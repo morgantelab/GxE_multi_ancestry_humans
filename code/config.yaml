@@ -1,0 +1,29 @@
+# config.yaml
+
+# Define paths
+paths:
+  phenotype_ids_file: "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/apr_run_with_chinese_20240402/2_sampling_then_grm_20240402/sampled_white_nwhite_ids_20240402.txt"
+  plink_executable: "/data2/morgante_lab/kgoda/software/plink1.9/plink"
+  geno_dir: "/data2/morgante_lab/data/ukbiobank/genotypes/array"
+  snp_list_dir: "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/apr_run_with_chinese_20240402/2_sampling_then_grm_20240402"
+  out_dir: "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/apr_run_with_chinese_20240402/2_sampling_then_grm_20240402"
+
+# Define resources
+resources:
+  filter_snplist:
+    cpus: 20
+    mem: "200G"
+    time: "24:00:00"
+
+  merge_genotypes:
+    cpus: 20
+    mem: "200G"
+    time: "24:00:00"
+
+  grm_prune:
+    cpus: 56
+    mem: "900G"
+    time: "50:30:00"
+    partition: "fm-bigmem-2"
+    nodelist: "bigmem007"
+
