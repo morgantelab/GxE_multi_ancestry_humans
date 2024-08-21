@@ -4,20 +4,22 @@ configfile: "config.yaml"
 
 rule all:
     input:
-        expand("{output_dir}/grm_sampled_pruned_20240402", output_dir=config["paths"]["out_dir"])
+        expand("{out_dir}/grm_sampled_pruned_20240402.bed", out_dir=config["paths"]["out_dir"])
 
 rule filter_snplist:
     input:
         geno_dir=config["paths"]["geno_dir"],
         phenotype_ids_file=config["paths"]["phenotype_ids_file"]
     output:
-        expand("{output_dir}/filtered_all_chr{chr}.snplist", output_dir=config["paths"]["snp_list_dir"], chr=range(1, 23))
+        expand("{out_dir}/filtered_all_chr{chr}.snplist", out_dir=config["paths"]["snp_list_dir"], chr=range(1, 23))
     params:
         plink_executable=config["paths"]["plink_executable"]
     resources:
         cpus=config["resources"]["filter_snplist"]["cpus"],
         mem_mb=int(config["resources"]["filter_snplist"]["mem"].replace("G", "")) * 1024,
-        time=config["resources"]["filter_snplist"]["time"]
+        time=config["resources"]["filter_snplist"]["time"],
+        partition=config["resources"]["filter_snplist"]["partition"],
+        nodelist=config["resources"]["filter_snplist"]["nodelist"]
     shell:
         """
         for CHR in {{1..22}}; do
@@ -30,16 +32,16 @@ rule filter_snplist:
                                       --keep-allele-order \
                                       --threads {resources.cpus} \
                                       --write-snplist \
-                                      --out {output_dir}/filtered_all_chr${{CHR}}
+                                      --out {config[paths][snp_list_dir]}/filtered_all_chr${{CHR}}
         done
         """
 
 rule merge_filtered_genotypes:
     input:
-        expand("{output_dir}/filtered_all_chr{chr}.snplist", output_dir=config["paths"]["snp_list_dir"], chr=range(1, 23)),
+        expand("{out_dir}/filtered_all_chr{chr}.snplist", out_dir=config["paths"]["snp_list_dir"], chr=range(1, 23)),
         phenotype_ids_file=config["paths"]["phenotype_ids_file"]
     output:
-        merged_geno="{output_dir}/combined_genotypes_filtered_sampled_20240402".format(output_dir=config["paths"]["out_dir"])
+        merged_geno=f"{config['paths']['out_dir']}/combined_genotypes_filtered_sampled_20240402.bed"
     params:
         plink_executable=config["paths"]["plink_executable"],
         geno_dir=config["paths"]["geno_dir"],
@@ -48,7 +50,9 @@ rule merge_filtered_genotypes:
     resources:
         cpus=config["resources"]["merge_genotypes"]["cpus"],
         mem_mb=int(config["resources"]["merge_genotypes"]["mem"].replace("G", "")) * 1024,
-        time=config["resources"]["merge_genotypes"]["time"]
+        time=config["resources"]["merge_genotypes"]["time"],
+        partition=config["resources"]["merge_genotypes"]["partition"],
+        nodelist=config["resources"]["merge_genotypes"]["nodelist"]
     shell:
         """
         MERGE_LIST={params.out_dir}/merge_list_all_20240402.txt
@@ -77,10 +81,10 @@ rule merge_filtered_genotypes:
 
 rule grm_sampled_pruned:
     input:
-        merged_geno="{output_dir}/combined_genotypes_filtered_sampled_20240402".format(output_dir=config["paths"]["out_dir"]),
+        merged_geno=f"{config['paths']['out_dir']}/combined_genotypes_filtered_sampled_20240402.bed",
         phenotype_ids_file=config["paths"]["phenotype_ids_file"]
     output:
-        grm="{output_dir}/grm_sampled_pruned_20240402".format(output_dir=config["paths"]["out_dir"])
+        grm=f"{config['paths']['out_dir']}/grm_sampled_pruned_20240402.bed"
     params:
         plink_executable=config["paths"]["plink_executable"],
         out_dir=config["paths"]["out_dir"]
