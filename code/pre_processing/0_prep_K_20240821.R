@@ -55,7 +55,7 @@ phen <- c("pulse_rate_automatic_00", "pulse_rate_automatic_01",
           "sist_blood_00", "sist_blood_01",
           "pulse_pressure_00", "pulse_pressure_01",
           "pulse_pressure_mean")
-phen <- c("PR0", "PR1",   "DP0", "DP1",   "SP0", "SP1",   "PP0", "PP1",   "PPm",    "DP0a", "DP1a",   "SP0a", "SP1a")
+phen <- c("PR0", "PR1", "DP0", "DP1", "SP0", "SP1", "PP0", "PP1", "PPm", "DP0a", "DP1a", "SP0a", "SP1a")
 data.frame(phen,phen%in%colnames(dat))
 
 
@@ -110,7 +110,7 @@ dat$ethn1_other <- ifelse(dat$ethn1 == 6, 1, 0)  # Other ethnic group
 dat$AOP <- dat$'V21003-0.0'
 dat$AOR <- dat$'V21022-0.0'
 
-Ivars <- c("ID", "Sex_SI", "Sex_gen", "YOB", "MOB", "DOF", "COF", "ethn1", "ethn1_white", "ethn1_whbri", "ethn1_mixed", "ethn1_asian", "ethn1_black", "ethn2", "AOP", "AOR")
+Ivars <- c("ID", "Sex_SI", "Sex_gen", "YOB", "MOB", "DOF", "COF", "ethn1", "ethn1_white", "ethn1_whbri", "ethn1_mixed", "ethn1_asian", "ethn1_black", "ethn1_chinese", "ethn1_other", "ethn2", "AOP", "AOR")
 data.frame(Ivars,Ivars%in%colnames(dat))
 
 #############
@@ -136,7 +136,7 @@ dat$hip <- dat$'V49-0.0'
 
 #Standing, seating height # V50-0.0 V51-0.0
 dat$height_stan <- dat$'V50-0.0'
-dat$height_seat <- dat$'V51-0.0'
+#dat$height_seat <- dat$'V51-0.0' missing 
 
 # Knowledge about birth weight # V120-0.0
 
@@ -172,7 +172,7 @@ dat$TFP <- dat$'V23127-0.0'
 dat$TFM <- dat$'V23128-0.0'
 
 
-Ebody <- c("BMI1", "BMI2", "weight1", "weight2", "waist", "hip", "height_stan", "wei_cha", "wei_cha_same", "wei_cha_gain", "wei_cha_lost", "BFP", "BFM", "BLM", "BWM", "BMR", "IWB", "TFP", "TFM") # "height_seat", 
+Ebody <- c("BMI1", "BMI2", "weight1", "weight2", "waist", "hip", "height_stan", "wei_cha", "wei_cha_same", "wei_cha_gain", "wei_cha_lost", "BFP", "BFM", "BLM", "BWM", "BMR", "IWB", "TFP", "TFM")
 data.frame(Ebody,Ebody%in%colnames(dat))
 
 
@@ -856,4 +856,4 @@ save(dt, file="data1_20240821.RData")
 
 
 
-#rm(list=ls()); gc()
+rm(list=ls()); gc()

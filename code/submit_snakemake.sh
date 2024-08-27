@@ -1,18 +1,18 @@
 #!/bin/bash
 #
-#SBATCH --job-name=genotype_pipeline
+#SBATCH --job-name=snake_genotype_pipeline
 #SBATCH --ntasks=1
-#SBATCH --partition=fm-bigmem-1  # Adjust this partition to match your cluster's configuration
-#SBATCH --time=48:00:00  # Set a time limit based on your workflow's needs
+#SBATCH --partition=fm-bigmem-1,fm-bigmem-2,fm-bigmem-3,compute
+#SBATCH --time=48:00:00
 #SBATCH --mem=6gb
-#SBATCH --output=/scratch3/kgoda/ukbiobank_files/tmp/logs/snakehead/%j.out
-#SBATCH --error=/scratch3/kgoda/ukbiobank_files/tmp/logs/snakehead/%j.err
+#SBATCH --output=/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snakehead/%j.out
+#SBATCH --error=/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snakehead/%j.err
 
 # Log message to confirm script starts running
 echo "Starting Snakemake pipeline..."
 
 # Create necessary directories for logs
-mkdir -p /scratch3/kgoda/ukbiobank_files/tmp/logs/snakehead
+#mkdir -p /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snakehead
 
 # Navigate to the working directory where the Snakefile and config.yaml are located
 cd /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/code
