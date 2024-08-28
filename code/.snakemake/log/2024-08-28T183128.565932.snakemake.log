@@ -1,0 +1,47 @@
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 50
+Rules claiming more threads will be scaled down.
+Job counts:
+	count	jobs
+	1	all
+	2	filter_snplist_per_ancestry
+	3
+Select jobs to execute...
+
+[Wed Aug 28 18:31:33 2024]
+rule filter_snplist_per_ancestry:
+    input: /data2/morgante_lab/data/ukbiobank/genotypes/array, /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/black_ids.txt
+    output: /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists/black_filtered_all_chr1.snplist
+    jobid: 1
+    wildcards: out_dir=/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists, ancestry=black, chr=1
+    resources: cpus=20, mem_mb=204800, time=24:00:00, partition=fm-bigmem-2, nodelist=bigmem007
+
+
+[Wed Aug 28 18:31:33 2024]
+rule filter_snplist_per_ancestry:
+    input: /data2/morgante_lab/data/ukbiobank/genotypes/array, /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/black_ids.txt
+    output: /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists/black_filtered_all_chr2.snplist
+    jobid: 2
+    wildcards: out_dir=/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists, ancestry=black, chr=2
+    resources: cpus=20, mem_mb=204800, time=24:00:00, partition=fm-bigmem-2, nodelist=bigmem007
+
+Waiting at most 30 seconds for missing files.
+MissingOutputException in line 18 of /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/code/snakefile.yaml:
+Job Missing files after 30 seconds:
+/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists/black_filtered_all_chr1.snplist
+This might be due to filesystem latency. If that is the case, consider to increase the wait time with --latency-wait.
+Job id: 1 completed successfully, but some output files are missing. 1
+  File "/opt/ohpc/pub/Software/mamba-rocky/envs/snakemake/lib/python3.9/site-packages/snakemake/executors/__init__.py", line 589, in handle_job_success
+  File "/opt/ohpc/pub/Software/mamba-rocky/envs/snakemake/lib/python3.9/site-packages/snakemake/executors/__init__.py", line 252, in handle_job_success
+Waiting at most 30 seconds for missing files.
+MissingOutputException in line 18 of /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/code/snakefile.yaml:
+Job Missing files after 30 seconds:
+/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists/black_filtered_all_chr2.snplist
+This might be due to filesystem latency. If that is the case, consider to increase the wait time with --latency-wait.
+Job id: 2 completed successfully, but some output files are missing. 2
+  File "/opt/ohpc/pub/Software/mamba-rocky/envs/snakemake/lib/python3.9/site-packages/snakemake/executors/__init__.py", line 589, in handle_job_success
+  File "/opt/ohpc/pub/Software/mamba-rocky/envs/snakemake/lib/python3.9/site-packages/snakemake/executors/__init__.py", line 252, in handle_job_success
+Shutting down, this might take some time.
+Exiting because a job execution failed. Look above for error message
+Complete log: /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/code/.snakemake/log/2024-08-28T183128.565932.snakemake.log

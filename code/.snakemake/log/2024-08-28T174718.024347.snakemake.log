@@ -1,0 +1,2 @@
+SyntaxError in line 28 of /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/code/snakefile.yaml:
+Command must be given as string after the shell keyword. (snakefile.yaml, line 28)

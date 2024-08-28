@@ -1,45 +1,51 @@
 # Snakefile
 
-Ancestry=['white', 'black', 'asian', 'mixed', 'chinese']
+Ancestry = ['black', 'asian', 'mixed', 'chinese']
+CHR = range(1, 23)
 
 configfile: "config.yaml"
 
 rule all:
     input:
-        expand("{out_dir}/{ancestry}_filtered_all_chr{chr}.snplist", out_dir=config["paths"]["snp_list_dir"], ancestry=Ancestry, chr=range(1, 23))
+        expand(
+            "{out_dir}/{ancestry}_filtered_all_chr{chr}.snplist",
+            out_dir=config["paths"]["snp_list_dir"],
+            ancestry=Ancestry,
+            chr=CHR
+        )
 
 # Step 1: Filter SNP List per Ancestry
 rule filter_snplist_per_ancestry:
     input:
-        geno_dir=config["paths"]["geno_dir"],
-        sample_ids=config["paths"]["sample_ids_dir"] + "/{ancestry}_sample_ids.txt"
+        geno_dir = config["paths"]["geno_dir"],
+        sample_ids = config["paths"]["sample_ids_dir"] + "/{ancestry}_ids.txt"
     output:
-        expand("{out_dir}/{ancestry}_filtered_all_chr{chr}.snplist", out_dir=config["paths"]["snp_list_dir"], ancestry=Ancestry, chr=range(1, 23))
+        "{out_dir}/{ancestry}_filtered_all_chr{chr}.snplist"
     params:
-        plink_executable=config["paths"]["plink_executable"]
+        plink_executable = config["paths"]["plink_executable"]
     resources:
-        cpus=config["resources"]["filter_snplist"]["cpus"],
-        mem_mb=int(config["resources"]["filter_snplist"]["mem_mb"].replace("G", "")) * 1024,
-        time=config["resources"]["filter_snplist"]["time"],
-        partition=config["resources"]["filter_snplist"]["partition"],
-        nodelist=config["resources"]["filter_snplist"]["nodelist"]
+        cpus = config["resources"]["filter_snplist"]["cpus"],
+        mem_mb = int(config["resources"]["filter_snplist"]["mem_mb"].replace("G", "")) * 1024,
+        time = config["resources"]["filter_snplist"]["time"],
+        partition = config["resources"]["filter_snplist"]["partition"],
+        nodelist = config["resources"]["filter_snplist"]["nodelist"]
     shell:
         """
-        for CHR in {{1..22}}; do
-            {params.plink_executable} --bfile {input.geno_dir}/ukb22418_c${{CHR}}_b0_v2_s488243 \
-                                      --keep {input.sample_ids} \
-                                      --maf 0.01 \
-                                      --mac 5 \
-                                      --geno 0.1 \
-                                      --hwe 1e-10 \
-                                      --keep-allele-order \
-                                      --threads {resources.cpus} \
-                                      --write-snplist \
-                                      --out {output_dir}/{ancestry}_filtered_all_chr${{CHR}}
-        done
+        {params.plink_executable} \
+        --bfile {input.geno_dir}/ukb22418_c{wildcards.chr}_b0_v2_s488243 \
+        --keep {input.sample_ids} \
+        --maf 0.01 \
+        --mac 5 \
+        --geno 0.1 \
+        --hwe 1e-10 \
+        --keep-allele-order \
+        --threads {resources.cpus} \
+        --write-snplist \
+        --out {output}
         """
 
 # Step 2: Merge Filtered Genotypes for Each Ancestry
+
 rule merge_filtered_genotypes_per_ancestry:
     input:
         expand("{out_dir}/{ancestry}_filtered_all_chr{chr}.snplist", out_dir=config["paths"]["snp_list_dir"], ancestry="{ancestry}", chr=range(1, 23)),

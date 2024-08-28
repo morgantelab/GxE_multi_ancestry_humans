@@ -34,14 +34,14 @@ conda activate snakemake
 
 # Execute Snakemake
 snakemake \
--s snakefile \
--n \
+-s snakefile.yaml \
 --configfile config.yaml \
 --latency-wait 30 \
 --use-conda \
 --nolock \
 --rerun-incomplete \
---jobs 100
+--cores 20 \
+--jobs 50
 
 # Unload R module and deactivate conda environment after completion
 #module unload R/4.1.2

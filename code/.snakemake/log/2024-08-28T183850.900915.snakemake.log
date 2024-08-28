@@ -1,0 +1,557 @@
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 50
+Rules claiming more threads will be scaled down.
+Job counts:
+	count	jobs
+	1	all
+	88	filter_snplist_per_ancestry
+	89
+Select jobs to execute...
+
+[Wed Aug 28 18:38:54 2024]
+rule filter_snplist_per_ancestry:
+    input: /data2/morgante_lab/data/ukbiobank/genotypes/array, /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/asian_ids.txt
+    output: /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists/asian_filtered_all_chr9.snplist
+    jobid: 31
+    wildcards: out_dir=/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists, ancestry=asian, chr=9
+    resources: cpus=20, mem_mb=204800, time=24:00:00, partition=fm-bigmem-2, nodelist=bigmem007
+
+
+[Wed Aug 28 18:38:54 2024]
+rule filter_snplist_per_ancestry:
+    input: /data2/morgante_lab/data/ukbiobank/genotypes/array, /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/mixed_ids.txt
+    output: /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists/mixed_filtered_all_chr2.snplist
+    jobid: 46
+    wildcards: out_dir=/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists, ancestry=mixed, chr=2
+    resources: cpus=20, mem_mb=204800, time=24:00:00, partition=fm-bigmem-2, nodelist=bigmem007
+
+
+[Wed Aug 28 18:38:55 2024]
+rule filter_snplist_per_ancestry:
+    input: /data2/morgante_lab/data/ukbiobank/genotypes/array, /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/mixed_ids.txt
+    output: /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists/mixed_filtered_all_chr17.snplist
+    jobid: 61
+    wildcards: out_dir=/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists, ancestry=mixed, chr=17
+    resources: cpus=20, mem_mb=204800, time=24:00:00, partition=fm-bigmem-2, nodelist=bigmem007
+
+
+[Wed Aug 28 18:38:56 2024]
+rule filter_snplist_per_ancestry:
+    input: /data2/morgante_lab/data/ukbiobank/genotypes/array, /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/black_ids.txt
+    output: /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists/black_filtered_all_chr8.snplist
+    jobid: 8
+    wildcards: out_dir=/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists, ancestry=black, chr=8
+    resources: cpus=20, mem_mb=204800, time=24:00:00, partition=fm-bigmem-2, nodelist=bigmem007
+
+
+[Wed Aug 28 18:38:58 2024]
+rule filter_snplist_per_ancestry:
+    input: /data2/morgante_lab/data/ukbiobank/genotypes/array, /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/chinese_ids.txt
+    output: /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists/chinese_filtered_all_chr2.snplist
+    jobid: 68
+    wildcards: out_dir=/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists, ancestry=chinese, chr=2
+    resources: cpus=20, mem_mb=204800, time=24:00:00, partition=fm-bigmem-2, nodelist=bigmem007
+
+
+[Wed Aug 28 18:38:59 2024]
+rule filter_snplist_per_ancestry:
+    input: /data2/morgante_lab/data/ukbiobank/genotypes/array, /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/chinese_ids.txt
+    output: /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists/chinese_filtered_all_chr17.snplist
+    jobid: 83
+    wildcards: out_dir=/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists, ancestry=chinese, chr=17
+    resources: cpus=20, mem_mb=204800, time=24:00:00, partition=fm-bigmem-2, nodelist=bigmem007
+
+
+[Wed Aug 28 18:39:02 2024]
+rule filter_snplist_per_ancestry:
+    input: /data2/morgante_lab/data/ukbiobank/genotypes/array, /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/black_ids.txt
+    output: /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists/black_filtered_all_chr16.snplist
+    jobid: 16
+    wildcards: out_dir=/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists, ancestry=black, chr=16
+    resources: cpus=20, mem_mb=204800, time=24:00:00, partition=fm-bigmem-2, nodelist=bigmem007
+
+
+[Wed Aug 28 18:39:06 2024]
+rule filter_snplist_per_ancestry:
+    input: /data2/morgante_lab/data/ukbiobank/genotypes/array, /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/chinese_ids.txt
+    output: /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists/chinese_filtered_all_chr10.snplist
+    jobid: 76
+    wildcards: out_dir=/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists, ancestry=chinese, chr=10
+    resources: cpus=20, mem_mb=204800, time=24:00:00, partition=fm-bigmem-2, nodelist=bigmem007
+
+Waiting at most 30 seconds for missing files.
+
+[Wed Aug 28 18:39:09 2024]
+rule filter_snplist_per_ancestry:
+    input: /data2/morgante_lab/data/ukbiobank/genotypes/array, /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/mixed_ids.txt
+    output: /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists/mixed_filtered_all_chr10.snplist
+    jobid: 54
+    wildcards: out_dir=/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists, ancestry=mixed, chr=10
+    resources: cpus=20, mem_mb=204800, time=24:00:00, partition=fm-bigmem-2, nodelist=bigmem007
+
+
+[Wed Aug 28 18:39:13 2024]
+rule filter_snplist_per_ancestry:
+    input: /data2/morgante_lab/data/ukbiobank/genotypes/array, /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/black_ids.txt
+    output: /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists/black_filtered_all_chr2.snplist
+    jobid: 2
+    wildcards: out_dir=/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists, ancestry=black, chr=2
+    resources: cpus=20, mem_mb=204800, time=24:00:00, partition=fm-bigmem-2, nodelist=bigmem007
+
+
+[Wed Aug 28 18:39:17 2024]
+rule filter_snplist_per_ancestry:
+    input: /data2/morgante_lab/data/ukbiobank/genotypes/array, /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/asian_ids.txt
+    output: /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists/asian_filtered_all_chr10.snplist
+    jobid: 32
+    wildcards: out_dir=/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists, ancestry=asian, chr=10
+    resources: cpus=20, mem_mb=204800, time=24:00:00, partition=fm-bigmem-2, nodelist=bigmem007
+
+
+[Wed Aug 28 18:39:22 2024]
+rule filter_snplist_per_ancestry:
+    input: /data2/morgante_lab/data/ukbiobank/genotypes/array, /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/black_ids.txt
+    output: /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists/black_filtered_all_chr9.snplist
+    jobid: 9
+    wildcards: out_dir=/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists, ancestry=black, chr=9
+    resources: cpus=20, mem_mb=204800, time=24:00:00, partition=fm-bigmem-2, nodelist=bigmem007
+
+
+[Wed Aug 28 18:39:27 2024]
+rule filter_snplist_per_ancestry:
+    input: /data2/morgante_lab/data/ukbiobank/genotypes/array, /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/chinese_ids.txt
+    output: /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists/chinese_filtered_all_chr3.snplist
+    jobid: 69
+    wildcards: out_dir=/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists, ancestry=chinese, chr=3
+    resources: cpus=20, mem_mb=204800, time=24:00:00, partition=fm-bigmem-2, nodelist=bigmem007
+
+
+[Wed Aug 28 18:39:31 2024]
+rule filter_snplist_per_ancestry:
+    input: /data2/morgante_lab/data/ukbiobank/genotypes/array, /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/chinese_ids.txt
+    output: /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists/chinese_filtered_all_chr18.snplist
+    jobid: 84
+    wildcards: out_dir=/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists, ancestry=chinese, chr=18
+    resources: cpus=20, mem_mb=204800, time=24:00:00, partition=fm-bigmem-2, nodelist=bigmem007
+
+
+[Wed Aug 28 18:39:36 2024]
+rule filter_snplist_per_ancestry:
+    input: /data2/morgante_lab/data/ukbiobank/genotypes/array, /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/black_ids.txt
+    output: /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists/black_filtered_all_chr17.snplist
+    jobid: 17
+    wildcards: out_dir=/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists, ancestry=black, chr=17
+    resources: cpus=20, mem_mb=204800, time=24:00:00, partition=fm-bigmem-2, nodelist=bigmem007
+
+MissingOutputException in line 18 of /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/code/snakefile.yaml:
+Job Missing files after 30 seconds:
+/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists/asian_filtered_all_chr9.snplist
+This might be due to filesystem latency. If that is the case, consider to increase the wait time with --latency-wait.
+Job id: 31 completed successfully, but some output files are missing. 31
+  File "/opt/ohpc/pub/Software/mamba-rocky/envs/snakemake/lib/python3.9/site-packages/snakemake/executors/__init__.py", line 589, in handle_job_success
+  File "/opt/ohpc/pub/Software/mamba-rocky/envs/snakemake/lib/python3.9/site-packages/snakemake/executors/__init__.py", line 252, in handle_job_success
+Waiting at most 30 seconds for missing files.
+
+[Wed Aug 28 18:39:42 2024]
+rule filter_snplist_per_ancestry:
+    input: /data2/morgante_lab/data/ukbiobank/genotypes/array, /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/chinese_ids.txt
+    output: /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists/chinese_filtered_all_chr11.snplist
+    jobid: 77
+    wildcards: out_dir=/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists, ancestry=chinese, chr=11
+    resources: cpus=20, mem_mb=204800, time=24:00:00, partition=fm-bigmem-2, nodelist=bigmem007
+
+
+[Wed Aug 28 18:39:47 2024]
+rule filter_snplist_per_ancestry:
+    input: /data2/morgante_lab/data/ukbiobank/genotypes/array, /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/asian_ids.txt
+    output: /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists/asian_filtered_all_chr18.snplist
+    jobid: 40
+    wildcards: out_dir=/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists, ancestry=asian, chr=18
+    resources: cpus=20, mem_mb=204800, time=24:00:00, partition=fm-bigmem-2, nodelist=bigmem007
+
+
+[Wed Aug 28 18:39:53 2024]
+rule filter_snplist_per_ancestry:
+    input: /data2/morgante_lab/data/ukbiobank/genotypes/array, /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/mixed_ids.txt
+    output: /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists/mixed_filtered_all_chr11.snplist
+    jobid: 55
+    wildcards: out_dir=/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists, ancestry=mixed, chr=11
+    resources: cpus=20, mem_mb=204800, time=24:00:00, partition=fm-bigmem-2, nodelist=bigmem007
+
+
+[Wed Aug 28 18:39:57 2024]
+rule filter_snplist_per_ancestry:
+    input: /data2/morgante_lab/data/ukbiobank/genotypes/array, /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/asian_ids.txt
+    output: /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists/asian_filtered_all_chr3.snplist
+    jobid: 25
+    wildcards: out_dir=/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists, ancestry=asian, chr=3
+    resources: cpus=20, mem_mb=204800, time=24:00:00, partition=fm-bigmem-2, nodelist=bigmem007
+
+
+[Wed Aug 28 18:40:00 2024]
+rule filter_snplist_per_ancestry:
+    input: /data2/morgante_lab/data/ukbiobank/genotypes/array, /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/black_ids.txt
+    output: /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists/black_filtered_all_chr10.snplist
+    jobid: 10
+    wildcards: out_dir=/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists, ancestry=black, chr=10
+    resources: cpus=20, mem_mb=204800, time=24:00:00, partition=fm-bigmem-2, nodelist=bigmem007
+
+
+[Wed Aug 28 18:40:04 2024]
+rule filter_snplist_per_ancestry:
+    input: /data2/morgante_lab/data/ukbiobank/genotypes/array, /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/chinese_ids.txt
+    output: /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists/chinese_filtered_all_chr4.snplist
+    jobid: 70
+    wildcards: out_dir=/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists, ancestry=chinese, chr=4
+    resources: cpus=20, mem_mb=204800, time=24:00:00, partition=fm-bigmem-2, nodelist=bigmem007
+
+
+[Wed Aug 28 18:40:07 2024]
+rule filter_snplist_per_ancestry:
+    input: /data2/morgante_lab/data/ukbiobank/genotypes/array, /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/chinese_ids.txt
+    output: /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists/chinese_filtered_all_chr19.snplist
+    jobid: 85
+    wildcards: out_dir=/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists, ancestry=chinese, chr=19
+    resources: cpus=20, mem_mb=204800, time=24:00:00, partition=fm-bigmem-2, nodelist=bigmem007
+
+MissingOutputException in line 18 of /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/code/snakefile.yaml:
+Job Missing files after 30 seconds:
+/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists/mixed_filtered_all_chr17.snplist
+This might be due to filesystem latency. If that is the case, consider to increase the wait time with --latency-wait.
+Job id: 61 completed successfully, but some output files are missing. 61
+  File "/opt/ohpc/pub/Software/mamba-rocky/envs/snakemake/lib/python3.9/site-packages/snakemake/executors/__init__.py", line 589, in handle_job_success
+  File "/opt/ohpc/pub/Software/mamba-rocky/envs/snakemake/lib/python3.9/site-packages/snakemake/executors/__init__.py", line 252, in handle_job_success
+Waiting at most 30 seconds for missing files.
+
+[Wed Aug 28 18:40:11 2024]
+rule filter_snplist_per_ancestry:
+    input: /data2/morgante_lab/data/ukbiobank/genotypes/array, /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/black_ids.txt
+    output: /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists/black_filtered_all_chr18.snplist
+    jobid: 18
+    wildcards: out_dir=/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists, ancestry=black, chr=18
+    resources: cpus=20, mem_mb=204800, time=24:00:00, partition=fm-bigmem-2, nodelist=bigmem007
+
+
+[Wed Aug 28 18:40:14 2024]
+rule filter_snplist_per_ancestry:
+    input: /data2/morgante_lab/data/ukbiobank/genotypes/array, /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/chinese_ids.txt
+    output: /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists/chinese_filtered_all_chr12.snplist
+    jobid: 78
+    wildcards: out_dir=/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists, ancestry=chinese, chr=12
+    resources: cpus=20, mem_mb=204800, time=24:00:00, partition=fm-bigmem-2, nodelist=bigmem007
+
+
+[Wed Aug 28 18:40:18 2024]
+rule filter_snplist_per_ancestry:
+    input: /data2/morgante_lab/data/ukbiobank/genotypes/array, /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/asian_ids.txt
+    output: /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists/asian_filtered_all_chr4.snplist
+    jobid: 26
+    wildcards: out_dir=/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists, ancestry=asian, chr=4
+    resources: cpus=20, mem_mb=204800, time=24:00:00, partition=fm-bigmem-2, nodelist=bigmem007
+
+
+[Wed Aug 28 18:40:23 2024]
+rule filter_snplist_per_ancestry:
+    input: /data2/morgante_lab/data/ukbiobank/genotypes/array, /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/black_ids.txt
+    output: /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists/black_filtered_all_chr11.snplist
+    jobid: 11
+    wildcards: out_dir=/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists, ancestry=black, chr=11
+    resources: cpus=20, mem_mb=204800, time=24:00:00, partition=fm-bigmem-2, nodelist=bigmem007
+
+
+[Wed Aug 28 18:40:27 2024]
+rule filter_snplist_per_ancestry:
+    input: /data2/morgante_lab/data/ukbiobank/genotypes/array, /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/chinese_ids.txt
+    output: /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists/chinese_filtered_all_chr5.snplist
+    jobid: 71
+    wildcards: out_dir=/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists, ancestry=chinese, chr=5
+    resources: cpus=20, mem_mb=204800, time=24:00:00, partition=fm-bigmem-2, nodelist=bigmem007
+
+
+[Wed Aug 28 18:40:32 2024]
+rule filter_snplist_per_ancestry:
+    input: /data2/morgante_lab/data/ukbiobank/genotypes/array, /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/chinese_ids.txt
+    output: /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists/chinese_filtered_all_chr20.snplist
+    jobid: 86
+    wildcards: out_dir=/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists, ancestry=chinese, chr=20
+    resources: cpus=20, mem_mb=204800, time=24:00:00, partition=fm-bigmem-2, nodelist=bigmem007
+
+
+[Wed Aug 28 18:40:37 2024]
+rule filter_snplist_per_ancestry:
+    input: /data2/morgante_lab/data/ukbiobank/genotypes/array, /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/black_ids.txt
+    output: /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists/black_filtered_all_chr19.snplist
+    jobid: 19
+    wildcards: out_dir=/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists, ancestry=black, chr=19
+    resources: cpus=20, mem_mb=204800, time=24:00:00, partition=fm-bigmem-2, nodelist=bigmem007
+
+MissingOutputException in line 18 of /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/code/snakefile.yaml:
+Job Missing files after 30 seconds:
+/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists/chinese_filtered_all_chr17.snplist
+This might be due to filesystem latency. If that is the case, consider to increase the wait time with --latency-wait.
+Job id: 83 completed successfully, but some output files are missing. 83
+  File "/opt/ohpc/pub/Software/mamba-rocky/envs/snakemake/lib/python3.9/site-packages/snakemake/executors/__init__.py", line 589, in handle_job_success
+  File "/opt/ohpc/pub/Software/mamba-rocky/envs/snakemake/lib/python3.9/site-packages/snakemake/executors/__init__.py", line 252, in handle_job_success
+Waiting at most 30 seconds for missing files.
+
+[Wed Aug 28 18:40:40 2024]
+rule filter_snplist_per_ancestry:
+    input: /data2/morgante_lab/data/ukbiobank/genotypes/array, /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/chinese_ids.txt
+    output: /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists/chinese_filtered_all_chr13.snplist
+    jobid: 79
+    wildcards: out_dir=/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists, ancestry=chinese, chr=13
+    resources: cpus=20, mem_mb=204800, time=24:00:00, partition=fm-bigmem-2, nodelist=bigmem007
+
+
+[Wed Aug 28 18:40:45 2024]
+rule filter_snplist_per_ancestry:
+    input: /data2/morgante_lab/data/ukbiobank/genotypes/array, /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/black_ids.txt
+    output: /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists/black_filtered_all_chr12.snplist
+    jobid: 12
+    wildcards: out_dir=/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists, ancestry=black, chr=12
+    resources: cpus=20, mem_mb=204800, time=24:00:00, partition=fm-bigmem-2, nodelist=bigmem007
+
+
+[Wed Aug 28 18:40:50 2024]
+rule filter_snplist_per_ancestry:
+    input: /data2/morgante_lab/data/ukbiobank/genotypes/array, /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/chinese_ids.txt
+    output: /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists/chinese_filtered_all_chr6.snplist
+    jobid: 72
+    wildcards: out_dir=/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists, ancestry=chinese, chr=6
+    resources: cpus=20, mem_mb=204800, time=24:00:00, partition=fm-bigmem-2, nodelist=bigmem007
+
+
+[Wed Aug 28 18:40:54 2024]
+rule filter_snplist_per_ancestry:
+    input: /data2/morgante_lab/data/ukbiobank/genotypes/array, /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/chinese_ids.txt
+    output: /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists/chinese_filtered_all_chr21.snplist
+    jobid: 87
+    wildcards: out_dir=/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists, ancestry=chinese, chr=21
+    resources: cpus=20, mem_mb=204800, time=24:00:00, partition=fm-bigmem-2, nodelist=bigmem007
+
+
+[Wed Aug 28 18:40:58 2024]
+rule filter_snplist_per_ancestry:
+    input: /data2/morgante_lab/data/ukbiobank/genotypes/array, /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/black_ids.txt
+    output: /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists/black_filtered_all_chr1.snplist
+    jobid: 1
+    wildcards: out_dir=/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists, ancestry=black, chr=1
+    resources: cpus=20, mem_mb=204800, time=24:00:00, partition=fm-bigmem-2, nodelist=bigmem007
+
+
+[Wed Aug 28 18:41:03 2024]
+rule filter_snplist_per_ancestry:
+    input: /data2/morgante_lab/data/ukbiobank/genotypes/array, /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/black_ids.txt
+    output: /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists/black_filtered_all_chr20.snplist
+    jobid: 20
+    wildcards: out_dir=/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists, ancestry=black, chr=20
+    resources: cpus=20, mem_mb=204800, time=24:00:00, partition=fm-bigmem-2, nodelist=bigmem007
+
+
+[Wed Aug 28 18:41:07 2024]
+rule filter_snplist_per_ancestry:
+    input: /data2/morgante_lab/data/ukbiobank/genotypes/array, /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/chinese_ids.txt
+    output: /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists/chinese_filtered_all_chr14.snplist
+    jobid: 80
+    wildcards: out_dir=/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists, ancestry=chinese, chr=14
+    resources: cpus=20, mem_mb=204800, time=24:00:00, partition=fm-bigmem-2, nodelist=bigmem007
+
+MissingOutputException in line 18 of /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/code/snakefile.yaml:
+Job Missing files after 30 seconds:
+/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists/black_filtered_all_chr8.snplist
+This might be due to filesystem latency. If that is the case, consider to increase the wait time with --latency-wait.
+Job id: 8 completed successfully, but some output files are missing. 8
+  File "/opt/ohpc/pub/Software/mamba-rocky/envs/snakemake/lib/python3.9/site-packages/snakemake/executors/__init__.py", line 589, in handle_job_success
+  File "/opt/ohpc/pub/Software/mamba-rocky/envs/snakemake/lib/python3.9/site-packages/snakemake/executors/__init__.py", line 252, in handle_job_success
+Waiting at most 30 seconds for missing files.
+
+[Wed Aug 28 18:41:11 2024]
+rule filter_snplist_per_ancestry:
+    input: /data2/morgante_lab/data/ukbiobank/genotypes/array, /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/black_ids.txt
+    output: /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists/black_filtered_all_chr13.snplist
+    jobid: 13
+    wildcards: out_dir=/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists, ancestry=black, chr=13
+    resources: cpus=20, mem_mb=204800, time=24:00:00, partition=fm-bigmem-2, nodelist=bigmem007
+
+
+[Wed Aug 28 18:41:14 2024]
+rule filter_snplist_per_ancestry:
+    input: /data2/morgante_lab/data/ukbiobank/genotypes/array, /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/chinese_ids.txt
+    output: /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists/chinese_filtered_all_chr7.snplist
+    jobid: 73
+    wildcards: out_dir=/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists, ancestry=chinese, chr=7
+    resources: cpus=20, mem_mb=204800, time=24:00:00, partition=fm-bigmem-2, nodelist=bigmem007
+
+
+[Wed Aug 28 18:41:17 2024]
+rule filter_snplist_per_ancestry:
+    input: /data2/morgante_lab/data/ukbiobank/genotypes/array, /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/chinese_ids.txt
+    output: /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists/chinese_filtered_all_chr22.snplist
+    jobid: 88
+    wildcards: out_dir=/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists, ancestry=chinese, chr=22
+    resources: cpus=20, mem_mb=204800, time=24:00:00, partition=fm-bigmem-2, nodelist=bigmem007
+
+
+[Wed Aug 28 18:41:21 2024]
+rule filter_snplist_per_ancestry:
+    input: /data2/morgante_lab/data/ukbiobank/genotypes/array, /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/black_ids.txt
+    output: /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists/black_filtered_all_chr21.snplist
+    jobid: 21
+    wildcards: out_dir=/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists, ancestry=black, chr=21
+    resources: cpus=20, mem_mb=204800, time=24:00:00, partition=fm-bigmem-2, nodelist=bigmem007
+
+
+[Wed Aug 28 18:41:25 2024]
+rule filter_snplist_per_ancestry:
+    input: /data2/morgante_lab/data/ukbiobank/genotypes/array, /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/chinese_ids.txt
+    output: /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists/chinese_filtered_all_chr15.snplist
+    jobid: 81
+    wildcards: out_dir=/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists, ancestry=chinese, chr=15
+    resources: cpus=20, mem_mb=204800, time=24:00:00, partition=fm-bigmem-2, nodelist=bigmem007
+
+
+[Wed Aug 28 18:41:29 2024]
+rule filter_snplist_per_ancestry:
+    input: /data2/morgante_lab/data/ukbiobank/genotypes/array, /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/asian_ids.txt
+    output: /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists/asian_filtered_all_chr22.snplist
+    jobid: 44
+    wildcards: out_dir=/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists, ancestry=asian, chr=22
+    resources: cpus=20, mem_mb=204800, time=24:00:00, partition=fm-bigmem-2, nodelist=bigmem007
+
+
+[Wed Aug 28 18:41:33 2024]
+rule filter_snplist_per_ancestry:
+    input: /data2/morgante_lab/data/ukbiobank/genotypes/array, /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/mixed_ids.txt
+    output: /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists/mixed_filtered_all_chr8.snplist
+    jobid: 52
+    wildcards: out_dir=/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists, ancestry=mixed, chr=8
+    resources: cpus=20, mem_mb=204800, time=24:00:00, partition=fm-bigmem-2, nodelist=bigmem007
+
+
+[Wed Aug 28 18:41:37 2024]
+rule filter_snplist_per_ancestry:
+    input: /data2/morgante_lab/data/ukbiobank/genotypes/array, /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/chinese_ids.txt
+    output: /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists/chinese_filtered_all_chr1.snplist
+    jobid: 67
+    wildcards: out_dir=/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists, ancestry=chinese, chr=1
+    resources: cpus=20, mem_mb=204800, time=24:00:00, partition=fm-bigmem-2, nodelist=bigmem007
+
+MissingOutputException in line 18 of /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/code/snakefile.yaml:
+Job Missing files after 30 seconds:
+/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists/black_filtered_all_chr16.snplist
+This might be due to filesystem latency. If that is the case, consider to increase the wait time with --latency-wait.
+Job id: 16 completed successfully, but some output files are missing. 16
+  File "/opt/ohpc/pub/Software/mamba-rocky/envs/snakemake/lib/python3.9/site-packages/snakemake/executors/__init__.py", line 589, in handle_job_success
+  File "/opt/ohpc/pub/Software/mamba-rocky/envs/snakemake/lib/python3.9/site-packages/snakemake/executors/__init__.py", line 252, in handle_job_success
+Waiting at most 30 seconds for missing files.
+
+[Wed Aug 28 18:41:40 2024]
+rule filter_snplist_per_ancestry:
+    input: /data2/morgante_lab/data/ukbiobank/genotypes/array, /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/black_ids.txt
+    output: /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists/black_filtered_all_chr14.snplist
+    jobid: 14
+    wildcards: out_dir=/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists, ancestry=black, chr=14
+    resources: cpus=20, mem_mb=204800, time=24:00:00, partition=fm-bigmem-2, nodelist=bigmem007
+
+
+[Wed Aug 28 18:41:44 2024]
+rule filter_snplist_per_ancestry:
+    input: /data2/morgante_lab/data/ukbiobank/genotypes/array, /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/chinese_ids.txt
+    output: /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists/chinese_filtered_all_chr8.snplist
+    jobid: 74
+    wildcards: out_dir=/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists, ancestry=chinese, chr=8
+    resources: cpus=20, mem_mb=204800, time=24:00:00, partition=fm-bigmem-2, nodelist=bigmem007
+
+
+[Wed Aug 28 18:41:47 2024]
+rule filter_snplist_per_ancestry:
+    input: /data2/morgante_lab/data/ukbiobank/genotypes/array, /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/black_ids.txt
+    output: /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists/black_filtered_all_chr22.snplist
+    jobid: 22
+    wildcards: out_dir=/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists, ancestry=black, chr=22
+    resources: cpus=20, mem_mb=204800, time=24:00:00, partition=fm-bigmem-2, nodelist=bigmem007
+
+
+[Wed Aug 28 18:41:51 2024]
+rule filter_snplist_per_ancestry:
+    input: /data2/morgante_lab/data/ukbiobank/genotypes/array, /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/chinese_ids.txt
+    output: /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists/chinese_filtered_all_chr16.snplist
+    jobid: 82
+    wildcards: out_dir=/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists, ancestry=chinese, chr=16
+    resources: cpus=20, mem_mb=204800, time=24:00:00, partition=fm-bigmem-2, nodelist=bigmem007
+
+
+[Wed Aug 28 18:41:54 2024]
+rule filter_snplist_per_ancestry:
+    input: /data2/morgante_lab/data/ukbiobank/genotypes/array, /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/black_ids.txt
+    output: /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists/black_filtered_all_chr15.snplist
+    jobid: 15
+    wildcards: out_dir=/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists, ancestry=black, chr=15
+    resources: cpus=20, mem_mb=204800, time=24:00:00, partition=fm-bigmem-2, nodelist=bigmem007
+
+
+[Wed Aug 28 18:41:58 2024]
+rule filter_snplist_per_ancestry:
+    input: /data2/morgante_lab/data/ukbiobank/genotypes/array, /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/chinese_ids.txt
+    output: /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists/chinese_filtered_all_chr9.snplist
+    jobid: 75
+    wildcards: out_dir=/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists, ancestry=chinese, chr=9
+    resources: cpus=20, mem_mb=204800, time=24:00:00, partition=fm-bigmem-2, nodelist=bigmem007
+
+MissingOutputException in line 18 of /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/code/snakefile.yaml:
+Job Missing files after 30 seconds:
+/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists/chinese_filtered_all_chr2.snplist
+This might be due to filesystem latency. If that is the case, consider to increase the wait time with --latency-wait.
+Job id: 68 completed successfully, but some output files are missing. 68
+  File "/opt/ohpc/pub/Software/mamba-rocky/envs/snakemake/lib/python3.9/site-packages/snakemake/executors/__init__.py", line 589, in handle_job_success
+  File "/opt/ohpc/pub/Software/mamba-rocky/envs/snakemake/lib/python3.9/site-packages/snakemake/executors/__init__.py", line 252, in handle_job_success
+Waiting at most 30 seconds for missing files.
+MissingOutputException in line 18 of /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/code/snakefile.yaml:
+Job Missing files after 30 seconds:
+/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists/mixed_filtered_all_chr2.snplist
+This might be due to filesystem latency. If that is the case, consider to increase the wait time with --latency-wait.
+Job id: 46 completed successfully, but some output files are missing. 46
+  File "/opt/ohpc/pub/Software/mamba-rocky/envs/snakemake/lib/python3.9/site-packages/snakemake/executors/__init__.py", line 589, in handle_job_success
+  File "/opt/ohpc/pub/Software/mamba-rocky/envs/snakemake/lib/python3.9/site-packages/snakemake/executors/__init__.py", line 252, in handle_job_success
+Waiting at most 30 seconds for missing files.
+MissingOutputException in line 18 of /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/code/snakefile.yaml:
+Job Missing files after 30 seconds:
+/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists/chinese_filtered_all_chr10.snplist
+This might be due to filesystem latency. If that is the case, consider to increase the wait time with --latency-wait.
+Job id: 76 completed successfully, but some output files are missing. 76
+  File "/opt/ohpc/pub/Software/mamba-rocky/envs/snakemake/lib/python3.9/site-packages/snakemake/executors/__init__.py", line 589, in handle_job_success
+  File "/opt/ohpc/pub/Software/mamba-rocky/envs/snakemake/lib/python3.9/site-packages/snakemake/executors/__init__.py", line 252, in handle_job_success
+Waiting at most 30 seconds for missing files.
+MissingOutputException in line 18 of /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/code/snakefile.yaml:
+Job Missing files after 30 seconds:
+/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists/mixed_filtered_all_chr10.snplist
+This might be due to filesystem latency. If that is the case, consider to increase the wait time with --latency-wait.
+Job id: 54 completed successfully, but some output files are missing. 54
+  File "/opt/ohpc/pub/Software/mamba-rocky/envs/snakemake/lib/python3.9/site-packages/snakemake/executors/__init__.py", line 589, in handle_job_success
+  File "/opt/ohpc/pub/Software/mamba-rocky/envs/snakemake/lib/python3.9/site-packages/snakemake/executors/__init__.py", line 252, in handle_job_success
+Waiting at most 30 seconds for missing files.
+MissingOutputException in line 18 of /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/code/snakefile.yaml:
+Job Missing files after 30 seconds:
+/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists/black_filtered_all_chr2.snplist
+This might be due to filesystem latency. If that is the case, consider to increase the wait time with --latency-wait.
+Job id: 2 completed successfully, but some output files are missing. 2
+  File "/opt/ohpc/pub/Software/mamba-rocky/envs/snakemake/lib/python3.9/site-packages/snakemake/executors/__init__.py", line 589, in handle_job_success
+  File "/opt/ohpc/pub/Software/mamba-rocky/envs/snakemake/lib/python3.9/site-packages/snakemake/executors/__init__.py", line 252, in handle_job_success
+Waiting at most 30 seconds for missing files.
+MissingOutputException in line 18 of /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/code/snakefile.yaml:
+Job Missing files after 30 seconds:
+/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists/asian_filtered_all_chr10.snplist
+This might be due to filesystem latency. If that is the case, consider to increase the wait time with --latency-wait.
+Job id: 32 completed successfully, but some output files are missing. 32
+  File "/opt/ohpc/pub/Software/mamba-rocky/envs/snakemake/lib/python3.9/site-packages/snakemake/executors/__init__.py", line 589, in handle_job_success
+  File "/opt/ohpc/pub/Software/mamba-rocky/envs/snakemake/lib/python3.9/site-packages/snakemake/executors/__init__.py", line 252, in handle_job_success
+Waiting at most 30 seconds for missing files.
+MissingOutputException in line 18 of /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/code/snakefile.yaml:
+Job Missing files after 30 seconds:
+/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists/chinese_filtered_all_chr18.snplist
+This might be due to filesystem latency. If that is the case, consider to increase the wait time with --latency-wait.
+Job id: 84 completed successfully, but some output files are missing. 84
+  File "/opt/ohpc/pub/Software/mamba-rocky/envs/snakemake/lib/python3.9/site-packages/snakemake/executors/__init__.py", line 589, in handle_job_success
+  File "/opt/ohpc/pub/Software/mamba-rocky/envs/snakemake/lib/python3.9/site-packages/snakemake/executors/__init__.py", line 252, in handle_job_success
+Waiting at most 30 seconds for missing files.
