@@ -1,0 +1,3 @@
+KeyError in line 20 of /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/code/snakefile:
+'mem'
+  File "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/code/snakefile", line 20, in <module>

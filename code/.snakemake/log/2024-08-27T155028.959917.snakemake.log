@@ -1,0 +1,4 @@
+Building DAG of jobs...
+WildcardError in line 12 of /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/code/snakefile:
+Wildcards in input files cannot be determined from output files:
+'ancestry'
