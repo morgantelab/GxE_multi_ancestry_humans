@@ -1,2 +1,2 @@
 #!/bin/bash
-mkdir -p ./{../output,../output/logs_slurm} | sbatch ./submit_snakemake.sh
+mkdir -p ../output/{log,logs_slurm} | sbatch ./submit_snakemake.sh

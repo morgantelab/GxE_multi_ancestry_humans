@@ -5,8 +5,8 @@
 #SBATCH --partition=compute
 #SBATCH --time=10-00:00:00
 #SBATCH --mem=1gb
-#SBATCH --output=/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/log/snplist_%j.out
-#SBATCH --error=/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/log/snplist_%j.err
+#SBATCH --output=/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snakehead/%j.out
+#SBATCH --error=/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snakehead/%j.err
 
 # Log message to confirm script starts running
 echo "Starting Snakemake pipeline..."
@@ -34,9 +34,9 @@ conda activate snakemake
 
 # Execute Snakemake
 snakemake \
--s snakefile \
+-s snakefile.yaml \
 --configfile config.yaml \
---latency-wait 120 \
+--latency-wait 30 \
 --use-conda \
 --rerun-incomplete \
 --profile slurm

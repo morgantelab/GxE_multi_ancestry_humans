@@ -1,0 +1,14 @@
+# config.yaml
+
+MAF=0.01
+GENO=0.1
+HWE="1e-10"
+MAC=5
+Ancestry = ['black', 'asian', 'mixed', 'chinese']
+CHR = range(1, 23)
+plink_executable = "/data2/morgante_lab/kgoda/software/plink1.9/plink"
+out_dir = "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output"
+geno_dir = "/data2/morgante_lab/data/ukbiobank/genotypes/array"
+sample_ids_dir = "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data"
+snp_list_dir = "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists"
+EXT = ".bed"
