@@ -1,10 +1,10 @@
 #!/bin/bash
 #
 #SBATCH --job-name=snake_genotype_pipeline
-#SBATCH --cpus-per-task=1
-#SBATCH --partition=compute
-#SBATCH --time=10-00:00:00
-#SBATCH --mem=1gb
+#SBATCH --ntasks=1
+#SBATCH --partition=fm-bigmem-1,fm-bigmem-2,fm-bigmem-3,compute
+#SBATCH --time=48:00:00
+#SBATCH --mem=6gb
 #SBATCH --output=/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snakehead/%j.out
 #SBATCH --error=/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snakehead/%j.err
 
@@ -34,23 +34,14 @@ conda activate snakemake
 
 # Execute Snakemake
 snakemake \
--s snakefile.yaml \
+-s snakefile \
+-n \
 --configfile config.yaml \
 --latency-wait 30 \
 --use-conda \
+--nolock \
 --rerun-incomplete \
---profile slurm
-
-# Test/Dry version
-#snakemake \
-#-p \
-#-n \
-#-s snakefile.yaml \
-#--configfile config.yaml \
-#--profile slurm
-
-#--dag | display | dot
-#-p -n \
+--jobs 100
 
 # Unload R module and deactivate conda environment after completion
 #module unload R/4.1.2

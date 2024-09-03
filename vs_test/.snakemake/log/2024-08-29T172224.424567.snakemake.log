@@ -1,0 +1,22 @@
+Building DAG of jobs...
+Job counts:
+	count	jobs
+	1	all
+	88	filter_snplist_per_ancestry
+	89
+
+[Thu Aug 29 17:22:24 2024]
+rule filter_snplist_per_ancestry:
+    input: /data2/morgante_lab/data/ukbiobank/genotypes/array/ukb22418_c2_b0_v2_s488243.bed
+    output: /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists/chinese_filtered_all_chr2.snplist
+    jobid: 68
+    wildcards: ancestry=chinese, chr=2
+    resources: cpus=4, mem_mb=20000, time_min=1440
+
+RuleException in line 10 of /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/vs_test/snakefile.yaml:
+'InputFiles' object has no attribute 'sample_ids'
+  File "/opt/ohpc/pub/Software/mamba-rocky/envs/snakemake/lib/python3.9/site-packages/snakemake/executors/__init__.py", line 136, in run_jobs
+  File "/opt/ohpc/pub/Software/mamba-rocky/envs/snakemake/lib/python3.9/site-packages/snakemake/executors/__init__.py", line 145, in run
+  File "/opt/ohpc/pub/Software/mamba-rocky/envs/snakemake/lib/python3.9/site-packages/snakemake/executors/__init__.py", line 156, in _run
+  File "/opt/ohpc/pub/Software/mamba-rocky/envs/snakemake/lib/python3.9/site-packages/snakemake/executors/__init__.py", line 176, in printjob
+  File "/opt/ohpc/pub/Software/mamba-rocky/envs/snakemake/lib/python3.9/site-packages/snakemake/executors/__init__.py", line 162, in printjob

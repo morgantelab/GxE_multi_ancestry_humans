@@ -1,47 +1,44 @@
 # Snakefile
 
-Ancestry = ['black', 'asian', 'mixed', 'chinese']
-CHR = range(1, 23)
-
 configfile: "config.yaml"
 
 rule all:
     input:
-        expand(
-            "{out_dir}/{ancestry}_filtered_all_chr{chr}.snplist",
-            out_dir=config["paths"]["snp_list_dir"],
-            ancestry=Ancestry,
-            chr=CHR
-        )
+        expand(config["snp_list_dir"] + "/" + "{ancestry}_filtered_all_chr{chr}.snplist", ancestry=config["Ancestry"], chr=config["CHR"])
 
 # Step 1: Filter SNP List per Ancestry
 rule filter_snplist_per_ancestry:
     input:
-        geno_dir = config["paths"]["geno_dir"],
-        sample_ids = config["paths"]["sample_ids_dir"] + "/{ancestry}_ids.txt"
+        config["geno_dir"] + "/" + "ukb22418_c{chr}_b0_v2_s488243" + config["EXT"]
     output:
-        "{out_dir}/{ancestry}_filtered_all_chr{chr}.snplist"
+        SNPLIST=config["snp_list_dir"] + "/" + "{ancestry}_filtered_all_chr{chr}.snplist"
     params:
-        plink_executable = config["paths"]["plink_executable"]
+        plink_executable = config["plink_executable"],
+        THREADS=4,
+        MAF=config["MAF"],
+        GENO=config["GENO"],
+        HWE=config["HWE"],
+        MAC=config["MAC"],
+        IPREFIX=config["geno_dir"]+"/"+"ukb22418_c{chr}_b0_v2_s488243"
+        OPREFIX="{ancestry}_filtered_all_chr{chr}",
+        SNPDIR=config["snp_list_dir"]
     resources:
-        cpus = config["resources"]["filter_snplist"]["cpus"],
-        mem_mb = int(config["resources"]["filter_snplist"]["mem_mb"].replace("G", "")) * 1024,
-        time = config["resources"]["filter_snplist"]["time"],
-        partition = config["resources"]["filter_snplist"]["partition"],
-        nodelist = config["resources"]["filter_snplist"]["nodelist"]
+        cpus=4, mem_mb=20000, time_min=1440
     shell:
         """
+        cd {params.SNPDIR}
+        
         {params.plink_executable} \
-        --bfile {input.geno_dir}/ukb22418_c{wildcards.chr}_b0_v2_s488243 \
+        --bfile {params.IPREFIX} \
         --keep {input.sample_ids} \
-        --maf 0.01 \
-        --mac 5 \
-        --geno 0.1 \
-        --hwe 1e-10 \
+        --maf {params.MAF} \
+        --mac {params.MAC} \
+        --geno {params.GENO} \
+        --hwe {params.HWE} \
         --keep-allele-order \
-        --threads {resources.cpus} \
+        --threads {params.THREADS} \
         --write-snplist \
-        --out {output}
+        --out {params.OPREFIX}
         """
 
 # Step 2: Merge Filtered Genotypes for Each Ancestry
