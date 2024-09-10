@@ -4,7 +4,7 @@ configfile: "config.yaml"
 
 rule all:
     input:
-        expand(config["snp_list_dir"] + "/" + "{ancestry}_filtered_all_chr{chr}.snplist", ancestry=config["Ancestry"], chr=config["CHR"])
+        expand(config["filtered_chr_dir"] + "/" + "filtered_chr{chr}.bed", chr=config["CHR"])
 
 # Step 1: Filter SNP List per Ancestry
 rule filter_snplist_per_ancestry:
@@ -42,8 +42,96 @@ rule filter_snplist_per_ancestry:
         --out {params.OPREFIX}
         """
 
-# # Step 2: Merge Filtered Genotypes for Each Ancestry
+# Step 1.5 Create Common SNP list across Ancestries
 
+rule common_snps:
+    input:
+        expand(config["snp_list_dir"] + "/" + "{ancestry}_filtered_all_chr{chr}.snplist",ancestry=config["Ancestry"], chr=config["CHR"])
+    output:
+        config["common_snps_dir"] + "/" + "common_snps_all.txt"
+    params:
+        INPUTDIR=config["snp_list_dir"],
+        SCRIPT=config["SCRIPT"] + "/" + "common_snps.R"
+    resources: cpus=1, mem_mb=20000, time_min=1440
+    shell:
+        """
+        ml R/4.1.2
+        Rscript {params.SCRIPT} -d {params.INPUTDIR} -o {output}
+        """
+
+# # Rule Template
+
+# rule Template:
+#     input:
+#     output:
+#     params:
+#     resources:
+#     shell:
+#         """
+#         """
+
+# # Step 2: Filtered CHR for Common snps
+
+rule filtered_chr_common_snps:
+    input:
+        bfile=config["geno_dir"] + "/" + "ukb22418_c{chr}_b0_v2_s488243" + config["EXT"],
+        common_snps=config["common_snps_dir"] + "/" + "common_snps_all.txt"
+    output:
+        CHR_filtered=config["filtered_chr_dir"] + "/" + "filtered_chr{chr}.bed"
+    params:
+        plink_executable = config["plink_executable"],
+        GENO=config["GENO"],
+        THREADS=4,
+        IPREFIX=config["geno_dir"]+ "/" + "ukb22418_c{chr}_b0_v2_s488243",
+        OPREFIX="filtered_chr{chr}",
+        CHRDIR=config["filtered_chr_dir"]
+    resources:
+        cpus=4, mem_mb=20000, time_min=1440
+    shell:
+        """
+        cd {params.CHRDIR}
+        
+        {params.plink_executable} \
+        --bfile {params.IPREFIX} \
+        --extract {input.common_snps} \
+        --make-bed \
+        --keep-allele-order \
+        --threads {params.THREADS} \
+        --out {params.OPREFIX}
+        """
+
+# # Step 2.5: Merged CHR for common snps
+rule merge_chr_common_snps:
+    input:
+        bfile=expand(config["filtered_chr_dir"] + "/" + "filtered_chr{chr}.bed", chr=config["CHR"])
+    output:
+        merged_geno=config["filtered_chr_dir"] + "/" + "merged_geno_common_snps"
+    params:
+        plink_executable = config["plink_executable"],
+        THREADS=4,
+        IPREFIX=config["filtered_chr_dir"] + "/" + "filtered_chr{chr}.bed",
+        OPREFIX="merged_geno_common_snps",
+        CHRDIR=config["filtered_chr_dir"]
+    resources:
+        cpus=4, mem_mb=20000, time_min=1440
+    shell:
+        """
+        cd {params.CHRDIR}
+        
+        {params.plink_executable} \
+        --bfile {params.IPREFIX} \
+        --merge-list {params.IPREFIX} \
+        --make-bed \
+        --keep-allele-order \
+        --threads {params.THREADS} \
+        --out {params.OPREFIX}
+        """
+
+
+
+
+
+#####old_snakemake####
 # rule merge_filtered_genotypes_per_ancestry:
 #     input:
 #         expand("{out_dir}/{ancestry}_filtered_all_chr{chr}.snplist", out_dir=config["paths"]["snp_list_dir"], ancestry="{ancestry}", chr=range(1, 23)),

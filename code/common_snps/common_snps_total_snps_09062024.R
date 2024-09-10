@@ -1,7 +1,6 @@
 rm(list=ls())
 setwd("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists/")
 
-
 # Load necessary libraries
 library(dplyr)
 
@@ -14,7 +13,7 @@ merged_snps_by_ancestry <- list()
 
 # Read and merge SNP lists for each ancestry
 for (ancestry in ancestries) {
-  all_snps <- c()
+  all_snps <- c()  # Initialize empty vector for each ancestry
   
   for (chr in chromosomes) {
     file_name <- paste0(ancestry, "_filtered_all_chr", chr, ".snplist")
@@ -24,6 +23,9 @@ for (ancestry in ancestries) {
   }
   
   merged_snps_by_ancestry[[ancestry]] <- all_snps
+  
+  # Print the total number of SNPs for each ancestry
+  cat("Total number of SNPs for", ancestry, ":", length(all_snps), "\n")
 }
 
 # Initialize the list with SNPs from the first ancestry
@@ -48,3 +50,7 @@ num_common_snps <- length(common_snps)
 
 # Output the final number of common SNPs
 cat("Final number of common SNPs across all ancestries:", num_common_snps, "\n")
+
+# Save the common SNPs to a file in the specified directory
+output_file <- "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/common_snps_all.txt"
+writeLines(common_snps, output_file)
