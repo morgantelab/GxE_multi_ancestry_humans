@@ -2,7 +2,7 @@
 
 setwd("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data")
 
-load("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/data2_20240821.RData")
+load("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/data2_20240930.RData")
 
 # Assuming the dataset dtt has a column 'ID' that uniquely identifies individuals
 

@@ -4,9 +4,10 @@ configfile: "config.yaml"
 
 rule all:
     input:
-        config["filtered_chr_dir"] + "/" + "merged_geno_common_snps.bed"
+        expand(config["filtered_chr_dir"] + "/" + "pruned_grm_{ancestry}.rel.id", ancestry=config["Ancestry"])
 
 # Step 1: Filter SNP List per Ancestry
+
 rule filter_snplist_per_ancestry:
     input:
         bfile=config["geno_dir"] + "/" + "ukb22418_c{chr}_b0_v2_s488243" + config["EXT"],
@@ -59,18 +60,7 @@ rule common_snps:
         Rscript {params.SCRIPT} -d {params.INPUTDIR} -o {output}
         """
 
-# # Rule Template
-
-# rule Template:
-#     input:
-#     output:
-#     params:
-#     resources:
-#     shell:
-#         """
-#         """
-
-# # Step 2: Filtered CHR for Common snps
+# Step 2: Filtered CHR for Common snps
 
 rule filtered_chr_common_snps:
     input:
@@ -100,7 +90,8 @@ rule filtered_chr_common_snps:
         --out {params.OPREFIX}
         """
 
-# # Step 2.5: create merge_list
+# Step 2.5: create merge_list
+
 rule create_merge_list:
     input:
         expand(config["filtered_chr_dir"] + "/" + "filtered_chr{chr}.bed", chr=config["CHR"]),
@@ -113,8 +104,8 @@ rule create_merge_list:
         ls {input} | xargs -n 1 basename | sed 's/.bed$//' > {output}
         """
 
+# Step 2.5: Merged CHR for common snps
 
-# # Step 2.5: Merged CHR for common snps
 rule merge_chr_common_snps:
     input:
         merge_list=config["filtered_chr_dir"] + "/" + "merge_list.txt"
@@ -139,77 +130,31 @@ rule merge_chr_common_snps:
         --out {params.OPREFIX}
         """
 
+# Step 3: Pruned GRM for each ancestry
 
-
-
-
-#####old_snakemake####
-# rule merge_filtered_genotypes_per_ancestry:
-#     input:
-#         expand("{out_dir}/{ancestry}_filtered_all_chr{chr}.snplist", out_dir=config["paths"]["snp_list_dir"], ancestry="{ancestry}", chr=range(1, 23)),
-#         sample_ids=config["paths"]["sample_ids_dir"] + "/{ancestry}_sample_ids.txt"
-#     output:
-#         merged_geno="{out_dir}/{ancestry}_combined_genotypes_filtered_sampled_20240402.bed"
-#     params:
-#         plink_executable=config["paths"]["plink_executable"],
-#         geno_dir=config["paths"]["geno_dir"],
-#         snp_list_dir=config["paths"]["snp_list_dir"],
-#         out_dir=config["paths"]["out_dir"]
-#     resources:
-#         cpus=config["resources"]["merge_genotypes"]["cpus"],
-#         mem_mb=int(config["resources"]["merge_genotypes"]["mem_mb"].replace("G", "")) * 1024,
-#         time=config["resources"]["merge_genotypes"]["time"],
-#         partition=config["resources"]["merge_genotypes"]["partition"],
-#         nodelist=config["resources"]["merge_genotypes"]["nodelist"]
-#     shell:
-#         """
-#         MERGE_LIST={params.out_dir}/{ancestry}_merge_list_all_20240402.txt
-#         > ${{MERGE_LIST}}  # Clear the merge list file content
+rule pruned_grm_ancestry:
+    input:
+        bfile=config["filtered_chr_dir"] + "/" + "merged_geno_common_snps.bed",
+        sample_ids=config["sample_ids_dir"] + "/" + "{ancestry}_ids.txt"
+    output:
+        GRM_pruned=config["filtered_chr_dir"] + "/" + "pruned_grm_{ancestry}.rel.id"
+    params:
+        plink_executable = config["plink_executable"],
+        THREADS=10,
+        IPREFIX=config["filtered_chr_dir"] + "/" + "merged_geno_common_snps",
+        OPREFIX="pruned_grm_{ancestry}",
+        CHRDIR=config["filtered_chr_dir"]
+    resources:
+        cpus=10, mem_mb=900000, time_min=3000
+    shell:
+        """
+        cd {params.CHRDIR}
         
-#         for CHR in {{1..22}}; do
-#             {params.plink_executable} --bfile {params.geno_dir}/ukb22418_c${{CHR}}_b0_v2_s488243 \
-#                                       --keep {input.sample_ids} \
-#                                       --extract {params.snp_list_dir}/{ancestry}_filtered_all_chr${{CHR}}.snplist \
-#                                       --make-bed \
-#                                       --keep-allele-order \
-#                                       --threads {resources.cpus} \
-#                                       --out {params.out_dir}/{ancestry}_chr${{CHR}}_filtered_all_20240402
-#             if [ "${{CHR}}" -gt 1 ]; then
-#                 echo "{params.out_dir}/{ancestry}_chr${{CHR}}_filtered_all_20240402.bed {params.out_dir}/{ancestry}_chr${{CHR}}_filtered_all_20240402.bim {params.out_dir}/{ancestry}_chr${{CHR}}_filtered_all_20240402.fam" >> ${{MERGE_LIST}}
-#             fi
-#         done
-        
-#         {params.plink_executable} --bfile {params.out_dir}/{ancestry}_chr1_filtered_all_20240402 \
-#                                   --merge-list ${{MERGE_LIST}} \
-#                                   --make-bed \
-#                                   --keep-allele-order \
-#                                   --threads {resources.cpus} \
-#                                   --out {output.merged_geno}
-#         """
-
-# # Step 3: Prune and Create GRM for Each Ancestry
-# rule grm_sampled_pruned_per_ancestry:
-#     input:
-#         merged_geno="{out_dir}/{ancestry}_combined_genotypes_filtered_sampled_20240402.bed",
-#         sample_ids=config["paths"]["sample_ids_dir"] + "/{ancestry}_sample_ids.txt"
-#     output:
-#         grm="{out_dir}/{ancestry}_grm_sampled_pruned_20240402.bed"
-#     params:
-#         plink_executable=config["paths"]["plink_executable"],
-#         out_dir=config["paths"]["out_dir"]
-#     resources:
-#         cpus=config["resources"]["grm_prune"]["cpus"],
-#         mem_mb=int(config["resources"]["grm_prune"]["mem_mb"].replace("G", "")) * 1024,
-#         time=config["resources"]["grm_prune"]["time"],
-#         partition=config["resources"]["grm_prune"]["partition"],
-#         nodelist=config["resources"]["grm_prune"]["nodelist"]
-#     shell:
-#         """
-#         {params.plink_executable} --bfile {input.merged_geno} \
-#                                   --keep {input.sample_ids} \
-#                                   --keep-allele-order \
-#                                   --rel-cutoff 0.05 \
-#                                   --threads {resources.cpus} \
-#                                   --out {output.grm}
-#         """
-
+        {params.plink_executable} \
+        --bfile {params.IPREFIX} \
+        --keep {input.sample_ids} \
+        --keep-allele-order \
+        --threads {params.THREADS} \
+        --rel-cutoff 0.05 \
+        --out {params.OPREFIX}
+        """
