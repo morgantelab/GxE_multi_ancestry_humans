@@ -2,11 +2,11 @@
 #
 #SBATCH --job-name=snake_genotype_pipeline
 #SBATCH --cpus-per-task=1
-#SBATCH --partition=fm-bigmem-2
+#SBATCH --partition=compute
 #SBATCH --time=10-00:00:00
 #SBATCH --mem=1gb
-#SBATCH --output=/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/log/grm_pruning_%j.out
-#SBATCH --error=/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/log/grm_pruning_%j.err
+#SBATCH --output=/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/log/grm_%j.out
+#SBATCH --error=/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/log/grm_%j.err
 
 # Log message to confirm script starts running
 echo "Starting Snakemake pipeline..."

@@ -4,7 +4,7 @@ configfile: "config.yaml"
 
 rule all:
     input:
-        expand(config["filtered_chr_dir"] + "/" + "pruned_grm_{ancestry}.rel.id", ancestry=config["Ancestry"])
+        expand(config["filtered_chr_dir"] + "/" + "pca_for_pcrelate.rds")
 
 # Step 1: Filter SNP List per Ancestry
 
@@ -157,4 +157,164 @@ rule pruned_grm_ancestry:
         --threads {params.THREADS} \
         --rel-cutoff 0.05 \
         --out {params.OPREFIX}
+        """
+
+# Step 4: GRM using plink
+
+rule grm_by_plink:
+    input:
+        bfile=config["filtered_chr_dir"] + "/" + "merged_geno_common_snps.bed",
+        all_ids=config["filtered_chr_dir"] + "/" + "merged_ids.rel.id"
+    output:
+        GRM_plink=config["filtered_chr_dir"] + "/" + "grm_by_plink.grm.bin"
+    params:
+        plink_executable = config["plink_executable"],
+        THREADS=10,
+        IPREFIX=config["filtered_chr_dir"] + "/" + "merged_geno_common_snps",
+        OPREFIX="grm_by_plink",
+        CHRDIR=config["filtered_chr_dir"]
+    resources:
+        cpus=10, mem_mb=900000, time_min=3000
+    shell:
+        """
+        cd {params.CHRDIR}
+        
+        {params.plink_executable} \
+        --bfile {params.IPREFIX} \
+        --keep {input.all_ids} \
+        --keep-allele-order \
+        --threads {params.THREADS} \
+        --make-grm-bin \
+        --out {params.OPREFIX}
+        """
+
+# Step 5: create grm using fabio struct method
+
+rule grm_by_struct_mtd:
+    input:
+        bfile=config["filtered_chr_dir"] + "/" + "merged_geno_common_snps.bed",
+        dataset=config["sample_ids_dir"] + "/" + "data2_20240930.RData",
+	ids=config["filtered_chr_dir"] + "/" + "merged_ids.rel.id"
+    output:
+        eigen_struct=config["filtered_chr_dir"] + "/" + "eigen_by_struct.rds"
+    params:
+        INPUTDIR=config["filtered_chr_dir"],
+        SCRIPT=config["SCRIPT"] + "/" + "eigen_by_struct.R"
+    resources: cpus=55, mem_mb=1400000, time_min=5000
+    shell:
+        """
+        ml R/4.1.2
+        Rscript {params.SCRIPT} -d {params.INPUTDIR} -b {input.bfile} -s {input.dataset} -i {input.ids} -o {output}
+        """
+
+# Step 6: Make bed geno of selected indv 
+
+rule merged_geno_common_snps_selected_indv:
+    input:
+        bfile=config["filtered_chr_dir"] + "/" + "merged_geno_common_snps.bed",
+        all_ids=config["filtered_chr_dir"] + "/" + "merged_ids.rel.id"
+    output:
+        merged_geno_common_snps_selected_indv=config["filtered_chr_dir"] + "/" + "merged_geno_common_snps_selected_indiv.bed"
+    params:
+        plink_executable = config["plink_executable"],
+        THREADS=10,
+        IPREFIX=config["filtered_chr_dir"] + "/" + "merged_geno_common_snps",
+        OPREFIX="merged_geno_common_snps_selected_indiv",
+        CHRDIR=config["filtered_chr_dir"]
+    resources:
+        cpus=10, mem_mb=900000, time_min=3000
+    shell:
+        """
+        cd {params.CHRDIR}
+        
+        {params.plink_executable} \
+        --bfile {params.IPREFIX} \
+        --keep {input.all_ids} \
+        --keep-allele-order \
+        --threads {params.THREADS} \
+        --make-bed \
+        --out {params.OPREFIX}
+        """
+
+# Step 7: convert plink to gds for pcrelate grm
+
+rule plink_to_gds:
+    input:
+        bed=config["filtered_chr_dir"] + "/" + "merged_geno_common_snps_selected_indiv.bed",
+        bim=config["filtered_chr_dir"] + "/" + "merged_geno_common_snps_selected_indiv.bim",
+        fam=config["filtered_chr_dir"] + "/" + "merged_geno_common_snps_selected_indiv.fam"
+    output:
+        gds=config["filtered_chr_dir"] + "/" + "merged_geno_common_snps_selected_indiv.gds"
+    params:
+        INPUTDIR=config["filtered_chr_dir"],
+        SCRIPT=config["SCRIPT"] + "/" + "convert_plink_to_gds.R"
+    resources: cpus=1, mem_mb=900000, time_min=3000
+    shell:
+        """
+        ml R/4.1.2
+        Rscript {params.SCRIPT} -d {params.INPUTDIR} -b {input.bed} -i {input.bim} -f {input.fam} -o {output}
+        """
+
+# Step 8: pcrelate grm
+
+rule grm_by_pcrelate:
+    input:
+        gds=config["filtered_chr_dir"] + "/" + "merged_geno_common_snps_selected_indiv.gds"
+    output:
+        kinship_matrix=config["filtered_chr_dir"] + "/" + "king_kinship_matrix_for_pcrelate.RData",
+        pcair_results=config["filtered_chr_dir"] + "/" + "pcair_for_pcrelate_results.rds",
+        pcrelate_results=config["filtered_chr_dir"] + "/" + "pcrelate_calcs.rds",
+        grm_matrix=config["filtered_chr_dir"] + "/" + "grm_matrix_pcrelate_5pcs.RData"
+    params:
+        INPUTDIR=config["filtered_chr_dir"],
+        SCRIPT=config["SCRIPT"] + "/" + "grm_by_pcrelate.R",
+        cores=55
+    resources: cpus=55, mem_mb=1000000, time_min=5000
+    shell:
+        """
+        ml R/4.1.2
+        Rscript {params.SCRIPT} -d {params.INPUTDIR} -g {input.gds} -k {output.kinship_matrix} -p {output.pcair_results} -r {output.pcrelate_results} -m {output.grm_matrix} -c {params.cores}
+        """
+
+# # Step 9: pca for grm by plink/gcta
+
+rule pca_for_grm_by_plink:
+    input:
+        grm_by_plink=config["filtered_chr_dir"] + "/" + "grm_by_plink.grm.bin",
+    output:
+        pca_gcta=config["filtered_chr_dir"] + "/" + "pca_by_gcta.eigenval"
+    params:
+        gcta_executable = config["gcta_executable"],
+        THREADS=50,
+        IPREFIX=config["filtered_chr_dir"] + "/" + "grm_by_plink",
+        OPREFIX="pca_by_gcta",
+        CHRDIR=config["filtered_chr_dir"]
+    resources:
+        cpus=10, mem_mb=15000, time_min=3000
+    shell:
+        """
+        cd {params.CHRDIR}
+        
+        {params.gcta_executable} \
+        --grm {params.IPREFIX} \
+        --thread-num {params.THREADS} \
+        --pca 24478 \
+        --out {params.OPREFIX}
+        """
+
+# Step 10: pca of pcrelate grm
+
+rule pca_for_grm_by_pcrelate:
+    input:
+        grm=config["filtered_chr_dir"] + "/" + "grm_matrix_pcrelate_5pcs.RData"
+    output:
+        pca_results=config["filtered_chr_dir"] + "/" + "pca_for_pcrelate.rds"
+    params:
+        INPUTDIR=config["filtered_chr_dir"],
+        SCRIPT=config["SCRIPT"] + "/" + "pca_for_grm_by_pcrelate.R"
+    resources: cpus=1, mem_mb=150000, time_min=3000
+    shell:
+        """
+        ml R/4.1.2
+        Rscript {params.SCRIPT} -d {params.INPUTDIR} -i {input.grm} -o {output.pca_results}
         """
