@@ -4,7 +4,7 @@ configfile: "config.yaml"
 
 rule all:
     input:
-        expand(config["filtered_chr_dir"] + "/" + "pca_for_pcrelate.rds")
+        expand(config["model_dir"] + "/" + "varabs_{bp}_{grm}.csv", bp=config["BP"], grm=config["GRM"])
 
 # Step 1: Filter SNP List per Ancestry
 
@@ -194,7 +194,7 @@ rule grm_by_struct_mtd:
     input:
         bfile=config["filtered_chr_dir"] + "/" + "merged_geno_common_snps.bed",
         dataset=config["sample_ids_dir"] + "/" + "data2_20240930.RData",
-	ids=config["filtered_chr_dir"] + "/" + "merged_ids.rel.id"
+	      ids=config["filtered_chr_dir"] + "/" + "merged_ids.rel.id"
     output:
         eigen_struct=config["filtered_chr_dir"] + "/" + "eigen_by_struct.rds"
     params:
@@ -317,4 +317,43 @@ rule pca_for_grm_by_pcrelate:
         """
         ml R/4.1.2
         Rscript {params.SCRIPT} -d {params.INPUTDIR} -i {input.grm} -o {output.pca_results}
+        """
+
+# Step 10: pca of grm by plink using eigen in R instead of gcta pca
+
+rule pca_for_grm_by_plink_using_eigen_R:
+    input:
+        grm=config["filtered_chr_dir"] + "/" + "grm_by_plink.grm.bin"
+    output:
+        pca_results=config["filtered_chr_dir"] + "/" + "pca_for_plink_by_eigen_R.rds"
+    params:
+        INPUTDIR=config["filtered_chr_dir"],
+	IPREFIX=config["filtered_chr_dir"] + "/" + "grm_by_plink",
+        SCRIPT=config["SCRIPT"] + "/" + "pca_for_grm_by_plink_using_eigen_in_R.R"
+    resources: cpus=1, mem_mb=60000, time_min=3000
+    shell:
+        """
+        ml R/4.1.2
+        Rscript {params.SCRIPT} -d {params.INPUTDIR} -i {params.IPREFIX} -o {output.pca_results}
+        """
+
+rule model_G_pcs:
+    input:
+        data=config["sample_ids_dir"] + "/" + "scaled_dataset_20241025.Rdata",
+        eigen=config["filtered_chr_dir"] + "/" + "pca_for_{grm}.rds",
+        pcs=config["filtered_chr_dir"] + "/" + "scaled_pcs_{grm}.rds"
+    output:
+        vcem=config["model_dir"] + "/" + "VCEm_{bp}_{grm}.csv",
+        varabs=config["model_dir"] + "/" + "varabs_{bp}_{grm}.csv"
+    params:
+        INPUTDIR=config["model_dir"],
+        scratch=config["scratch_dir"],
+        SCRIPT=config["SCRIPT"] + "/" + "model_G_pcs.R"
+    resources: cpus=5, mem_mb=50000, time_min=3000
+    shell:
+        """
+        ml R/4.1.2
+	export OPENBLAS_NUM_THREADS=5
+	export OMP_NUM_THREADS=5
+        Rscript {params.SCRIPT} -d {params.INPUTDIR} -t {input.data} -e {input.eigen} -p {input.pcs} -o {params.INPUTDIR} -s {params.scratch} -r {output.varabs}
         """

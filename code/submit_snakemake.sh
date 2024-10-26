@@ -5,8 +5,8 @@
 #SBATCH --partition=compute
 #SBATCH --time=10-00:00:00
 #SBATCH --mem=1gb
-#SBATCH --output=/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/log/grm_%j.out
-#SBATCH --error=/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/log/grm_%j.err
+#SBATCH --output=/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/log/model_%j.out
+#SBATCH --error=/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/log/model_%j.err
 
 # Log message to confirm script starts running
 echo "Starting Snakemake pipeline..."
