@@ -1,12 +1,21 @@
 #clean enviroment
 rm(list = ls())
 
+#library
+library(dplyr)
+
 #set working directory
 setwd("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data")
 
 #load dataset
 load("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/data2_20240930.RData")
 dataset<- dtt
+
+# Read in the list of IDs from the file
+id_list <- read.table("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/filtered_chr/merged_ids.rel.id", header = FALSE)$V1
+
+# Subset the dataset to include only individuals in the ID list
+dataset <- dataset %>% filter(ID %in% id_list)  # Replace 'ID' with the actual ID column name in your dataset
 
 # Scale DP0a, PP0a, and SP0a to mean 100 and sd 10
 dataset$DP0s <- scale(dataset$DP0a) * 10 + 100
@@ -15,7 +24,7 @@ dataset$SP0s <- scale(dataset$SP0a) * 10 + 100
 
 # Scale AOP (age) to mean 0 and sd 1
 dataset$AOPs <- scale(dataset$AOP)
-dataset$AOPss<- dataset$AOP^2
+dataset$AOPss<- dataset$AOPs^2
 
 # Save the scaled dataset
 save(dataset, file = "scaled_dataset_20241025.Rdata")

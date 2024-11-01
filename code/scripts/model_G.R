@@ -15,8 +15,6 @@ option_list <- list(
               help = "Path to the scaled dataset RData file", metavar = "character"),
   make_option(c("-e", "--eigen"), type = "character", default = NULL, 
               help = "Path to the eigen results RDS file", metavar = "character"),
-  make_option(c("-p", "--pcs"), type = "character", default = NULL, 
-              help = "Path to the scaled PCs RDS file", metavar = "character"),
   make_option(c("-o", "--output"), type = "character", default = NULL, 
               help = "Output directory for saving results", metavar = "character"),
   make_option(c("-s", "--scratch"), type = "character", default = "/scratch3/kgoda/ukbiobank_files/tmp/snakemake_runs", 
@@ -30,7 +28,7 @@ opt_parser <- OptionParser(option_list = option_list)
 opt <- parse_args(opt_parser)
 
 # Check required arguments
-if (is.null(opt$data) | is.null(opt$eigen) | is.null(opt$pcs) | is.null(opt$output)) {
+if (is.null(opt$data) | is.null(opt$eigen) | is.null(opt$output)) {
   print_help(opt_parser)
   stop("All file paths and phenotype type must be provided.", call. = FALSE)
 }
@@ -42,10 +40,9 @@ setwd(opt$dir)
 output_file <- basename(opt$result)  # Get the file name from the path
 parsed_info <- strsplit(output_file, "_")[[1]]  # Split the file name by underscore
 
-# Assuming the file name follows the pattern: "varabs_<type>_<grm_source>_G_pcs.csv"
+# Assuming the file name follows the pattern: "VCEm_<type>_<grm_source>_G.csv"
 type <- parsed_info[2]  # Extract the type (e.g., sp, dp, pp)
 grm_source <- parsed_info[3]  # Extract the GRM source (e.g., plink, pcrelate)
-
 
 # Load dataset
 load(opt$data)
@@ -76,12 +73,6 @@ X$AOPs <- as.vector(X$AOPs)
 X$AOPss <- as.vector(X$AOPss)
 rownames(X) <- rownames(W)
 
-# Load scaled PCs and match to individual IDs
-pcs_scaled <- readRDS(opt$pcs)
-matched_pcs <- pcs_scaled[match(individual_ids, pcs_scaled$ID), 2:11]
-X <- cbind(X, matched_pcs)
-print("Combined X matrix created")
-
 # Model setup
 iter <- 90000
 burnin <- 40000
@@ -99,29 +90,29 @@ print("Model ETA created")
 
 # Run BGLR model
 
-model <- BGLR(y=y, ETA=ETA, nIter=iter, burnIn=burnin, thin=thin, verbose=verb, saveAt=paste(opt$scratch, '/', type, '_', grm_source, '_run_G_pcs', sep=''))
+model <- BGLR(y=y, ETA=ETA, nIter=iter, burnIn=burnin, thin=thin, verbose=verb, saveAt=paste(opt$scratch, '/', type, '_', grm_source, '_G_run_', sep=''))
 
 # Collect results
-zz0 <- read.table(paste(opt$scratch, '/', type, '_', grm_source, '_run_G_pcs_mu.dat', sep=''), header=F)
+zz0 <- read.table(paste(opt$scratch, '/', type, '_', grm_source, '_G_run_mu.dat', sep=''), header=F)
 colnames(zz0) <- "int"
-zz1 <- read.table(paste(opt$scratch, '/', type, '_', grm_source, '_run_G_pcs_ETA_G_varB.dat', sep=''), header=F)
+zz1 <- read.table(paste(opt$scratch, '/', type, '_', grm_source, '_G_run_ETA_G_varB.dat', sep=''), header=F)
 colnames(zz1) <- "G"
-zz9 <- read.table(paste(opt$scratch, '/', type, '_', grm_source, '_run_G_pcs_varE.dat', sep=''), header=F)
+zz9 <- read.table(paste(opt$scratch, '/', type, '_', grm_source, '_G_run_varE.dat', sep=''), header=F)
 colnames(zz9) <- "res"
 
 VCEm <- data.frame(zz0, zz1, zz9)
-write.csv(VCEm, file=file.path(opt$output, paste0("VCEm_", type, "_", grm_source, "_G_pcs.csv")), row.names=TRUE)
+write.csv(VCEm, file=file.path(opt$output, paste0("VCEm_", type, "_", grm_source, "_G", ".csv")), row.names=TRUE)
 print("VCEm results written")
 
 # Save variance partition results
 # intercept and fixed effects
-B1 <- read.table(paste(opt$scratch, '/', type, '_', grm_source, '_run_G_pcs_ETA_X_B.dat', sep=''), header=T)
+B1 <- read.table(paste(opt$scratch, '/', type, '_', grm_source, '_G_run_ETA_X_B.dat', sep=''), header=T)
 
 # additive genetic random effects
-B2 <- readBinMat(paste(opt$scratch, '/', type, '_', grm_source, '_run_G_pcs_ETA_G_b.bin', sep=''))
+B2 <- readBinMat(paste(opt$scratch, '/', type, '_', grm_source, '_G_run_ETA_G_b.bin', sep=''))
 
 varabs <- matrix(NA, nrow_varabs, 2); colnames(varabs) <- c("V_X", "V_G")
 varabs[, 1] <- matrixStats::colVars(ETA$X$X %*% t(B1))[-c(1:(burnin/thin))]
 varabs[, 2] <- matrixStats::colVars(tcrossprod(ETA$G$X, B2))
-write.csv(varabs, file=file.path(opt$output, paste0("varabs_", type, "_", grm_source, "_G_pcs.csv")), row.names=TRUE)
+write.csv(varabs, file=file.path(opt$output, paste0("varabs_", type, "_", grm_source, "_G", ".csv")), row.names=TRUE)
 

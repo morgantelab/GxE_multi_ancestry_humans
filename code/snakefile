@@ -4,7 +4,7 @@ configfile: "config.yaml"
 
 rule all:
     input:
-        expand(config["model_dir"] + "/" + "varabs_{bp}_{grm}.csv", bp=config["BP"], grm=config["GRM"])
+        expand(config["model_dir"] + "/" + "varabs_{bp}_{grm}_G.csv", bp=config["BP"], grm=config["GRM"])
 
 # Step 1: Filter SNP List per Ancestry
 
@@ -343,8 +343,8 @@ rule model_G_pcs:
         eigen=config["filtered_chr_dir"] + "/" + "pca_for_{grm}.rds",
         pcs=config["filtered_chr_dir"] + "/" + "scaled_pcs_{grm}.rds"
     output:
-        vcem=config["model_dir"] + "/" + "VCEm_{bp}_{grm}.csv",
-        varabs=config["model_dir"] + "/" + "varabs_{bp}_{grm}.csv"
+        vcem=config["model_dir"] + "/" + "VCEm_{bp}_{grm}_G_pcs.csv",
+        varabs=config["model_dir"] + "/" + "varabs_{bp}_{grm}_G_pcs.csv"
     params:
         INPUTDIR=config["model_dir"],
         scratch=config["scratch_dir"],
@@ -356,4 +356,24 @@ rule model_G_pcs:
 	export OPENBLAS_NUM_THREADS=5
 	export OMP_NUM_THREADS=5
         Rscript {params.SCRIPT} -d {params.INPUTDIR} -t {input.data} -e {input.eigen} -p {input.pcs} -o {params.INPUTDIR} -s {params.scratch} -r {output.varabs}
+        """
+
+rule model_G:
+    input:
+        data=config["sample_ids_dir"] + "/" + "scaled_dataset_20241025.Rdata",
+        eigen=config["filtered_chr_dir"] + "/" + "pca_for_{grm}.rds",
+    output:
+        vcem=config["model_dir"] + "/" + "VCEm_{bp}_{grm}_G.csv",
+        varabs=config["model_dir"] + "/" + "varabs_{bp}_{grm}_G.csv"
+    params:
+        INPUTDIR=config["model_dir"],
+        scratch=config["scratch_dir"],
+        SCRIPT=config["SCRIPT"] + "/" + "model_G.R"
+    resources: cpus=10, mem_mb=50000, time_min=3000
+    shell:
+        """
+        ml R/4.1.2
+        export OPENBLAS_NUM_THREADS=10
+        export OMP_NUM_THREADS=10
+        Rscript {params.SCRIPT} -d {params.INPUTDIR} -t {input.data} -e {input.eigen} -o {params.INPUTDIR} -s {params.scratch} -r {output.vcem}
         """
