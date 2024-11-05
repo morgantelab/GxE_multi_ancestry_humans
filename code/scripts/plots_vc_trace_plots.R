@@ -8,21 +8,21 @@ setwd("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/plots")
 
 # Define lists of file paths for VCEm and varabs
 VCEm_file_paths <- list(
-  DP_plink = "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/model/VCEm_DP_plink_G_pcs.csv",
-  SP_plink = "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/model/VCEm_SP_plink_G_pcs.csv",
-  PP_plink = "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/model/VCEm_PP_plink_G_pcs.csv",
-  DP_pcrelate = "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/model/VCEm_DP_pcrelate_G_pcs.csv",
-  SP_pcrelate = "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/model/VCEm_SP_pcrelate_G_pcs.csv",
-  PP_pcrelate = "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/model/VCEm_PP_pcrelate_G_pcs.csv"
+  DP_plink = "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/model/VCEm_DP_plink_G.csv",
+  SP_plink = "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/model/VCEm_SP_plink_G.csv",
+  PP_plink = "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/model/VCEm_PP_plink_G.csv",
+  DP_pcrelate = "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/model/VCEm_DP_pcrelate_G.csv",
+  SP_pcrelate = "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/model/VCEm_SP_pcrelate_G.csv",
+  PP_pcrelate = "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/model/VCEm_PP_pcrelate_G.csv"
 )
 
 varabs_file_paths <- list(
-  DP_plink = "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/model/varabs_DP_plink_G_pcs.csv",
-  SP_plink = "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/model/varabs_SP_plink_G_pcs.csv",
-  PP_plink = "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/model/varabs_PP_plink_G_pcs.csv",
-  DP_pcrelate = "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/model/varabs_DP_pcrelate_G_pcs.csv",
-  SP_pcrelate = "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/model/varabs_SP_pcrelate_G_pcs.csv",
-  PP_pcrelate = "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/model/varabs_PP_pcrelate_G_pcs.csv"
+  DP_plink = "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/model/varabs_DP_plink_G.csv",
+  SP_plink = "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/model/varabs_SP_plink_G.csv",
+  PP_plink = "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/model/varabs_PP_plink_G.csv",
+  DP_pcrelate = "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/model/varabs_DP_pcrelate_G.csv",
+  SP_pcrelate = "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/model/varabs_SP_pcrelate_G.csv",
+  PP_pcrelate = "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/model/varabs_PP_pcrelate_G.csv"
 )
 
 # Define function to generate and save plots for each file
@@ -51,7 +51,7 @@ generate_and_save_plots <- function(VCEm_file_path, varabs_file_path, identifier
     ylab("Value")
   
   # Save the intercept and variances plot
-  ggsave(paste0("trace_plots_intercept_and_variances_", identifier, ".png"), plot = intercept_variances_plot, width = 10, height = 6)
+  ggsave(paste0("G_trace_plots_intercept_and_variances_", identifier, ".png"), plot = intercept_variances_plot, width = 10, height = 6)
   
   # Read the varabs data
   varabs <- fread(varabs_file_path)
@@ -75,7 +75,7 @@ generate_and_save_plots <- function(VCEm_file_path, varabs_file_path, identifier
     ylab("Variance")
   
   # Save the variance components plot
-  ggsave(paste0("trace_plots_variance_components_", identifier, ".png"), plot = variances_plot, width = 10, height = 6)
+  ggsave(paste0("G_trace_plots_variance_components_", identifier, ".png"), plot = variances_plot, width = 10, height = 6)
 }
 
 # Iterate over each pair of VCEm and varabs file paths

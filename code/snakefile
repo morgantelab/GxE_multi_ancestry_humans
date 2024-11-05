@@ -4,7 +4,7 @@ configfile: "config.yaml"
 
 rule all:
     input:
-        expand(config["model_dir"] + "/" + "varabs_{bp}_{grm}_G.csv", bp=config["BP"], grm=config["GRM"])
+        expand(config["model_dir"] + "/" + "varabs_{bp}_{grm}_G_pcs_X_separated.csv", bp=config["BP"], grm=config["GRM"])
 
 # Step 1: Filter SNP List per Ancestry
 
@@ -278,29 +278,29 @@ rule grm_by_pcrelate:
 
 # # Step 9: pca for grm by plink/gcta
 
-rule pca_for_grm_by_plink:
-    input:
-        grm_by_plink=config["filtered_chr_dir"] + "/" + "grm_by_plink.grm.bin",
-    output:
-        pca_gcta=config["filtered_chr_dir"] + "/" + "pca_by_gcta.eigenval"
-    params:
-        gcta_executable = config["gcta_executable"],
-        THREADS=50,
-        IPREFIX=config["filtered_chr_dir"] + "/" + "grm_by_plink",
-        OPREFIX="pca_by_gcta",
-        CHRDIR=config["filtered_chr_dir"]
-    resources:
-        cpus=10, mem_mb=15000, time_min=3000
-    shell:
-        """
-        cd {params.CHRDIR}
-        
-        {params.gcta_executable} \
-        --grm {params.IPREFIX} \
-        --thread-num {params.THREADS} \
-        --pca 24478 \
-        --out {params.OPREFIX}
-        """
+#rule pca_for_grm_by_plink:
+#    input:
+#        grm_by_plink=config["filtered_chr_dir"] + "/" + "grm_by_plink.grm.bin",
+#    output:
+#        pca_gcta=config["filtered_chr_dir"] + "/" + "pca_by_gcta.eigenval"
+#    params:
+#        gcta_executable = config["gcta_executable"],
+#        THREADS=50,
+#        IPREFIX=config["filtered_chr_dir"] + "/" + "grm_by_plink",
+#        OPREFIX="pca_by_gcta",
+#        CHRDIR=config["filtered_chr_dir"]
+#    resources:
+#        cpus=10, mem_mb=15000, time_min=3000
+#    shell:
+#        """
+#        cd {params.CHRDIR}
+#        
+#        {params.gcta_executable} \
+#        --grm {params.IPREFIX} \
+#        --thread-num {params.THREADS} \
+#        --pca 24478 \
+#        --out {params.OPREFIX}
+#        """
 
 # Step 10: pca of pcrelate grm
 
@@ -353,8 +353,8 @@ rule model_G_pcs:
     shell:
         """
         ml R/4.1.2
-	export OPENBLAS_NUM_THREADS=5
-	export OMP_NUM_THREADS=5
+	    export OPENBLAS_NUM_THREADS=5
+	    export OMP_NUM_THREADS=5
         Rscript {params.SCRIPT} -d {params.INPUTDIR} -t {input.data} -e {input.eigen} -p {input.pcs} -o {params.INPUTDIR} -s {params.scratch} -r {output.varabs}
         """
 
@@ -376,4 +376,25 @@ rule model_G:
         export OPENBLAS_NUM_THREADS=10
         export OMP_NUM_THREADS=10
         Rscript {params.SCRIPT} -d {params.INPUTDIR} -t {input.data} -e {input.eigen} -o {params.INPUTDIR} -s {params.scratch} -r {output.vcem}
+        """
+
+rule model_G_pcs_X_separated:
+    input:
+        data=config["sample_ids_dir"] + "/" + "scaled_dataset_20241025.Rdata",
+        eigen=config["filtered_chr_dir"] + "/" + "pca_for_{grm}.rds",
+        pcs=config["filtered_chr_dir"] + "/" + "scaled_pcs_{grm}.rds"
+    output:
+        vcem=config["model_dir"] + "/" + "VCEm_{bp}_{grm}_G_pcs_X_separated.csv",
+        varabs=config["model_dir"] + "/" + "varabs_{bp}_{grm}_G_pcs_X_separated.csv"
+    params:
+        INPUTDIR=config["model_dir"],
+        scratch=config["scratch_dir"],
+        SCRIPT=config["SCRIPT"] + "/" + "model_G_pcs_X_separated.R"
+    resources: cpus=5, mem_mb=50000, time_min=3000
+    shell:
+        """
+        ml R/4.1.2
+        export OPENBLAS_NUM_THREADS=5
+        export OMP_NUM_THREADS=5
+        Rscript {params.SCRIPT} -d {params.INPUTDIR} -t {input.data} -e {input.eigen} -p {input.pcs} -o {params.INPUTDIR} -s {params.scratch} -r {output.varabs}
         """

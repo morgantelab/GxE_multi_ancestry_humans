@@ -17,10 +17,10 @@ load("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/scaled_data
 print("dataset loaded")
 
 # Load the eigen results
-eigen_path_plink <- "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/filtered_chr/pca_for_plink.rds"
-eigen_results_plink <- readRDS(eigen_path_plink)
-eigenvectors <- eigen_results_plink$vectors
-eigenvalues <- eigen_results_plink$values
+eigen_path_pcrelate <- "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/filtered_chr/pca_for_pcrelate.rds"
+eigen_results_pcrelate <- readRDS(eigen_path_pcrelate)
+eigenvectors <- eigen_results_pcrelate$vectors
+eigenvalues <- eigen_results_pcrelate$values
 print("eigen results handled")
 
 ### For GBLUP, W is a matrix of eigenvectors each multiplied by the respective eigenvalues. This implies that the first eigenvectors will have larger variance. Also, please remove eigenvectors with negative eigenvalues.
@@ -54,9 +54,9 @@ individual_ids <- rownames(W)
 matched_dataset <- dataset[match(individual_ids, dataset$ID), ]
 
 ### Extract the phenotype vectors ###
-y_PP_plink <- matched_dataset$PP0s
+y_PP_pcrelate <- matched_dataset$PP0s
 
-print("y_PP_plink created")
+print("y_PP_pcrelate created")
 
 ### X is the incidence matrix for the 'fixed' covariates (no penalisation, no shrinkage). here age and sex ###
 ### Extract the covariate matrix ###
@@ -68,25 +68,25 @@ rownames(X) <- rownames(W)
 print("initial X created")
 
 #load scaled PCs
-pcs_scaled <- readRDS("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/filtered_chr/scaled_pcs_plink.rds")
-print("scaled pcs loaded")
+#pcs_scaled <- readRDS("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/filtered_chr/scaled_pcs_plink.rds")
+#print("scaled pcs loaded")
 
 # match the PCs to the individual_ids
-matched_pcs <- pcs_scaled[match(individual_ids, pcs_scaled$ID), ]
+#matched_pcs <- pcs_scaled[match(individual_ids, pcs_scaled$ID), ]
 
 # Extract only the PC columns
-pcs <- matched_pcs[, 2:11]  # Assuming the first column is ID and the next 10 columns are PC1-PC10
+#pcs <- matched_pcs[, 2:11]  # Assuming the first column is ID and the next 10 columns are PC1-PC10
 
 # Combine the covariates and PCs
-X <- cbind(X, pcs)
+#X <- cbind(X, pcs)
 
 # Print the structure of X to verify
-print("Combined X matrix created")
-str(X)
+#print("Combined X matrix created")
+#str(X)
 
 ### small checks for the matrices and vectors created ###
 #dataset[dataset$ID == 1000086, "PP0a"]
-#dataset[dataset$ID == 1000086, "SP0a"]
+#dataset[dataset$ID == 1000086, "DP0a"]
 #dataset[dataset$ID == 1000086, "DP0a"]
 #dataset[dataset$ID == 1000086, "AOP"]
 #dataset[dataset$ID == 1000086, "Sex_SI"]
@@ -116,58 +116,58 @@ if (!is.numeric(ETA$X$X)) {
 print("model ETA created")
 
 ### Run model here ###
-print("model for PP_plink running")
+#print("model for PP_pcrelate running")
 
-model <- BGLR(y=y_PP_plink, ETA=ETA, nIter=iter, burnIn=burnin, thin=thin, verbose=verb, saveAt=paste(scratch, '/PP_plink_run_', sep=''))
+#model <- BGLR(y=y_PP_pcrelate, ETA=ETA, nIter=iter, burnIn=burnin, thin=thin, verbose=verb, saveAt=paste(scratch, '/PP_pcrelate_G_run_', sep=''))
 
-print("model for PP_plink done")
+#print("model for PP_pcrelate done")
 
 ### Collect results ###
 
 ### Model parameters ###  
 
 ### intercept ###
-zz0 <- read.table(paste(scratch, '/PP_plink_run_mu.dat', sep=''), header=F); colnames(zz0) <- "int"
+zz0 <- read.table(paste(scratch, '/PP_pcrelate_G_run_mu.dat', sep=''), header=F); colnames(zz0) <- "int"
 
 print("zz0 created")
 
 ### variance of ridge regression betas for the additive genetic effect ###
-zz1 <- read.table(paste(scratch, '/PP_plink_run_ETA_G_varB.dat', sep=''), header=F); colnames(zz1) <- "G"
+zz1 <- read.table(paste(scratch, '/PP_pcrelate_G_run_ETA_G_varB.dat', sep=''), header=F); colnames(zz1) <- "G"
 
 print("zz1 created")
 
 ### variance of ridge regression betas for the environmental effect ###
-#zz2 <- read.table(paste(scratch, '/PP_plink_run_ETA_E_varB.dat', sep=''), header=F); colnames(zz2) <- "E"
+#zz2 <- read.table(paste(scratch, '/PP_pcrelate_run_ETA_E_varB.dat', sep=''), header=F); colnames(zz2) <- "E"
 
 ### variance of the residual deviations ###
-zz9 <- read.table(paste(scratch, '/PP_plink_run_varE.dat', sep=''), header=F); colnames(zz9) <- "res"
+zz9 <- read.table(paste(scratch, '/PP_pcrelate_G_run_varE.dat', sep=''), header=F); colnames(zz9) <- "res"
 
 print("zz9 created")
 
 ### dataframe with model parameters ###
-VCEm_PP_plink <- data.frame(zz0, zz1, zz9)
-#VCEm_PP_plink <- data.frame(zz0, zz1, zz9)
+VCEm_PP_pcrelate <- data.frame(zz0, zz1, zz9)
+#VCEm_PP_pcrelate <- data.frame(zz0, zz1, zz9)
 
-print("VCEm_PP_plink created now saving")
+print("VCEm_PP_pcrelate created now saving")
 
-write.csv(VCEm_PP_plink, file="/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/model/VCEm_PP_plink_G_pcs.csv", row.names=TRUE)
-#VCEm_PP <- read.csv("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/apr_run_with_chinese_20240402/5_variance_components/VCEm_PP_plink")
-print("VCEm_PP_plink written")
+write.csv(VCEm_PP_pcrelate, file="/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/model/VCEm_PP_pcrelate_G.csv", row.names=TRUE)
+#VCEm_PP <- read.csv("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/apr_run_with_chinese_20240402/5_variance_components/VCEm_PP_pcrelate")
+print("VCEm_PP_pcrelate written")
 
 ### Sampled regression effects ###  
 
 ### intercept and fixed effects ###
-B1 <- read.table(paste(scratch, '/PP_plink_run_ETA_X_b.dat', sep=''), header=T)
+B1 <- read.table(paste(scratch, '/PP_pcrelate_G_run_ETA_X_b.dat', sep=''), header=T)
 
 print("B1 done now B2")
 
 ### additive genetic random effects ###
-B2 <- readBinMat(paste(scratch, '/PP_plink_run_ETA_G_b.bin', sep=''))
+B2 <- readBinMat(paste(scratch, '/PP_pcrelate_G_run_ETA_G_b.bin', sep=''))
 
 print("B2 done")
 
 ### environmental random effects ###
-#B3 <- readBinMat(paste(scratch, '/PP_plink_r5_run_this_ETA_E_b.bin', sep=''))
+#B3 <- readBinMat(paste(scratch, '/PP_pcrelate_r5_run_this_ETA_E_b.bin', sep=''))
 
 ### dataframe with variance partition ###
 #varabs <- matrix(NA, nrow_varabs, 3); colnames(varabs) <- c("V_X", "V_G", "V_E")
@@ -199,7 +199,7 @@ print("varab cols done now saving varab")
 #plot(1:1000, varabs[,1])
 #plot(1:1000, varabs[,2])
 
-write.csv(varabs, file="/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/model/varabs_PP_plink_G_pcs.csv", row.names=TRUE)
+write.csv(varabs, file="/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/model/varabs_PP_pcrelate_G.csv", row.names=TRUE)
 
 print("varab saved")
 
