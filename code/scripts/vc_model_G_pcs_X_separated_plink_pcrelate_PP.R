@@ -39,7 +39,7 @@ X$AOPss <- as.vector(X$AOPss)
 rownames(X) <- rownames(W)
 
 # Load scaled PCs and match to individual IDs
-pcs_scaled <- readRDS("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/filtered_chr/scaled_pcs_pcrelate.rds")
+pcs_scaled <- readRDS("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/filtered_chr/scaled_pcs_plink.rds")
 matched_pcs <- pcs_scaled[match(individual_ids, pcs_scaled$ID), 2:11]
 P <- matched_pcs
 
@@ -69,7 +69,7 @@ print("Model ETA created")
 
 # Run BGLR model
 
-#model <- BGLR(y=y, ETA=ETA, nIter=iter, burnIn=burnin, thin=thin, verbose=verb, saveAt=paste(opt$scratch, '/', type, '_', grm_source, '_run_G_pcs_X_separated_', sep=''))
+model <- BGLR(y=y_PP_pcrelate, ETA=ETA, nIter=iter, burnIn=burnin, thin=thin, verbose=verb, saveAt=paste(scratch, '/PP_pcrelate_pcs_plink_G_run_X_separated_', sep=''))
 
 
 ### Collect results ###
@@ -77,50 +77,45 @@ print("Model ETA created")
 ### Model parameters ###  
 
 ### intercept ###
-zz0 <- read.table(paste(scratch, '/PP_pcrelate_run_G_pcs_X_separated_mu.dat', sep=''), header=F); colnames(zz0) <- "int"
+zz0 <- read.table(paste(scratch, '/PP_pcrelate_pcs_plink_G_run_X_separated_mu.dat', sep=''), header=F); colnames(zz0) <- "int"
 
 print("zz0 created")
 
 ### variance of ridge regression betas for the additive genetic effect ###
-zz1 <- read.table(paste(scratch, '/PP_pcrelate_run_G_pcs_X_separated_ETA_G_varB.dat', sep=''), header=F); colnames(zz1) <- "G"
+zz1 <- read.table(paste(scratch, '/PP_pcrelate_pcs_plink_G_run_X_separated_ETA_G_varB.dat', sep=''), header=F); colnames(zz1) <- "G"
 
 print("zz1 created")
 
-### variance of ridge regression betas for the environmental effect ###
-#zz2 <- read.table(paste(scratch, '/PP_pcrelate_run_G_pcs_X_separated_ETA_E_varB.dat', sep=''), header=F); colnames(zz2) <- "E"
-
 ### variance of the residual deviations ###
-zz9 <- read.table(paste(scratch, '/PP_pcrelate_run_G_pcs_X_separated_varE.dat', sep=''), header=F); colnames(zz9) <- "res"
+zz9 <- read.table(paste(scratch, '/PP_pcrelate_pcs_plink_G_run_X_separated_varE.dat', sep=''), header=F); colnames(zz9) <- "res"
 
 print("zz9 created")
 
 ### dataframe with model parameters ###
 VCEm_PP_pcrelate <- data.frame(zz0, zz1, zz9)
-#VCEm_PP_pcrelate <- data.frame(zz0, zz1, zz9)
 
-print("VCEm_PP_pcrelate created now saving")
+print("PP_pcrelate_pcs_plink_G_run_X_separated created now saving")
 
-write.csv(VCEm_PP_pcrelate, file="/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/model/VCEm_PP_pcrelate_run_G_pcs_X_separated.csv", row.names=TRUE)
-#VCEm_PP <- read.csv("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/apr_run_with_chinese_20240402/5_variance_components/VCEm_PP_pcrelate_run_G_pcs_X_separated")
-print("VCEm_PP_pcrelate written")
+write.csv(VCEm_PP_pcrelate, file="/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/model/VCEm_PP_pcrelate_pcs_plink_G_run_X_separated.csv", row.names=TRUE)
+#VCEm_PP <- read.csv("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/apr_run_with_chinese_20240402/5_variance_components/VCEm_PP_pcrelate_pcs_plink_G_run_X_separated")
+print("PP_pcrelate_pcs_plink_G_run_X_separated written")
 
 ### Sampled regression effects ###  
 
 ### intercept and fixed effects part 1 ###
-B1 <- read.table(paste(scratch, '/PP_pcrelate_run_G_pcs_X_separated_ETA_X1_b.dat', sep=''), header=T)
+B1 <- read.table(paste(scratch, '/PP_pcrelate_pcs_plink_G_run_X_separated_ETA_X1_b.dat', sep=''), header=T)
 
 print("B1 done now B2")
 
 ### additive genetic random effects ###
-B2 <- readBinMat(paste(scratch, '/PP_pcrelate_run_G_pcs_X_separated_ETA_G_b.bin', sep=''))
+B2 <- readBinMat(paste(scratch, '/PP_pcrelate_pcs_plink_G_run_X_separated_ETA_G_b.bin', sep=''))
 
 ### fixed effects part 2 pcs ###
-#B3 <- readBinMat(paste(scratch, '/PP_pcrelate_run_G_pcs_X_separated_ETA_X2_b.dat', sep=''))
-B3 <- as.matrix(fread(paste(scratch, '/PP_pcrelate_run_G_pcs_X_separated_ETA_X2_b.dat', sep='')))
+#B3 <- readBinMat(paste(scratch, '/PP_pcrelate_pcs_plink_G_run_X_separated_ETA_X2_b.dat', sep=''))
+B3 <- as.matrix(fread(paste(scratch, '/PP_pcrelate_pcs_plink_G_run_X_separated_ETA_X2_b.dat', sep='')))
 
 ### dataframe with variance partition ###
 varabs <- matrix(NA, nrow_varabs, 3); colnames(varabs) <- c("V_X1", "V_X2", "V_G")
-#varabs <- matrix(NA, nrow_varabs, 2); colnames(varabs) <- c("V_X", "V_G")
 
 print("filling up cols of varab")
 
@@ -133,28 +128,11 @@ varabs[, 2] <- matrixStats::colVars(ETA$X2$X%*%t(B3))[-c(1:(burnin/thin))]
 ### fill up column for random additive genetic covariates ###
 varabs[, 3] <- matrixStats::colVars(tcrossprod(ETA$G$X,B2))
 
-# Ensure ETA$E$X is a numeric matrix (doesnt run without this)
-#ETA$E$X <- as.matrix(ETA$E$X)
-#ETA$E$X <- apply(ETA$E$X, 2, as.numeric)
-
-# Ensure B3 is numeric
-#B3 <- as.matrix(B3)
-#B3 <- apply(B3, 2, as.numeric)
-
-### fill up column for random environmental covariates ###
-#varabs[-c(1:(burnin/thin)), 2] <- apply(ETA$E$X%*%t(B3), 2, var)
-#varabs[, 3] <- matrixStats::colVars(tcrossprod(ETA$E$X,B3))
-
 print("varab cols done now saving varab")
 
-write.csv(varabs, file="/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/model/varabs_PP_pcrelate_run_G_pcs_X_separated.csv", row.names=TRUE)
+write.csv(varabs, file="/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/model/varabs_PP_pcrelate_pcs_plink_G_run_X_separated.csv", row.names=TRUE)
 
 print("varab saved")
-
-### fill up column for random environmental covariates ###
-#varabs[-c(1:(burnin/thin)), 2] <- apply(ETA$E$X%*%t(B3), 2, var)
-
-
 
 ### Note -c(1:(burnin/thin)). This is because burn-in samples are stored in B1, but are not in B2 and B3.
 

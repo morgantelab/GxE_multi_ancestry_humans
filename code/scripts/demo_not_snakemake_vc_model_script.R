@@ -84,6 +84,11 @@ print("initial X created")
 #print("Combined X matrix created")
 #str(X)
 
+load("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/Emat_20241106.RData")
+filtered_Emat <- Emat[match(individual_ids, rownames(Emat)), ]
+rownames(filtered_Emat) <- individual_ids
+E <- tcrossprod(filtered_Emat) / ncol(filtered_Emat)
+
 ### small checks for the matrices and vectors created ###
 #dataset[dataset$ID == 1000086, "PP0a"]
 #dataset[dataset$ID == 1000086, "DP0a"]

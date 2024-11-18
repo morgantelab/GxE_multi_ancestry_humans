@@ -84,8 +84,8 @@ P <- matched_pcs
 print("Combined X matrix created")
 
 # Model setup
-iter <- 90000
-burnin <- 40000
+iter <- 120000
+burnin <- 70000
 thin <- 50
 verb <- T
 nrow_varabs <- (iter-burnin)/thin

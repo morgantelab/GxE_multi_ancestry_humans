@@ -4,7 +4,7 @@ configfile: "config.yaml"
 
 rule all:
     input:
-        expand(config["model_dir"] + "/" + "varabs_{bp}_{grm}_G_pcs_X_separated.csv", bp=config["BP"], grm=config["GRM"])
+        expand(config["model_dir"] + "/" + "varabs_{bp}_{grm}_run_G_E_pcrelate_pcs_plink.csv", bp=config["BP"], grm=config["GRM"])
 
 # Step 1: Filter SNP List per Ancestry
 
@@ -361,7 +361,7 @@ rule model_G_pcs:
 rule model_G:
     input:
         data=config["sample_ids_dir"] + "/" + "scaled_dataset_20241025.Rdata",
-        eigen=config["filtered_chr_dir"] + "/" + "pca_for_{grm}.rds",
+        eigen=config["filtered_chr_dir"] + "/" + "pca_for_{grm}.rds"
     output:
         vcem=config["model_dir"] + "/" + "VCEm_{bp}_{grm}_G.csv",
         varabs=config["model_dir"] + "/" + "varabs_{bp}_{grm}_G.csv"
@@ -378,23 +378,65 @@ rule model_G:
         Rscript {params.SCRIPT} -d {params.INPUTDIR} -t {input.data} -e {input.eigen} -o {params.INPUTDIR} -s {params.scratch} -r {output.vcem}
         """
 
-rule model_G_pcs_X_separated:
+rule model_G_pcs_X_separated_higher_iter:
     input:
         data=config["sample_ids_dir"] + "/" + "scaled_dataset_20241025.Rdata",
         eigen=config["filtered_chr_dir"] + "/" + "pca_for_{grm}.rds",
         pcs=config["filtered_chr_dir"] + "/" + "scaled_pcs_{grm}.rds"
     output:
-        vcem=config["model_dir"] + "/" + "VCEm_{bp}_{grm}_G_pcs_X_separated.csv",
-        varabs=config["model_dir"] + "/" + "varabs_{bp}_{grm}_G_pcs_X_separated.csv"
+        modelscratch=config["scratch_dir"] + "/" + "SP_plink_run_G_pcs_X_separated_varE.dat"
     params:
         INPUTDIR=config["model_dir"],
         scratch=config["scratch_dir"],
-        SCRIPT=config["SCRIPT"] + "/" + "model_G_pcs_X_separated.R"
+        SCRIPT=config["SCRIPT"] + "/" + "higher_iter_model_G_pcs_X_separated.R"
     resources: cpus=5, mem_mb=50000, time_min=3000
     shell:
         """
         ml R/4.1.2
         export OPENBLAS_NUM_THREADS=5
         export OMP_NUM_THREADS=5
-        Rscript {params.SCRIPT} -d {params.INPUTDIR} -t {input.data} -e {input.eigen} -p {input.pcs} -o {params.INPUTDIR} -s {params.scratch} -r {output.varabs}
+        Rscript {params.SCRIPT} -d {params.INPUTDIR} -t {input.data} -e {input.eigen} -p {input.pcs} -o {params.INPUTDIR} -s {params.scratch} -r {output.modelscratch}
+        """
+
+rule model_G_E:
+    input:
+        data=config["sample_ids_dir"] + "/" + "scaled_dataset_20241025.Rdata",
+        eigen=config["filtered_chr_dir"] + "/" + "pca_for_{grm}.rds",
+        envvar=config["sample_ids_dir"] + "/" + "Emat_20241106.RData"
+    output:
+        vcem=config["model_dir"] + "/" + "VCEm_{bp}_{grm}_G_E.csv",
+        varabs=config["model_dir"] + "/" + "varabs_{bp}_{grm}_G_E.csv"
+    params:
+        INPUTDIR=config["model_dir"],
+        scratch=config["scratch_dir"],
+        SCRIPT=config["SCRIPT"] + "/" + "model_G_E.R"
+    resources: cpus=10, mem_mb=150000, time_min=3000
+    shell:
+        """
+        ml R/4.1.2
+	export OPENBLAS_NUM_THREADS=1
+        export OMP_NUM_THREADS=1
+        Rscript {params.SCRIPT} -d {params.INPUTDIR} -t {input.data} -e {input.eigen} -v {input.envvar} -o {params.INPUTDIR} -s {params.scratch} -r {output.varabs}
+        """
+
+rule model_G_E_pcrelate_pcs_plink:
+    input:
+        data=config["sample_ids_dir"] + "/" + "scaled_dataset_20241025.Rdata",
+        eigen=config["filtered_chr_dir"] + "/" + "pca_for_{grm}.rds",
+	      pcs=config["filtered_chr_dir"] + "/" + "scaled_pcs_plink.rds",
+        envvar=config["model_dir"] + "/" + "E_eigen_G_E.rds"
+    output:
+        vcem=config["model_dir"] + "/" + "VCEm_{bp}_{grm}_run_G_E_pcrelate_pcs_plink.csv",
+        varabs=config["model_dir"] + "/" + "varabs_{bp}_{grm}_run_G_E_pcrelate_pcs_plink.csv"
+    params:
+        INPUTDIR=config["model_dir"],
+        scratch=config["scratch_dir"],
+        SCRIPT=config["SCRIPT"] + "/" + "model_G_E_pcrelate_pcs_plink.R"
+    resources: cpus=10, mem_mb=150000, time_min=3000
+    shell:
+        """
+        ml R/4.1.2
+    export OPENBLAS_NUM_THREADS=1
+        export OMP_NUM_THREADS=1
+        Rscript {params.SCRIPT} -d {params.INPUTDIR} -t {input.data} -e {input.eigen} -p {input.pcs} -v {input.envvar} -o {params.INPUTDIR} -s {params.scratch} -r {output.varabs}
         """

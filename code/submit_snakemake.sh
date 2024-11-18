@@ -38,6 +38,7 @@ snakemake \
 --configfile config.yaml \
 --latency-wait 120 \
 --use-conda \
+--keep-going \
 --rerun-incomplete \
 --profile slurm
 
