@@ -4,7 +4,7 @@ configfile: "config.yaml"
 
 rule all:
     input:
-        expand(config["model_dir"] + "/" + "varabs_{bp}_{grm}_run_G_E_pcrelate_pcs_plink.csv", bp=config["BP"], grm=config["GRM"])
+        expand(config["model_dir"] + "/" + "varabs_{bp}_{grm}_GE.csv", bp=config["BP"], grm=config["GRM"])
 
 # Step 1: Filter SNP List per Ancestry
 
@@ -419,24 +419,46 @@ rule model_G_E:
         Rscript {params.SCRIPT} -d {params.INPUTDIR} -t {input.data} -e {input.eigen} -v {input.envvar} -o {params.INPUTDIR} -s {params.scratch} -r {output.varabs}
         """
 
-rule model_G_E_pcrelate_pcs_plink:
+# #rule model_G_E_pcrelate_pcs_plink:
+# #    input:
+# #        data=config["sample_ids_dir"] + "/" + "scaled_dataset_20241025.Rdata",
+#         eigen=config["filtered_chr_dir"] + "/" + "pca_for_{grm}.rds",
+# 	    pcs=config["filtered_chr_dir"] + "/" + "scaled_pcs_plink.rds",
+#         envvar=config["model_dir"] + "/" + "E_eigen_G_E.rds"
+#     output:
+#         vcem=config["model_dir"] + "/" + "VCEm_{bp}_{grm}_run_G_E_pcrelate_pcs_plink.csv",
+#         varabs=config["model_dir"] + "/" + "varabs_{bp}_{grm}_run_G_E_pcrelate_pcs_plink.csv"
+#     params:
+#         INPUTDIR=config["model_dir"],
+#         scratch=config["scratch_dir"],
+#         SCRIPT=config["SCRIPT"] + "/" + "model_G_E_pcrelate_pcs_plink.R"
+#     resources: cpus=10, mem_mb=150000, time_min=3000
+#     shell:
+#         """
+#         ml R/4.1.2
+#     export OPENBLAS_NUM_THREADS=1
+#         export OMP_NUM_THREADS=1
+#         Rscript {params.SCRIPT} -d {params.INPUTDIR} -t {input.data} -e {input.eigen} -p {input.pcs} -v {input.envvar} -o {params.INPUTDIR} -s {params.scratch} -r {output.varabs}
+#         """
+
+rule model_GE:
     input:
         data=config["sample_ids_dir"] + "/" + "scaled_dataset_20241025.Rdata",
         eigen=config["filtered_chr_dir"] + "/" + "pca_for_{grm}.rds",
-	      pcs=config["filtered_chr_dir"] + "/" + "scaled_pcs_plink.rds",
-        envvar=config["model_dir"] + "/" + "E_eigen_G_E.rds"
+        envvar=config["model_dir"] + "/" + "E_eigen_G_E.rds",
+        GE=config["model_dir"] + "/" + "eigen_GE_{grm}.rds"
     output:
-        vcem=config["model_dir"] + "/" + "VCEm_{bp}_{grm}_run_G_E_pcrelate_pcs_plink.csv",
-        varabs=config["model_dir"] + "/" + "varabs_{bp}_{grm}_run_G_E_pcrelate_pcs_plink.csv"
+        vcem=config["model_dir"] + "/" + "VCEm_{bp}_{grm}_GE.csv",
+        varabs=config["model_dir"] + "/" + "varabs_{bp}_{grm}_GE.csv"
     params:
         INPUTDIR=config["model_dir"],
         scratch=config["scratch_dir"],
-        SCRIPT=config["SCRIPT"] + "/" + "model_G_E_pcrelate_pcs_plink.R"
+        SCRIPT=config["SCRIPT"] + "/" + "model_GE.R"
     resources: cpus=10, mem_mb=150000, time_min=3000
     shell:
         """
         ml R/4.1.2
-    export OPENBLAS_NUM_THREADS=1
+        export OPENBLAS_NUM_THREADS=1
         export OMP_NUM_THREADS=1
-        Rscript {params.SCRIPT} -d {params.INPUTDIR} -t {input.data} -e {input.eigen} -p {input.pcs} -v {input.envvar} -o {params.INPUTDIR} -s {params.scratch} -r {output.varabs}
+        Rscript {params.SCRIPT} -d {params.INPUTDIR} -t {input.data} -e {input.eigen} -q {input.GE} -v {input.envvar} -o {params.INPUTDIR} -s {params.scratch} -r {output.varabs}
         """

@@ -19,7 +19,7 @@ option_list <- list(
               help = "envvar matrix", metavar = "character"),
   make_option(c("-o", "--output"), type = "character", default = NULL, 
               help = "Output directory for saving results", metavar = "character"),
-  make_option(c("-p", "--pcs"), type = "character", default = NULL, 
+  make_option(c("-q", "--GE"), type = "character", default = NULL, 
               help = "Path to the scaled PCs RDS file", metavar = "character"),
   make_option(c("-s", "--scratch"), type = "character", default = "/scratch3/kgoda/ukbiobank_files/tmp/snakemake_runs", 
               help = "Temporary directory for storing model files", metavar = "character"),
@@ -77,11 +77,6 @@ X$AOPs <- as.vector(X$AOPs)
 X$AOPss <- as.vector(X$AOPss)
 rownames(X) <- rownames(W)
 
-# Load scaled PCs and match to individual IDs
-pcs_scaled <- readRDS(opt$pcs)
-matched_pcs <- pcs_scaled[match(individual_ids, pcs_scaled$ID), 2:11]
-P <- matched_pcs
-
 # Load eigen of E
 E_eigen <- readRDS(opt$eigen)
 E_eigenvectors <- E_eigen$vectors
@@ -96,6 +91,19 @@ for(i in 1:ncol(E_filtered_eigenvectors)) {
 }
 E <- E_filtered_eigenvectors
 
+# Load eigen of GE
+GE_eigen <- readRDS(opt$GE)
+GE_eigenvectors <- GE_eigen$vectors
+GE_eigenvalues <- GE_eigen$values
+
+# Filter and scale eigenvectors by positive eigenvalues
+GE_positive_indices <- which(GE_eigenvalues > 0)
+GE_filtered_eigenvectors <- GE_eigenvectors[, GE_positive_indices]
+GE_filtered_eigenvalues <- GE_eigenvalues[GE_positive_indices]
+for(i in 1:ncol(GE_filtered_eigenvectors)) {  
+  GE_filtered_eigenvectors[, i] <- GE_filtered_eigenvectors[, i] * sqrt(GE_filtered_eigenvalues[i])
+}
+GE <- GE_filtered_eigenvectors
 
 # Model setup
 iter <- 90000
@@ -105,9 +113,9 @@ verb <- T
 nrow_varabs <- (iter-burnin)/thin
 
 ETA <- list(X1=list(X=X, model="FIXED", saveEffects=TRUE),
-            X2=list(X=P, model="FIXED", saveEffects=TRUE),
             G=list(X=W, model="BRR", saveEffects=TRUE),
-            E=list(X=E, model="BRR", saveEffects=TRUE)
+            E=list(X=E, model="BRR", saveEffects=TRUE),
+            GxE=list(X=GE, model="BRR", saveEffects=TRUE)
 )
 
 if (!is.numeric(ETA$X1$X)) {
@@ -116,49 +124,43 @@ if (!is.numeric(ETA$X1$X)) {
 }
 print("Model ETA created")
 
-if (!is.numeric(ETA$X2$X)) {
-  ETA$X2$X <- as.matrix(ETA$X2$X)
-  ETA$X2$X <- apply(ETA$X2$X, 2, as.numeric)
-}
-print("Model ETA created")
-
 # Run BGLR model
 
-model <- BGLR(y=y, ETA=ETA, nIter=iter, burnIn=burnin, thin=thin, verbose=verb, saveAt=paste(opt$scratch, '/', type, '_', grm_source, '_run_G_E_pcrelate_pcs_plink_', sep=''))
+model <- BGLR(y=y, ETA=ETA, nIter=iter, burnIn=burnin, thin=thin, verbose=verb, saveAt=paste(opt$scratch, '/', type, '_', grm_source, '_GE', sep=''))
 
 ###Collecting results###
 # Load results from BGLR output
-zz0 <- read.table(paste(opt$scratch, '/', type, '_', grm_source, '_run_G_E_pcrelate_pcs_plink_mu.dat', sep=''), header=F)
+zz0 <- read.table(paste(opt$scratch, '/', type, '_', grm_source, '_GEmu.dat', sep=''), header=F)
 colnames(zz0) <- "int"
 
-zz1 <- read.table(paste(opt$scratch, '/', type, '_', grm_source, '_run_G_E_pcrelate_pcs_plink_ETA_G_varB.dat', sep=''), header=F)
+zz1 <- read.table(paste(opt$scratch, '/', type, '_', grm_source, '_GEETA_G_varB.dat', sep=''), header=F)
 colnames(zz1) <- "G"
 
-zz2 <- read.table(paste(opt$scratch, '/', type, '_', grm_source, '_run_G_E_pcrelate_pcs_plink_ETA_E_varB.dat', sep=''), header=F)
+zz2 <- read.table(paste(opt$scratch, '/', type, '_', grm_source, '_GEETA_E_varB.dat', sep=''), header=F)
 colnames(zz2) <- "E"
 
-zz9 <- read.table(paste(opt$scratch, '/', type, '_', grm_source, '_run_G_E_pcrelate_pcs_plink_varE.dat', sep=''), header=F)
+zz9 <- read.table(paste(opt$scratch, '/', type, '_', grm_source, '_GEvarE.dat', sep=''), header=F)
 colnames(zz9) <- "res"
 
 # Combine results into a dataframe and save
 VCEm <- data.frame(zz0, zz1, zz2, zz9)
-write.csv(VCEm, file=file.path(opt$output, paste0("VCEm_", type, "_", grm_source, "_run_G_E_pcrelate_pcs_plink.csv")), row.names=TRUE)
+write.csv(VCEm, file=file.path(opt$output, paste0("VCEm_", type, "_", grm_source, "_GE.csv")), row.names=TRUE)
 
 # Sampled regression effects
-B1 <- read.table(paste(opt$scratch, '/', type, '_', grm_source, '_run_G_E_pcrelate_pcs_plink_ETA_X1_b.dat', sep=''), header=TRUE)
-B2 <- read.table(paste(opt$scratch, '/', type, '_', grm_source, '_run_G_E_pcrelate_pcs_plink_ETA_X2_b.dat', sep=''), header=TRUE)
-B3 <- readBinMat(paste(opt$scratch, '/', type, '_', grm_source, '_run_G_E_pcrelate_pcs_plink_ETA_G_b.bin', sep=''))
-B4 <- readBinMat(paste(opt$scratch, '/', type, '_', grm_source, '_run_G_E_pcrelate_pcs_plink_ETA_E_b.bin', sep=''))
+B1 <- read.table(paste(opt$scratch, '/', type, '_', grm_source, '_GEETA_X_b.dat', sep=''), header=TRUE)
+B2 <- readBinMat(paste(opt$scratch, '/', type, '_', grm_source, '_GEETA_G_b.bin', sep=''))
+B3 <- readBinMat(paste(opt$scratch, '/', type, '_', grm_source, '_GEETA_E_b.bin', sep=''))
+B4 <- readBinMat(paste(opt$scratch, '/', type, '_', grm_source, '_GEETA_GxE_b.bin', sep=''))
 
 # Calculate variance components
-varabs <- matrix(NA, nrow_varabs, 4); colnames(varabs) <- c("V_X1", "V_X2", "V_G", "V_E")
+varabs <- matrix(NA, nrow_varabs, 4); colnames(varabs) <- c("V_X1", "V_G", "V_E", "V_GxE")
 
 # Fill variance components
 varabs[, 1] <- matrixStats::colVars(ETA$X1$X %*% t(B1))[-c(1:(burnin/thin))]
-varabs[, 2] <- matrixStats::colVars(ETA$X2$X %*% t(B2))[-c(1:(burnin/thin))]
-varabs[, 3] <- matrixStats::colVars(tcrossprod(ETA$G$X, B3))
-varabs[, 4] <- matrixStats::colVars(tcrossprod(ETA$E$X, B4))
+varabs[, 2] <- matrixStats::colVars(tcrossprod(ETA$G$X, B2))
+varabs[, 3] <- matrixStats::colVars(tcrossprod(ETA$E$X, B3))
+varabs[, 4] <- matrixStats::colVars(tcrossprod(ETA$GxE$X, B4))
 
 # Save variance components
-write.csv(varabs, file=file.path(opt$output, paste0("varabs_", type, "_", grm_source, "_run_G_E_pcrelate_pcs_plink.csv")), row.names=TRUE)
+write.csv(varabs, file=file.path(opt$output, paste0("varabs_", type, "_", grm_source, "_GE.csv")), row.names=TRUE)
 print("Variance partition results saved")

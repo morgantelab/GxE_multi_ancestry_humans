@@ -1,12 +1,15 @@
 ### For PCRelate and plink GRM ###
 rm(list=ls()); gc()
 
+# Load required libraries
 library(data.table)
 library(Matrix)
 library(BGLR)
 library(readr)
 library(genio)
 library(dplyr)
+library(optparse)
+
 
 ### Please refer to https://github.com/gdlc/BGLR-R for a more valuable description ###
 
@@ -75,8 +78,21 @@ for(i in 1:ncol(E_filtered_eigenvectors)) {
 }
 E <- E_filtered_eigenvectors
 
-### Model ###
+# Load eigen of GE
+GE_eigen <- readRDS("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/model/eigen_GE_pcrelate.rds")
+GE_eigenvectors <- GE_eigen$vectors
+GE_eigenvalues <- GE_eigen$values
 
+# Filter and scale eigenvectors by positive eigenvalues
+GE_positive_indices <- which(GE_eigenvalues > 0)
+GE_filtered_eigenvectors <- GE_eigenvectors[, GE_positive_indices]
+GE_filtered_eigenvalues <- GE_eigenvalues[GE_positive_indices]
+for(i in 1:ncol(GE_filtered_eigenvectors)) {  
+  GE_filtered_eigenvectors[, i] <- GE_filtered_eigenvectors[, i] * sqrt(GE_filtered_eigenvalues[i])
+}
+GE <- GE_filtered_eigenvectors
+
+# Model setup
 iter <- 90000
 burnin <- 40000
 thin <- 50
@@ -84,92 +100,52 @@ verb <- T
 nrow_varabs <- (iter-burnin)/thin
 scratch <- "/scratch3/kgoda/ukbiobank_files/tmp/snakemake_runs" # Use this!
 
-### Define model ###
 
-ETA <- list(X=list(X=X, model="FIXED", saveEffects=TRUE), 
+ETA <- list(X1=list(X=X, model="FIXED", saveEffects=TRUE),
             G=list(X=W, model="BRR", saveEffects=TRUE),
-            E=list(X=E, model="BRR", saveEffects=TRUE)
+            E=list(X=E, model="BRR", saveEffects=TRUE),
+            GxE=list(X=GE, model="BRR", saveEffects=TRUE)
 )
 
-### Ensure ETA$X$X is numeric ###
-if (!is.numeric(ETA$X$X)) {
-  ETA$X$X <- as.matrix(ETA$X$X)
-  ETA$X$X <- apply(ETA$X$X, 2, as.numeric)
+if (!is.numeric(ETA$X1$X)) {
+  ETA$X1$X <- as.matrix(ETA$X1$X)
+  ETA$X1$X <- apply(ETA$X1$X, 2, as.numeric)
 }
+print("Model ETA created")
 
-print("model ETA created")
+###Collecting results###
+# Load results from BGLR output
+zz0 <- read.table(paste(scratch, '/PP_pcrelate_GEmu.dat', sep=''), header=F)
+colnames(zz0) <- "int"
 
-### Collect results ###
+zz1 <- read.table(paste(scratch, '/PP_pcrelate_GEETA_G_varB.dat', sep=''), header=F)
+colnames(zz1) <- "G"
 
-### Model parameters ###  
+zz2 <- read.table(paste(scratch, '/PP_pcrelate_GEETA_E_varB.dat', sep=''), header=F)
+colnames(zz2) <- "E"
 
-### intercept ###
-zz0 <- read.table(paste(scratch, '/PP_pcrelate_run_G_E_mu.dat', sep=''), header=F); colnames(zz0) <- "int"
+zz9 <- read.table(paste(scratch, '/PP_pcrelate_GEvarE.dat', sep=''), header=F)
+colnames(zz9) <- "res"
 
-print("zz0 created")
+# Combine results into a dataframe and save
+VCEm <- data.frame(zz0, zz1, zz2, zz9)
+write.csv(VCEm_PP_pcrelate, file="/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/model/VCEm_PP_pcrelate_GE.csv", row.names=TRUE)
 
-### variance of ridge regression betas for the additive genetic effect ###
-zz1 <- read.table(paste(scratch, '/PP_pcrelate_run_G_E_ETA_G_varB.dat', sep=''), header=F); colnames(zz1) <- "G"
+# Sampled regression effects
+B1 <- read.table(paste(scratch, '/PP_pcrelate_GEETA_X_b.dat', sep=''), header=TRUE)
+B2 <- readBinMat(paste(scratch, '/PP_pcrelate_GEETA_G_b.bin', sep=''))
+B3 <- readBinMat(paste(scratch, '/PP_pcrelate_GEETA_E_b.bin', sep=''))
+B4 <- readBinMat(paste(scratch, '/PP_pcrelate_GEETA_GxE_b.bin', sep=''))
 
-print("zz1 created")
+# Calculate variance components
+varabs <- matrix(NA, nrow_varabs, 4); colnames(varabs) <- c("V_X1", "V_G", "V_E", "V_GxE")
 
-### variance of ridge regression betas for the environmental effect ###
-zz2 <- read.table(paste(scratch, '/PP_pcrelate_run_G_E_ETA_E_varB.dat', sep=''), header=F); colnames(zz2) <- "E"
+# Fill variance components
+varabs[, 1] <- matrixStats::colVars(ETA$X1$X %*% t(B1))[-c(1:(burnin/thin))]
+varabs[, 2] <- matrixStats::colVars(tcrossprod(ETA$G$X, B2))
+varabs[, 3] <- matrixStats::colVars(tcrossprod(ETA$E$X, B3))
+varabs[, 4] <- matrixStats::colVars(tcrossprod(ETA$GxE$X, B4))
 
-### variance of the residual deviations ###
-zz9 <- read.table(paste(scratch, '/PP_pcrelate_run_G_E_varE.dat', sep=''), header=F); colnames(zz9) <- "res"
-
-print("zz9 created")
-
-### dataframe with model parameters ###
-VCEm_PP_pcrelate <- data.frame(zz0, zz1, zz2, zz9)
-
-print("VCEm_PP_pcrelate created now saving")
-
-#write.csv(VCEm_PP_pcrelate, file="/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/model/VCEm_PP_pcrelate_run_G_E.csv", row.names=TRUE)
-print("VCEm_PP_pcrelate written")
-
-### Sampled regression effects ###  
-
-### intercept and fixed effects ###
-B1 <- read.table(paste(scratch, '/PP_pcrelate_run_G_E_ETA_X_b.dat', sep=''), header=T)
-
-print("B1 done now B2")
-
-### additive genetic random effects ###
-B2 <- readBinMat(paste(scratch, '/PP_pcrelate_run_G_E_ETA_G_b.bin', sep=''))
-
-print("B2 done")
-
-### environmental random effects ###
-B3 <- readBinMat(paste(scratch, '/PP_pcrelate_run_G_E_ETA_E_b.bin', sep=''))
-
-### dataframe with variance partition ###
-varabs <- matrix(NA, nrow_varabs, 3); colnames(varabs) <- c("V_X", "V_G", "V_E")
-
-print("filling up cols of varab")
-
-### fill up column for fixed covariates ###
-varabs[, 1] <- matrixStats::colVars(ETA$X$X%*%t(B1))[-c(1:(burnin/thin))]   
-print("varab col one filled up now col 2")
-
-### fill up column for random additive genetic covariates ###
-varabs[, 2] <- matrixStats::colVars(tcrossprod(ETA$G$X,B2))
-
-dim(ETA$G$X)
-dim(B2)
-
-### fill up column for random environmental covariates ###
-varabs[, 3] <- matrixStats::colVars(tcrossprod(ETA$E$X,B3))
-
-dim(ETA$E$X)
-dim(B3)
-
-
-print("varab cols done now saving varab")
-
-#write.csv(varabs, file="/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/model/varabs_PP_pcrelate_run_G_E.csv", row.names=TRUE)
-
-print("varab saved")
-
-### Note -c(1:(burnin/thin)). This is because burn-in samples are stored in B1, but are not in B2 and B3.
+# Save variance components
+write.csv(varabs, file="/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/model/varabs_PP_pcrelate_GE.csv", row.names=TRUE)
+print("Variance partition results saved")

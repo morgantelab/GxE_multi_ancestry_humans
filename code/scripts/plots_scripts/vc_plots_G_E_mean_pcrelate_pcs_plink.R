@@ -11,18 +11,12 @@ setwd("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/plots")
 
 # Define lists of file paths for VCEm and varabs
 VCEm_file_paths <- list(
-  DP_plink = "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/model/VCEm_DP_plink_run_G_E_pcrelate_pcs_plink.csv",
-  SP_plink = "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/model/VCEm_SP_plink_run_G_E_pcrelate_pcs_plink.csv",
-  PP_plink = "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/model/VCEm_PP_plink_run_G_E_pcrelate_pcs_plink.csv",
   DP_pcrelate = "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/model/VCEm_DP_pcrelate_run_G_E_pcrelate_pcs_plink.csv",
   SP_pcrelate = "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/model/VCEm_SP_pcrelate_run_G_E_pcrelate_pcs_plink.csv",
   PP_pcrelate = "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/model/VCEm_PP_pcrelate_run_G_E_pcrelate_pcs_plink.csv"
 )
 
 varabs_file_paths <- list(
-  DP_plink = "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/model/varabs_DP_plink_run_G_E_pcrelate_pcs_plink.csv",
-  SP_plink = "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/model/varabs_SP_plink_run_G_E_pcrelate_pcs_plink.csv",
-  PP_plink = "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/model/varabs_PP_plink_run_G_E_pcrelate_pcs_plink.csv",
   DP_pcrelate = "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/model/varabs_DP_pcrelate_run_G_E_pcrelate_pcs_plink.csv",
   SP_pcrelate = "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/model/varabs_SP_pcrelate_run_G_E_pcrelate_pcs_plink.csv",
   PP_pcrelate = "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/model/varabs_PP_pcrelate_run_G_E_pcrelate_pcs_plink.csv"
