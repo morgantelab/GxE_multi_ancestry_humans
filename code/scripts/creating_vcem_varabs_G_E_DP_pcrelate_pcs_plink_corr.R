@@ -31,7 +31,7 @@ filtered_eigenvectors <- eigenvectors[, positive_indices]
 filtered_eigenvalues <- eigenvalues[positive_indices]
 
 ### Scale eigenvectors by the square root of their corresponding positive eigenvalues ###
-for(i in 1:ncol(filtered_eigenvectors)){  
+for(i in 1:ncol(filtered_eigenvectors)){
   filtered_eigenvectors[,i] <- filtered_eigenvectors[,i] * sqrt(filtered_eigenvalues[i])
 }
 
@@ -48,9 +48,9 @@ individual_ids <- rownames(W)
 matched_dataset <- dataset[match(individual_ids, dataset$ID), ]
 
 ### Extract the phenotype vectors ###
-y_SP_pcrelate <- matched_dataset$SP0s
+y_DP_pcrelate <- matched_dataset$DP0s
 
-print("y_SP_pcrelate created")
+print("y_DP_pcrelate created")
 
 ### X is the incidence matrix for the 'fixed' covariates (no penalisation, no shrinkage). here age and sex ###
 ### Extract the covariate matrix ###
@@ -75,7 +75,7 @@ E_eigenvalues <- E_eigen_results$values
 E_positive_indices <- which(E_eigenvalues > 0)
 E_filtered_eigenvectors <- E_eigenvectors[, E_positive_indices]
 E_filtered_eigenvalues <- E_eigenvalues[E_positive_indices]
-for(i in 1:ncol(E_filtered_eigenvectors)) {  
+for(i in 1:ncol(E_filtered_eigenvectors)) {
   E_filtered_eigenvectors[, i] <- E_filtered_eigenvectors[, i] * sqrt(E_filtered_eigenvalues[i])
 }
 E <- E_filtered_eigenvectors
@@ -113,71 +113,72 @@ print("Model ETA created")
 ##Run model
 # Run BGLR model
 
-model <- BGLR(y=y_SP_pcrelate, ETA=ETA, nIter=iter, burnIn=burnin, thin=thin, verbose=verb, saveAt=paste(scratch, '/SP_pcrelate_run_G_E_pcrelate_pcs_plink_2_', sep=''))
-# ### Collect results ###
-# 
-# ### Model parameters ###  
-# 
-# ### intercept ###
-# zz0 <- read.table(paste(scratch, '/SP_pcrelate_run_G_E_pcrelate_pcs_plink_2_mu.dat', sep=''), header=F); colnames(zz0) <- "int"
-# 
-# print("zz0 created")
-# 
-# ### variance of ridge regression betas for the additive genetic effect ###
-# zz1 <- read.table(paste(scratch, '/SP_pcrelate_run_G_E_pcrelate_pcs_plink_2_ETA_G_varB.dat', sep=''), header=F); colnames(zz1) <- "G"
-# 
-# print("zz1 created")
-# 
-# ### variance of ridge regression betas for the environmental effect ###
-# zz2 <- read.table(paste(scratch, '/SP_pcrelate_run_G_E_pcrelate_pcs_plink_2_ETA_E_varB.dat', sep=''), header=F); colnames(zz2) <- "E"
-# 
-# ### variance of the residual deviations ###
-# zz9 <- read.table(paste(scratch, '/SP_pcrelate_run_G_E_pcrelate_pcs_plink_2_varE.dat', sep=''), header=F); colnames(zz9) <- "res"
-# 
-# print("zz9 created")
-# 
-# ### dataframe with model parameters ###
-# VCEm_SP_pcrelate <- data.frame(zz0, zz1, zz2, zz9)
-# 
-# print("VCEm_SP_pcrelate created now saving")
-# 
-# #write.csv(VCEm_SP_pcrelate, file="/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/model/VCEm_SP_pcrelate_run_G_E_pcrelate_pcs_plink_2.csv", row.names=TRUE)
-# print("VCEm_SP_pcrelate written")
-# 
-# ### Sampled regression effects ###  
-# 
-# ### intercept and fixed effects ###
-# B1 <- read.table(paste(scratch, '/SP_pcrelate_run_G_E_pcrelate_pcs_plink_ETA_X1_b.dat', sep=''), header=T)
-# 
-# print("B1 done now B2")
-# 
-# ### additive genetic random effects ###
-# B2 <- read.table(paste(scratch, '/SP_pcrelate_run_G_E_pcrelate_pcs_plink_ETA_X2_b.dat', sep=''), header=T)
-# 
-# B3 <- readBinMat(paste(scratch, '/SP_pcrelate_run_G_E_pcrelate_pcs_plink_ETA_G_b.bin', sep=''))
-# 
-# B4 <- readBinMat(paste(scratch, '/SP_pcrelate_run_G_E_pcrelate_pcs_plink_ETA_E_b.bin', sep=''))
-# 
-# ### dataframe with variance partition ###
-# varabs <- matrix(NA, nrow_varabs, 4); colnames(varabs) <- c("V_X1", "V_X2", "V_G", "V_E")
-# 
-# print("filling up cols of varab")
-# 
-# # Fill variance components
-# varabs[, 1] <- matrixStats::colVars(ETA$X1$X %*% t(B1))[-c(1:(burnin/thin))]
-# varabs[, 2] <- matrixStats::colVars(ETA$X2$X %*% t(B2))[-c(1:(burnin/thin))]
-# varabs[, 3] <- matrixStats::colVars(tcrossprod(ETA$G$X, B3))
-# dim(ETA$G$X)
-# dim(B3)
-# 
-# varabs[, 4] <- matrixStats::colVars(tcrossprod(ETA$E$X, B4))
-# dim(ETA$E$X)
-# dim(B4)
-# 
-# print("varab cols done now saving varab")
-# 
-# #write.csv(varabs, file="/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/model/varabs_SP_pcrelate_run_G_E_pcrelate_pcs_plink.csv", row.names=TRUE)
-# 
-# print("varab saved")
-# 
-# ### Note -c(1:(burnin/thin)). This is because burn-in samples are stored in B1, but are not in B2 and B3.
+model <- BGLR(y=y_DP_pcrelate, ETA=ETA, nIter=iter, burnIn=burnin, thin=thin, verbose=verb, saveAt=paste(scratch, '/DP_pcrelate_run_G_E_pcrelate_pcs_plink_2_', sep=''))
+
+### Collect results ###
+
+### Model parameters ###
+
+### intercept ###
+zz0 <- read.table(paste(scratch, '/DP_pcrelate_run_G_E_pcrelate_pcs_plink_2_mu.dat', sep=''), header=F); colnames(zz0) <- "int"
+
+print("zz0 created")
+
+### variance of ridge regression betas for the additive genetic effect ###
+zz1 <- read.table(paste(scratch, '/DP_pcrelate_run_G_E_pcrelate_pcs_plink_2_ETA_G_varB.dat', sep=''), header=F); colnames(zz1) <- "G"
+
+print("zz1 created")
+
+### variance of ridge regression betas for the environmental effect ###
+zz2 <- read.table(paste(scratch, '/DP_pcrelate_run_G_E_pcrelate_pcs_plink_2_ETA_E_varB.dat', sep=''), header=F); colnames(zz2) <- "E"
+
+### variance of the residual deviations ###
+zz9 <- read.table(paste(scratch, '/DP_pcrelate_run_G_E_pcrelate_pcs_plink_2_varE.dat', sep=''), header=F); colnames(zz9) <- "res"
+
+print("zz9 created")
+
+### dataframe with model parameters ###
+VCEm_DP_pcrelate <- data.frame(zz0, zz1, zz2, zz9)
+
+print("VCEm_DP_pcrelate created now saving")
+
+write.csv(VCEm_DP_pcrelate, file="/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/model/VCEm_DP_pcrelate_run_G_E_pcrelate_pcs_plink_2.csv", row.names=TRUE)
+print("VCEm_DP_pcrelate written")
+
+### Sampled regression effects ###
+
+### intercept and fixed effects ###
+B1 <- read.table(paste(scratch, '/DP_pcrelate_run_G_E_pcrelate_pcs_plink_2_ETA_X1_b.dat', sep=''), header=T)
+
+print("B1 done now B2")
+
+### additive genetic random effects ###
+B2 <- read.table(paste(scratch, '/DP_pcrelate_run_G_E_pcrelate_pcs_plink_2_ETA_X2_b.dat', sep=''), header=T)
+
+B3 <- readBinMat(paste(scratch, '/DP_pcrelate_run_G_E_pcrelate_pcs_plink_2_ETA_G_b.bin', sep=''))
+
+B4 <- readBinMat(paste(scratch, '/DP_pcrelate_run_G_E_pcrelate_pcs_plink_2_ETA_E_b.bin', sep=''))
+
+### dataframe with variance partition ###
+varabs <- matrix(NA, nrow_varabs, 4); colnames(varabs) <- c("V_X1", "V_X2", "V_G", "V_E")
+
+print("filling up cols of varab")
+
+# Fill variance components
+varabs[, 1] <- matrixStats::colVars(ETA$X1$X %*% t(B1))[-c(1:(burnin/thin))]
+varabs[, 2] <- matrixStats::colVars(ETA$X2$X %*% t(B2))[-c(1:(burnin/thin))]
+varabs[, 3] <- matrixStats::colVars(tcrossprod(ETA$G$X, B3))
+dim(ETA$G$X)
+dim(B3)
+
+varabs[, 4] <- matrixStats::colVars(tcrossprod(ETA$E$X, B4))
+dim(ETA$E$X)
+dim(B4)
+
+print("varab cols done now saving varab")
+
+write.csv(varabs, file="/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/model/varabs_DP_pcrelate_run_G_E_pcrelate_pcs_plink_2.csv", row.names=TRUE)
+
+print("varab saved")
+
+### Note -c(1:(burnin/thin)). This is because burn-in samples are stored in B1, but are not in B2 and B3.

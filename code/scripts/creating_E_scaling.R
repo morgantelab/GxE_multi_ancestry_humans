@@ -9,22 +9,22 @@ library(dplyr)
 setwd("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data")
 
 #load dataset
-#load("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/data2_20240930.RData")
-#dataset<- dtt
+load("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/data2_20240930.RData")
+dataset<- dtt
 
 # Read in the list of IDs from the file
-#id_list <- read.table("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/filtered_chr/merged_ids.rel.id", header = FALSE)$V1
+id_list <- read.table("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/filtered_chr/merged_ids.rel.id", header = FALSE)$V1
 
 # Subset the dataset to include only individuals in the ID list
-#dataset <- dataset %>% filter(ID %in% id_list)  # Replace 'ID' with the actual ID column name in your dataset
+dataset <- dataset %>% filter(ID %in% id_list)  # Replace 'ID' with the actual ID column name in your dataset
 
-#dataset$sleep_dev <- (dataset$sleep - mean(dataset$sleep))^2
+dataset$sleep_dev <- (dataset$sleep - mean(dataset$sleep))^2
 
-#Evars <-	c("Townsend", "act0_d", "TVtime", "sleep_d", "smoking_now", "veg_cook", "fish_oily", "fish_lean", "meat_proc", "poultry", "beef", "lamb", "pork", "cheese", "salt", "tea", "alc1", "waist", "getup", "coffee", "smoked_past", "BFP", "sleep_dev")
-#length(Evars)
-#Emat <- as.matrix(dataset[Evars]); dim(Emat)
-#rownames(Emat) <- dataset$ID
-#Emat <- scale(Emat)
+Evars <-	c("Townsend", "act0_d", "TVtime", "sleep_d", "smoking_now", "veg_cook", "fish_oily", "fish_lean", "meat_proc", "poultry", "beef", "lamb", "pork", "cheese", "salt", "tea", "alc1", "waist", "getup", "coffee", "smoked_past", "BFP", "sleep_dev")
+length(Evars)
+Emat <- as.matrix(dataset[Evars]); dim(Emat)
+rownames(Emat) <- dataset$ID
+Emat <- scale(Emat)
 
 load("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/Emat_20241106.RData")
 E <- tcrossprod(Emat)
