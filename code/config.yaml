@@ -14,7 +14,7 @@ gcta_executable: "/data2/morgante_lab/kgoda/software/gcta64/gcta-1.94.1-linux-ke
 out_dir: "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output"
 geno_dir: "/data2/morgante_lab/data/ukbiobank/genotypes/array"
 sample_ids_dir: "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data"
-snp_list_dir: "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/snp_lists"
+snp_list_dir: "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/snp_lists"
 common_snps_dir: "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data"
 filtered_chr_dir: "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/filtered_chr"
 model_dir: "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/model"

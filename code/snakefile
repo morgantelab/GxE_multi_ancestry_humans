@@ -4,7 +4,14 @@ configfile: "config.yaml"
 
 rule all:
     input:
-        expand(config["model_dir"] + "/" + "PREDs_{bp}_ethn_{ancestry}_X1.csv", bp=config["BP"], ancestry=config["Ancestry"]), expand(config["model_dir"] + "/" + "PREDs_{bp}_ethn_{ancestry}_X1_X2.csv", bp=config["BP"], ancestry=config["Ancestry"]), expand(config["model_dir"] + "/" + "PREDs_{bp}_ethn_{ancestry}_X1_X2_G.csv", bp=config["BP"], ancestry=config["Ancestry"]), expand(config["model_dir"] + "/" + "PREDs_{bp}_ethn_{ancestry}_X1_X2_E.csv", bp=config["BP"], ancestry=config["Ancestry"]), expand(config["model_dir"] + "/" + "PREDs_{bp}_ethn_{ancestry}_X1_X2_G_E.csv", bp=config["BP"], ancestry=config["Ancestry"]), expand(config["model_dir"] + "/" + "PREDs_{bp}_ethn_{ancestry}_X1_X2_G_E_GE.csv", bp=config["BP"], ancestry=config["Ancestry"])
+        expand(config["model_dir"] + "/" + "PREDs_{bp}_Fold_{foldnum}_X1.csv"),
+        expand(config["model_dir"] + "/" + "PREDs_{bp}_Fold_{foldnum}_X1_X2.csv"),
+        expand(config["model_dir"] + "/" + "PREDs_{bp}_Fold_{foldnum}_X1_X2_G.csv"),
+        expand(config["model_dir"] + "/" + "PREDs_{bp}_Fold_{foldnum}_X1_X2_E.csv"),
+        expand(config["model_dir"] + "/" + "PREDs_{bp}_Fold_{foldnum}_X1_X2_G_E.csv"),
+        expand(config["model_dir"] + "/" + "PREDs_{bp}_Fold_{foldnum}_X1_X2_G_E_GE.csv"),
+
+
 
 # Step 1: Filter SNP List per Ancestry
 
@@ -49,7 +56,7 @@ rule common_snps:
     input:
         expand(config["snp_list_dir"] + "/" + "{ancestry}_filtered_all_chr{chr}.snplist",ancestry=config["Ancestry"], chr=config["CHR"])
     output:
-        config["common_snps_dir"] + "/" + "common_snps_all.txt"
+        config["snp_list_dir"] + "/" + "common_snps_all_ancestries.txt"
     params:
         INPUTDIR=config["snp_list_dir"],
         SCRIPT=config["SCRIPT"] + "/" + "common_snps.R"
@@ -67,7 +74,7 @@ rule common_snps:
 rule filtered_chr_common_snps:
     input:
         bfile=config["geno_dir"] + "/" + "ukb22418_c{chr}_b0_v2_s488243" + config["EXT"],
-        common_snps=config["common_snps_dir"] + "/" + "common_snps_all.txt"
+        common_snps=config["snp_list_dir"] + "/" + "common_snps_all_ancestries.txt"
     output:
         CHR_filtered=config["filtered_chr_dir"] + "/" + "filtered_chr{chr}.bed"
     params:
@@ -96,7 +103,7 @@ rule filtered_chr_common_snps:
 
 rule create_merge_list:
     input:
-        expand(config["filtered_chr_dir"] + "/" + "filtered_chr{chr}.bed", chr=config["CHR"]),
+        expand(config["filtered_chr_dir"] + "/" + "filtered_chr{chr}.bed", chr=config["CHR"])
     output:
         merge_list=config["filtered_chr_dir"] + "/" + "merge_list.txt"
     resources:
@@ -455,6 +462,8 @@ rule model_GE:
 
 #Predictions
 
+#NEED add fold creation
+
 rule pred_model_X1:
     input:
         data=config["sample_ids_dir"] + "/" + "scaled_dataset_20241025.Rdata",
@@ -473,6 +482,8 @@ rule pred_model_X1:
         export MKL_NUM_THREADS=10
         Rscript {params.SCRIPT} -d {params.INPUTDIR} -t {input.data} -o {params.INPUTDIR} -s {params.scratch} -r {output.preds} -f {input.folds}
         """
+
+##NEED add script for scaled pcs plink
 
 rule pred_model_X1_X2:
     input:

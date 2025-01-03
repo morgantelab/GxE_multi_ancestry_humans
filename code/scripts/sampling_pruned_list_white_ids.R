@@ -13,4 +13,4 @@ sampled_ids <- id_data[sample(nrow(id_data), 15000), ]
 write.table(sampled_ids, "sampled_white_ids.rel.id", quote = FALSE, row.names = FALSE, col.names = FALSE, sep = "\t")
 
 # Print a message to indicate completion
-cat("Sampled 20,000 individuals and saved to sampled_ids.rel.id\n")
+cat("Sampled 15,000 individuals and saved to sampled_ids.rel.id\n")
