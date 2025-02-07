@@ -13,7 +13,7 @@ library(dplyr)
 setwd("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/model")
 
 ### load dataset ###
-load("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/scaled_dataset_20241025.Rdata")
+load("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/scaled_dataset_20250106.Rdata")
 print("dataset loaded")
 
 ### Extract the phenotype vectors ###
@@ -33,7 +33,7 @@ print("initial X created")
 
 # Load scaled PCs and match to individual IDs
 pcs_scaled <- readRDS("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/filtered_chr/scaled_pcs_plink.rds")
-matched_pcs <- pcs_scaled[match(dataset$ID, pcs_scaled$ID), 2:11] 
+matched_pcs <- pcs_scaled[match(dataset$ID, pcs_scaled$ID), 2:11]
 P <- matched_pcs
 
 iter <- 90000

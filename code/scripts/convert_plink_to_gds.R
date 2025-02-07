@@ -4,7 +4,7 @@ library(optparse)
 
 # Define command-line options
 option_list <- list(
-  make_option(c("-d", "--dir"), type = "character", default = NULL, 
+  make_option(c("-d", "--dir"), type = "character", default = NULL,
               help = "path to the working directory", metavar = "character"),
   make_option(c("-b", "--bed"), type = "character", default = NULL,
               help = "path to the PLINK .bed file", metavar = "character"),

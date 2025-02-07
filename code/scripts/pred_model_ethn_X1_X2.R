@@ -79,7 +79,6 @@ burnin <- 40000
 thin <- 50
 verb <- T
 nrow_varabs <- (iter-burnin)/thin
-scratch <- "/scratch3/kgoda/ukbiobank_files/tmp/snakemake_runs" # Use this!
 
 ### Define model ###
 

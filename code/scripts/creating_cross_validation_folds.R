@@ -7,7 +7,7 @@ rm(list=ls()); gc()
 setwd("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/model")
 
 # Load the dataset
-load("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/scaled_dataset_20241025.Rdata")
+load("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/scaled_dataset_20250106.Rdata")
 
 # Set seed for reproducibility
 set.seed(123)
@@ -26,8 +26,5 @@ folds <- split(dataset, dataset$Fold)
 
 # Save each fold separately if required
 for (i in 1:5) {
-  saveRDS(folds[[i]], paste0("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/Fold_", i, ".rds"))
+  saveRDS(folds[[i]], paste0("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/model/Fold_", i, ".rds"))
 }
-
-# Optional: View the structure of the folds
-str(folds)

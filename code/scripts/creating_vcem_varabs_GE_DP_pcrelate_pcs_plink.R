@@ -13,7 +13,7 @@ library(dplyr)
 setwd("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/model")
 
 ### load dataset ###
-load("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/scaled_dataset_20241025.Rdata")
+load("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/scaled_dataset_20250106.Rdata")
 print("dataset loaded")
 
 # Load the eigen results
@@ -97,8 +97,8 @@ GE <- GE_filtered_eigenvectors
 
 ### Model ###
 
-iter <- 120000
-burnin <- 70000
+iter <- 900000
+burnin <- 40000
 thin <- 50
 verb <- T
 nrow_varabs <- (iter-burnin)/thin

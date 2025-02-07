@@ -4,8 +4,8 @@
 #SBATCH --partition=fm-bigmem-1,fm-bigmem-2,fm-bigmem-3,fm-bigmem-4
 #SBATCH --time=90:30:00
 #SBATCH --mem=100G
-#SBATCH --output=/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/logs_slurm/X1_X2_E_SP.out
-#SBATCH --error=/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/logs_slurm/X1_X2_E_SP.err
+#SBATCH --output=/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/logs_slurm/X1_X2_E_SP_25.out
+#SBATCH --error=/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/logs_slurm/X1_X2_E_SP_25.err
 #SBATCH --mail-type=all
 #SBATCH --mail-user=kgoda@clemson.edu
 

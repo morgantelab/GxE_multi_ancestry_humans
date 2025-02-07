@@ -1,11 +1,11 @@
 ## creating ancestry id files ##
 
-setwd("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data")
+setwd("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/model")
 
-load("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/data2_20240930.RData")
+load("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/scaled_dataset_20250106.Rdata")
 
 # Assuming the dataset dtt has a column 'ID' that uniquely identifies individuals
-
+dtt<- dataset
 # Create ID lists for each ethnicity and repeat the IDs in two columns
 asian_ids <- data.frame(ID1 = dtt$ID[dtt$ethn1_asian == 1], ID2 = dtt$ID[dtt$ethn1_asian == 1])
 white_ids <- data.frame(ID1 = dtt$ID[dtt$ethn1_white == 1], ID2 = dtt$ID[dtt$ethn1_white == 1])

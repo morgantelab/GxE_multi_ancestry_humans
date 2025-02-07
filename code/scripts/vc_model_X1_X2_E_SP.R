@@ -13,7 +13,7 @@ library(dplyr)
 setwd("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/model")
 
 ### load dataset ###
-load("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/scaled_dataset_20241025.Rdata")
+load("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/scaled_dataset_20250106.Rdata")
 print("dataset loaded")
 
 ### Extract the phenotype vectors ###
@@ -33,7 +33,7 @@ print("initial X created")
 
 # Load scaled PCs and match to individual IDs
 pcs_scaled <- readRDS("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/filtered_chr/scaled_pcs_plink.rds")
-matched_pcs <- pcs_scaled[match(dataset$ID, pcs_scaled$ID), 2:11] 
+matched_pcs <- pcs_scaled[match(dataset$ID, pcs_scaled$ID), 2:11]
 P <- matched_pcs
 
 E_eigen_path <- "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/model/E_eigen_G_E.rds"
@@ -114,23 +114,23 @@ model <- BGLR(y=y, ETA=ETA, nIter=iter, burnIn=burnin, thin=thin, verbose=verb, 
 # #
 # # ### intercept and fixed effects ###
 # ### Sampled regression effects ###
-# 
+#
 # ### intercept and fixed effects ###
 # B1 <- read.table(paste(scratch, '/SP_X1_run_ETA_X_b.dat', sep=''), header=T)
-# 
+#
 # ### dataframe with variance partition ###
 # varabs <- matrix(NA, nrow_varabs, 1); colnames(varabs) <- c("V_X")
-# 
+#
 # print("filling up cols of varab")
-# 
+#
 # ### fill up column for fixed covariates ###
 # varabs[, 1] <- matrixStats::colVars(ETA$X$X%*%t(B1))[-c(1:(burnin/thin))]
-# 
+#
 # print("varab cols done now saving varab")
-# 
+#
 # write.csv(varabs, file="/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/model/varabs_SP_X.csv", row.names=TRUE)
-# 
+#
 # print("varab saved")
-# 
-# 
+#
+#
 # # ### Note -c(1:(burnin/thin)). This is because burn-in samples are stored in B1, but are not in B2 and B3.

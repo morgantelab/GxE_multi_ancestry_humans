@@ -10,7 +10,7 @@ library(dplyr)
 
 setwd("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/model")
 
-load("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/scaled_dataset_20241025.Rdata")
+load("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/scaled_dataset_20250106.Rdata")
 
 eigen_path_pcrelate <- "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/filtered_chr/pca_for_pcrelate.rds"
 eigen_results_pcrelate <- readRDS(eigen_path_pcrelate)
@@ -21,7 +21,7 @@ eigenvalues <- eigen_results_pcrelate$values
 positive_indices <- which(eigenvalues > 0)
 filtered_eigenvectors <- eigenvectors[, positive_indices]
 filtered_eigenvalues <- eigenvalues[positive_indices]
-for(i in 1:ncol(filtered_eigenvectors)) {  
+for(i in 1:ncol(filtered_eigenvectors)) {
   filtered_eigenvectors[, i] <- filtered_eigenvectors[, i] * sqrt(filtered_eigenvalues[i])
 }
 W <- filtered_eigenvectors
@@ -74,7 +74,7 @@ model <- BGLR(y=y_PP_pcrelate, ETA=ETA, nIter=iter, burnIn=burnin, thin=thin, ve
 
 ### Collect results ###
 
-### Model parameters ###  
+### Model parameters ###
 
 ### intercept ###
 zz0 <- read.table(paste(scratch, '/PP_pcrelate_pcs_plink_G_run_X_separated_mu.dat', sep=''), header=F); colnames(zz0) <- "int"
@@ -100,7 +100,7 @@ write.csv(VCEm_PP_pcrelate, file="/data2/morgante_lab/ukbiobank_projects/GxE_mul
 #VCEm_PP <- read.csv("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/apr_run_with_chinese_20240402/5_variance_components/VCEm_PP_pcrelate_pcs_plink_G_run_X_separated")
 print("PP_pcrelate_pcs_plink_G_run_X_separated written")
 
-### Sampled regression effects ###  
+### Sampled regression effects ###
 
 ### intercept and fixed effects part 1 ###
 B1 <- read.table(paste(scratch, '/PP_pcrelate_pcs_plink_G_run_X_separated_ETA_X1_b.dat', sep=''), header=T)
@@ -120,7 +120,7 @@ varabs <- matrix(NA, nrow_varabs, 3); colnames(varabs) <- c("V_X1", "V_X2", "V_G
 print("filling up cols of varab")
 
 ### fill up column for fixed covariates ###
-varabs[, 1] <- matrixStats::colVars(ETA$X1$X%*%t(B1))[-c(1:(burnin/thin))]   
+varabs[, 1] <- matrixStats::colVars(ETA$X1$X%*%t(B1))[-c(1:(burnin/thin))]
 print("varab col one filled up now col 2")
 
 varabs[, 2] <- matrixStats::colVars(ETA$X2$X%*%t(B3))[-c(1:(burnin/thin))]

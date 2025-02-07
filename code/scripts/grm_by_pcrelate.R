@@ -7,19 +7,19 @@ library(optparse)
 
 # Define command-line options
 option_list <- list(
-  make_option(c("-d", "--dir"), type = "character", default = NULL, 
+  make_option(c("-d", "--dir"), type = "character", default = NULL,
               help = "path to the working directory", metavar = "character"),
-  make_option(c("-g", "--gds"), type = "character", default = NULL, 
+  make_option(c("-g", "--gds"), type = "character", default = NULL,
               help = "path to the GDS file", metavar = "character"),
-  make_option(c("-k", "--kinship"), type = "character", default = NULL, 
+  make_option(c("-k", "--kinship"), type = "character", default = NULL,
               help = "path to save the KING kinship matrix", metavar = "character"),
-  make_option(c("-p", "--pcair"), type = "character", default = NULL, 
+  make_option(c("-p", "--pcair"), type = "character", default = NULL,
               help = "path to save the PC-AiR results", metavar = "character"),
-  make_option(c("-r", "--pcrelate"), type = "character", default = NULL, 
+  make_option(c("-r", "--pcrelate"), type = "character", default = NULL,
               help = "path to save the PC-Relate results", metavar = "character"),
-  make_option(c("-m", "--grm"), type = "character", default = NULL, 
+  make_option(c("-m", "--grm"), type = "character", default = NULL,
               help = "path to save the GRM matrix", metavar = "character"),
-  make_option(c("-c", "--cores"), type = "integer", default = 1, 
+  make_option(c("-c", "--cores"), type = "integer", default = 1,
               help = "number of cores for parallel computation", metavar = "integer")
 )
 
@@ -85,10 +85,10 @@ diversity_genoData <- GenotypeBlockIterator(diversity_genoData)
 
 # Run PC-Relate with 5 principal components
 mypcrelate_5pcs <- pcrelate(
-  diversity_genoData, 
+  diversity_genoData,
   pcs = pcair_results$vectors[, 1:5],  # Use first 5 PCs
-  ibd.probs = FALSE, 
-  training.set = pcair_results$unrels, 
+  ibd.probs = FALSE,
+  training.set = pcair_results$unrels,
   BPPARAM = BiocParallel::MulticoreParam(workers = opt$cores)
 )
 

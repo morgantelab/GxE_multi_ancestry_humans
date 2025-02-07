@@ -40,5 +40,5 @@ rownames(E_eigen$vectors) <- rownames(Emat)
 #saveRDS(E_eigen, file = opt$output)
 
 #save(dataset, file="data3_20241106.RData")
-#save(Emat, file="Emat_20241106.RData")
+save(Emat, file="Emat_20250106.RData")
 #save(E, file="E_20241106.RData")

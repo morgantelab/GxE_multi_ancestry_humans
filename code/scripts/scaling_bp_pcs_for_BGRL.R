@@ -27,7 +27,7 @@ dataset$AOPs <- scale(dataset$AOP)
 dataset$AOPss<- dataset$AOPs^2
 
 # Save the scaled dataset
-save(dataset, file = "scaled_dataset_20241025.Rdata")
+save(dataset, file = "scaled_dataset_20250106.Rdata")
 
 #set working directory
 setwd("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/filtered_chr")
@@ -37,7 +37,7 @@ eigen_path_pcrelate <- "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestr
 eigen_results_pcrelate <- readRDS(eigen_path_pcrelate)
 
 #Read in the RDS file containing the Eigen data
-eigen_path_plink <- "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/filtered_chr/pca_for_plink_by_eigen_R.rds"
+eigen_path_plink <- "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/filtered_chr/pca_for_plink.rds"
 eigen_results_plink <- readRDS(eigen_path_plink)
 
 #Extract the top 10 PCs and the corresponding IDs
