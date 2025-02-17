@@ -4,9 +4,7 @@ configfile: "config.yaml"
 
 rule all:
     input:
-        expand(config["gwas_dir"] + "/" + "gxe_{env}_{foldnum}.done", env=config["ENV"], foldnum=config["FOLDNUM"]),
-        expand(config["gwas_dir"] + "/" + "gxe_{env}_{ancestry}.done", env=config["ENV"], ancestry=config["Ancestry"])
-
+        expand(config["gwas_dir"] + "/" + "Hadamard_GRM_Fold{foldnum}_{bp}.RData", foldnum=config["FOLDNUM"], bp=config["BP"])
 
 # Step 1: Filter SNP List per Ancestry
 
@@ -851,4 +849,48 @@ rule gwas_snp_env_ancestry:
 
         # Create a completion flag
         touch {output.done}
+        """
+
+
+import os
+
+def filter_existing_files(foldnum, bp):
+    """Filter only existing files for the specific foldnum and bp"""
+    gwas_dir = config["gwas_dir"]
+    env_list = config["ENV"]  # List of environments
+
+    existing_files = []
+    for env in env_list:
+        file_path = f"{gwas_dir}/gxe_{env}_{foldnum}.{bp}0s_filtered.txt"
+        if os.path.exists(file_path):  # ✅ Check if file exists
+            existing_files.append(file_path)
+
+    return existing_files  # ✅ Return only valid files
+
+rule hadamard_grm_folds:
+    input:
+        bfile=config["filtered_chr_dir"] + "/merged_geno_common_snps_selected_indiv.bed",
+        filtered_snps=lambda wildcards: filter_existing_files(wildcards.foldnum, wildcards.bp),  # ✅ Fix: Pass foldnum & bp explicitly
+        envmat=config["common_snps_dir"] + "/Emat_20250106.RData"
+    output:
+        grm=config["gwas_dir"] + "/Hadamard_GRM_Fold{foldnum}_{bp}.RData"
+    params:
+        INPUTDIR=config["gwas_dir"],
+        SCRIPT=config["SCRIPT"] + "/interaction_grm.R"
+    resources:
+        cpus=10, mem_mb=150000, time_min=3000
+    shell:
+        """
+        source /opt/intel/oneapi/mkl/2023.2.0/env/vars.sh intel64
+        module load R/4.2.3
+        export MKL_NUM_THREADS=1
+
+        Rscript {params.SCRIPT} \
+        -d {params.INPUTDIR} \
+        -b {input.bfile} \
+        -e {input.envmat} \
+        -s "{input.filtered_snps}" \
+        -f {wildcards.foldnum} \
+        -p {wildcards.bp} \
+        -o {params.INPUTDIR}
         """

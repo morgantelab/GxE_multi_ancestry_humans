@@ -5,7 +5,7 @@ library(ggplot2)
 library(genio)  # Read PLINK files for SNP metadata
 
 # Define file paths
-plink_results_file <- "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/gwas_snp_env/gxe_beef_1.DP0s.glm.linear"
+plink_results_file <- "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/gwas_snp_env/gxe_meat_proc_1.DP0s.glm.linear"
 plink_prefix <- "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/filtered_chr/merged_geno_common_snps_selected_indiv"
 
 # Load PLINK GWAS results
