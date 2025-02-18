@@ -18,3 +18,5 @@ code/.snakemake/metadata/*
 code/._snakefile
 plots
 plots/*
+plotss
+plotss/*
