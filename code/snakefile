@@ -4,7 +4,8 @@ configfile: "config.yaml"
 
 rule all:
     input:
-        expand(config["gwas_dir"] + "/" + "Hadamard_GRM_Fold{foldnum}_{bp}.RData", foldnum=config["FOLDNUM"], bp=config["BP"])
+        expand(config["model_dir"] + "/" + "PREDs_{bp}_Fold_{foldnum}_X1_X2_G_E_GE_GEselect.csv", foldnum=config["FOLDNUM"], bp=config["BP"]),
+        expand(config["model_dir"] + "/" + "PREDs_{bp}_ethn_{ancestry}_X1_X2_G_E_GE_GEselect.csv", ancestry=config["Ancestry"], bp=config["BP"])
 
 # Step 1: Filter SNP List per Ancestry
 
@@ -851,7 +852,6 @@ rule gwas_snp_env_ancestry:
         touch {output.done}
         """
 
-
 import os
 
 def filter_existing_files(foldnum, bp):
@@ -893,4 +893,95 @@ rule hadamard_grm_folds:
         -f {wildcards.foldnum} \
         -p {wildcards.bp} \
         -o {params.INPUTDIR}
+        """
+
+import os
+
+def filter_existing_files(ancestry, bp):
+    """Filter only existing files for the specific ancestry and bp"""
+    gwas_dir = config["gwas_dir"]
+    env_list = config["ENV"]  # List of environments
+
+    existing_files = []
+    for env in env_list:
+        file_path = f"{gwas_dir}/gxe_{env}_{ancestry}.{bp}0s_filtered.txt"
+        if os.path.exists(file_path):  # ✅ Check if file exists
+            existing_files.append(file_path)
+
+    return existing_files  # ✅ Return only valid files
+
+rule hadamard_grm_ancestry:
+    input:
+        bfile=config["filtered_chr_dir"] + "/merged_geno_common_snps_selected_indiv.bed",
+        filtered_snps=lambda wildcards: filter_existing_files(wildcards.ancestry, wildcards.bp),
+        envmat=config["common_snps_dir"] + "/Emat_20250106.RData"
+    output:
+        grm=config["gwas_dir"] + "/Hadamard_GRM_ancestry{ancestry}_{bp}.RData"
+    params:
+        INPUTDIR=config["gwas_dir"],
+        SCRIPT=config["SCRIPT"] + "/interaction_grm_ancestry.R"
+    resources:
+        cpus=10, mem_mb=150000, time_min=3000
+    shell:
+        """
+        source /opt/intel/oneapi/mkl/2023.2.0/env/vars.sh intel64
+        module load R/4.2.3
+        export MKL_NUM_THREADS=1
+
+        Rscript {params.SCRIPT} \
+        -d {params.INPUTDIR} \
+        -b {input.bfile} \
+        -e {input.envmat} \
+        -s "{input.filtered_snps}" \
+        -f {wildcards.ancestry} \
+        -p {wildcards.bp} \
+        -o {params.INPUTDIR}
+        """
+
+rule pred_model_fold_X1_X2_G_E_GE_GEselect:
+    input:
+        data=config["sample_ids_dir"] + "/" + "scaled_dataset_20250106.Rdata",
+        folds=config["model_dir"] + "/" + "Fold_{foldnum}.rds",
+        pcs=config["filtered_chr_dir"] + "/" + "scaled_pcs_plink.rds",
+        eigen=config["filtered_chr_dir"] + "/" + "pca_for_pcrelate.rds",
+        envvar=config["model_dir"] + "/" + "E_eigen_G_E.rds",
+        GE=config["model_dir"] + "/" + "eigen_GE_pcrelate.rds",
+        GEselect=config["gwas_dir"] + "/" + "Hadamard_GRM_Fold{foldnum}_{bp}.RData"
+    output:
+        preds=config["model_dir"] + "/" + "PREDs_{bp}_Fold_{foldnum}_X1_X2_G_E_GE_GEselect.csv"
+    params:
+        INPUTDIR=config["model_dir"],
+        scratch=config["scratch_dir"],
+        SCRIPT=config["SCRIPT"] + "/" + "predicting_fold_X1_X2_E_G_GE_GEselect.R"
+    resources: cpus=10, mem_mb=150000, time_min=3000
+    shell:
+        """
+        source /opt/intel/oneapi/mkl/2023.2.0/env/vars.sh intel64
+        module load R/4.2.3
+        export MKL_NUM_THREADS=10
+        Rscript {params.SCRIPT} -d {params.INPUTDIR} -t {input.data} -o {params.INPUTDIR} -s {params.scratch} -r {output.preds} -f {input.folds} -p {input.pcs} -v {input.envvar} -e {input.eigen} -q {input.GE} -u {input.GEselect}
+        """
+
+rule pred_model_ethn_X1_X2_G_E_GE_GEselect:
+    input:
+        data=config["sample_ids_dir"] + "/" + "scaled_dataset_20250106.Rdata",
+        ethn=config["model_dir"] + "/" + "{ancestry}_ids.txt",
+        pcs=config["filtered_chr_dir"] + "/" + "scaled_pcs_plink.rds",
+        eigen=config["filtered_chr_dir"] + "/" + "pca_for_pcrelate.rds",
+        envvar=config["model_dir"] + "/" + "E_eigen_G_E.rds",
+        GE=config["model_dir"] + "/" + "eigen_GE_pcrelate.rds",
+        GEselect=config["gwas_dir"] + "/" + "Hadamard_GRM_ancestry{ancestry}_{bp}.RData"
+    output:
+        preds=config["model_dir"] + "/" + "PREDs_{bp}_ethn_{ancestry}_X1_X2_G_E_GE_GEselect.csv"
+    params:
+        INPUTDIR=config["model_dir"],
+        scratch=config["scratch_dir"],
+        SCRIPT=config["SCRIPT"] + "/" + "predicting_ethn_X1_X2_E_G_GE_GEselect.R"
+    resources: cpus=10, mem_mb=150000, time_min=3000
+    shell:
+        """
+        source /opt/intel/oneapi/mkl/2023.2.0/env/vars.sh intel64
+        module load R/4.2.3
+        export MKL_NUM_THREADS=10
+        Rscript {params.SCRIPT} -d {params.INPUTDIR} -t {input.data} -o {params.INPUTDIR} -s {params.scratch} -r {output.preds} -a {input.ethn} -p {input.pcs} -v {input.envvar} -e {input.eigen} -q {input.GE} -u {input.GEselect}
         """

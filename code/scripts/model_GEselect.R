@@ -49,7 +49,7 @@ matched_dataset <- dataset[match(individual_ids, dataset$ID), ]
 
 ### Extract the phenotype vectors ###
 y_DP_pcrelate <- matched_dataset$DP0s
-
+rownames(y_DP_pcrelate) <- rownames(W)
 print("y_DP_pcrelate created")
 
 ### X is the incidence matrix for the 'fixed' covariates (no penalisation, no shrinkage). here age and sex ###
@@ -94,7 +94,12 @@ for(i in 1:ncol(GE_filtered_eigenvectors)) {
 }
 GE <- GE_filtered_eigenvectors
 
-GEselect_eigen <- readRDS("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/model/eigen_GE_selected.rds")
+
+# create eigen of GEselect #
+load("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/gwas_snp_env/Hadamard_GRM_Fold1_DP.RData")
+GEselect_eigen <- eigen(K_fold_grm)
+rownames(GEselect_eigen$vectors) <- rownames(K_fold_grm)
+
 GEselect_eigenvectors <- GEselect_eigen$vectors
 GEselect_eigenvalues <- GEselect_eigen$values
 
@@ -124,7 +129,7 @@ ETA <- list(X1=list(X=X, model="FIXED", saveEffects=TRUE),
             G=list(X=W, model="BRR", saveEffects=TRUE),
             E=list(X=E, model="BRR", saveEffects=TRUE),
             GxE=list(X=GE, model="BRR", saveEffects=TRUE),
-            GxEs=list(X=GEselect, model="BRR", saveEffects=TRUE)
+            GxEselect=list(X=GEselect, model="BRR", saveEffects=TRUE)
 )
 
 if (!is.numeric(ETA$X1$X)) {
@@ -143,7 +148,7 @@ print("Model ETA created")
 ##Run model
 # Run BGLR model
 
-model <- BGLR(y=y_DP_pcrelate, ETA=ETA, nIter=iter, burnIn=burnin, thin=thin, verbose=verb, saveAt=paste(scratch, '/DP_run_GEselect_', sep=''))
+model <- BGLR(y=y_DP_pcrelate, ETA=ETA, nIter=iter, burnIn=burnin, thin=thin, verbose=verb, saveAt=paste(scratch, '/DP_Fold1_run_GEselect_', sep=''))
 
 # ### Collect results ###
 #
