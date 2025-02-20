@@ -4,8 +4,8 @@ configfile: "config.yaml"
 
 rule all:
     input:
-        expand(config["model_dir"] + "/" + "PREDs_{bp}_Fold_{foldnum}_X1_X2_G_E_GE_GEselect.csv", foldnum=config["FOLDNUM"], bp=config["BP"]),
-        expand(config["model_dir"] + "/" + "PREDs_{bp}_ethn_{ancestry}_X1_X2_G_E_GE_GEselect.csv", ancestry=config["Ancestry"], bp=config["BP"])
+        expand(config["model_dir"] + "/" + "PREDs_{bp}_Fold_{foldnum}_X1_X2_G_E_GE.csv", foldnum=config["FOLDNUM"], bp=config["BP"]),
+        expand(config["model_dir"] + "/" + "PREDs_{bp}_ethn_{ancestry}_X1_X2_G_E_GE.csv", ancestry=config["Ancestry"], bp=config["BP"])
 
 # Step 1: Filter SNP List per Ancestry
 

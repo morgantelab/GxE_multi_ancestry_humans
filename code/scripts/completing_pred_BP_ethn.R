@@ -1,4 +1,5 @@
 rm(list=ls()); gc()
+set.seed(1123)
 
 # Load necessary libraries
 library(dplyr)
@@ -6,32 +7,32 @@ library(ggplot2)
 library(readr)
 library(tidyr)
 
-setwd("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/model")
+setwd("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/model/")
 
 # Step 1: Load the datasets
 # Load the prediction dataset
-preds_df <- read_csv("PREDs_DP_ethn_white_X1.csv") #change DP to SP or PP and white to other ancestries when needed
+preds_df <- read_csv("PREDs_PP_ethn_black_X1_X2_G_E_GE_GEselect.csv") #change DP to SP or PP and black to other ancestries when needed
 
 # Load the IDs from Fold_5
-ethn <- read.table("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/white_ids.txt")
+ethn <- read.table("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/model/black_ids.txt")
 ethn_ids <- ethn$V1
 
 # Load the scaled dataset
-load("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/scaled_dataset_20241025.Rdata")
+load("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/scaled_dataset_20250106.Rdata")
 
-# Step 2: Subset the dataset based on Fold_5 IDs
+# Step 2: Subset the dataset based on ethn IDs
 preds_subset <- preds_df %>%
   filter(ID %in% ethn_ids)
 
 # Step 3: Fill missing values from the scaled dataset
 # Subset `preds_subset` IDs from the `dataset` and fill the `Observed` column
 preds_filled <- preds_subset %>%
-  left_join(dataset %>% select(ID, DP0s), by = "ID") %>%
-  mutate(Observed = ifelse(is.na(Observed), DP0s, Observed)) %>%
-  select(-DP0s) # Remove DP0s column after filling the missing values
+  left_join(dataset %>% select(ID, PP0s), by = "ID") %>%
+  mutate(Observed = ifelse(is.na(Observed), PP0s, Observed)) %>%
+  select(-PP0s) # Remove PP0s column after filling the missing values
 
 # Step 4: Save the updated dataset
-write_csv(preds_filled, "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/model/predictions_calcs/Updated_PREDs_DP_X1_white.csv") #change BP and ethn as needed
+#write_csv(preds_filled, "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/model/Updated_PREDs_PP_ethn_black_X1_X2_G_E_GE_GEselect.csv") #change BP and ethn as needed
 
 # Step 5: Calculate R^2 and correlation
 # Assuming the dataset has columns `Observed` and `Predicted`

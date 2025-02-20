@@ -1,65 +1,88 @@
 rm(list=ls()); gc()
 set.seed(1123)
 
-# Load required libraries
-library(data.table)
 library(optparse)
+library(data.table)
 
 # Define command-line options
 option_list <- list(
-  make_option(c("-d", "--dir"), type = "character", default = NULL,
-              help = "Path to the working directory", metavar = "character"),
-  make_option(c("-i", "--input"), type = "character", default = NULL,
-              help = "Path to the input GWAS file (.glm.linear)", metavar = "character"),
-  make_option(c("-e", "--env"), type = "character", default = NULL,
-              help = "environment covariate", metavar = "character"),
-  make_option(c("-f", "--fold"), type = "character", default = NULL,
-              help = "fold", metavar = "character"),
-  make_option(c("-t", "--trait"), type = "character", default = NULL,
-              help = "trait", metavar = "character"),
-  make_option(c("-o", "--output"), type = "character", default = NULL,
-              help = "Output directory for saving filtered results", metavar = "character")
+  make_option(c("-i", "--input_dir"), type = "character", default = NULL,
+              help = "Directory containing PLINK results", metavar = "character"),
+  make_option(c("-o", "--output_dir"), type = "character", default = NULL,
+              help = "Directory to save filtered results", metavar = "character"),
+  make_option(c("-p", "--pval_threshold"), type = "numeric", default = 1e-5,
+              help = "P-value threshold for filtering", metavar = "numeric")
 )
 
 # Parse options
 opt_parser <- OptionParser(option_list = option_list)
 opt <- parse_args(opt_parser)
 
-# Check required arguments
-if (is.null(opt$dir) | is.null(opt$input) | is.null(opt$output) | is.null(opt$trait) | is.null(opt$env) | is.null(opt$fold)) {
-  print_help(opt_parser)
-  stop("All file paths must be provided.", call. = FALSE)
+# Validate required arguments
+if (is.null(opt$input_dir) || is.null(opt$output_dir)) {
+  stop("Both input and output directories must be specified.")
 }
 
-# Set working directory
-setwd(opt$dir)
+# Define known interaction terms
+interaction_terms <- c("Townsend", "act0_d", "TVtime", "sleep_d", "smoking_now", "veg_cook", "fish_oily",
+                       "fish_lean", "meat_proc", "poultry", "beef", "lamb", "pork", "cheese", "salt", "tea",
+                       "alc1", "waist", "getup", "coffee", "smoked_past", "BFP", "sleep_dev")
 
-# Read input GWAS file
-cat("Processing file:", opt$input, "\n")
-df <- fread(opt$input, header = TRUE)
+# List all PLINK result files
+result_files <- list.files(path = opt$input_dir, pattern = "*.glm.linear$", full.names = TRUE)
 
-# Identify the P-value column dynamically
-p_col <- grep("P$", colnames(df), value = TRUE)
-if (length(p_col) == 0) {
-  stop("No P-value column found in", opt$input)
+# Initialize summary table
+summary_results <- data.table(File = character(), Hits = integer(), Total_Tests = integer(), Mean_P_Filtered = numeric(), Mean_P_All = numeric())
+
+for (interaction_term in interaction_terms) {
+  print(paste("🔹 Processing interaction:", interaction_term))
+
+  selected_files <- result_files[grepl(paste0("_", interaction_term, "_"), result_files)]
+
+  if (length(selected_files) == 0) {
+    print(paste("⚠️ No files found for interaction:", interaction_term))
+    next
+  }
+
+  for (plink_results_file in selected_files) {
+    file_name <- basename(plink_results_file)
+    print(paste("✅ Processing file:", file_name, "for interaction term:", interaction_term))
+
+    results <- fread(plink_results_file)
+
+    if (!("TEST" %in% colnames(results)) || !("P" %in% colnames(results))) {
+      print(paste("⚠️ Skipping", file_name, "- required columns (TEST, P) not found"))
+      next
+    }
+
+    results[, P := as.numeric(P)]
+    results <- results[!is.na(P)]
+
+    interaction_test <- paste0("ADDx", interaction_term)
+    results_interaction <- results[TEST == interaction_test]
+    results_filtered <- results_interaction[P < opt$pval_threshold]
+
+    num_hits <- nrow(results_filtered)
+    total_tests <- nrow(results_interaction)
+    mean_p_filtered <- ifelse(num_hits > 0, mean(results_filtered$P), NA)
+    mean_p_all <- ifelse(total_tests > 0, mean(results_interaction$P), NA)
+
+    summary_results <- rbind(summary_results, data.table(File = file_name, Hits = num_hits, Total_Tests = total_tests, Mean_P_Filtered = mean_p_filtered, Mean_P_All = mean_p_all))
+
+    if (num_hits == 0) {
+      print(paste("⚠️ No significant hits found in", file_name))
+      next
+    }
+
+    output_file <- file.path(opt$output_dir, paste0(sub(".glm.linear", "", file_name), "_filtered.txt"))
+    fwrite(results_filtered, output_file, sep = "\t", quote = FALSE)
+    print(paste("💾 Saved filtered results to", output_file))
+  }
 }
 
-# Extract environmental variable from filename
-file_basename <- basename(opt$input)
-env_var <- sub("gxe_([^_]+)_.*", "\\1", file_basename)  # Extract env name after 'gxe_'
+# Save summary results
+summary_file <- file.path(opt$output_dir, "summary_hits.txt")
+fwrite(summary_results, summary_file, sep = "\t", quote = FALSE)
+print(paste("📊 Summary of hits saved to", summary_file))
 
-# Filter for interaction terms (ADDx{env}) where P-value < 1e-5
-df_filtered <- df[grepl(paste0("ADDx", env_var, "$"), df$TEST) & df[[p_col]] < 1e-5, ]
-
-if (nrow(df_filtered) == 0) {
-  cat("No significant interactions found for", env_var, "in", opt$input, "\n")
-  quit(save = "no")
-}
-
-# Define output filename
-output_file <- file.path(opt$output, paste0(file_basename, ".filtered.linear"))
-
-# Save filtered results
-fwrite(df_filtered, output_file, sep = "\t")
-
-cat("Filtered results saved to:", output_file, "\n")
+print("✅ Processing complete.")

@@ -1,4 +1,5 @@
 rm(list=ls()); gc()
+set.seed(1123)
 
 # Load necessary libraries
 library(dplyr)
@@ -10,14 +11,14 @@ setwd("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/model")
 
 # Step 1: Load the datasets
 # Load the prediction dataset
-preds_df <- read_csv("PREDs_DP_Fold_5_X1.csv")
+preds_df <- read_csv("PREDs_SP_Fold_3_X1_X2_G_E_GE_GEselect.csv")
 
-# Load the IDs from Fold_5
-fold <- readRDS("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/Fold_5.rds")
+# Load the IDs from Fold_1
+fold <- readRDS("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/model/Fold_3.rds")
 fold_ids <- fold$ID
 
 # Load the scaled dataset
-load("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/scaled_dataset_20241025.Rdata")
+load("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/scaled_dataset_20250106.Rdata")
 
 # Step 2: Subset the dataset based on Fold_5 IDs
 preds_subset <- preds_df %>%
@@ -26,12 +27,12 @@ preds_subset <- preds_df %>%
 # Step 3: Fill missing values from the scaled dataset
 # Subset `preds_subset` IDs from the `dataset` and fill the `Observed` column
 preds_filled <- preds_subset %>%
-  left_join(dataset %>% select(ID, DP0s), by = "ID") %>%
-  mutate(Observed = ifelse(is.na(Observed), DP0s, Observed)) %>%
-  select(-DP0s) # Remove DP0s column after filling the missing values
+  left_join(dataset %>% select(ID, SP0s), by = "ID") %>%
+  mutate(Observed = ifelse(is.na(Observed), SP0s, Observed)) %>%
+  select(-SP0s) # Remove SP0s column after filling the missing values
 
 # Step 4: Save the updated dataset
-write_csv(preds_filled, "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/model/predictions_calcs/Updated_PREDs_DP_X1_Fold_5.csv")
+write_csv(preds_filled, "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/model/Updated_PREDs_SP_Fold_2_X1_X2_G_E_GE_GEselect.csv")
 
 # Step 5: Calculate R^2 and correlation
 # Assuming the dataset has columns `Observed` and `Predicted`
