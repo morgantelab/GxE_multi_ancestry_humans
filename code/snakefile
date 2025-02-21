@@ -4,8 +4,9 @@ configfile: "config.yaml"
 
 rule all:
     input:
-        expand(config["model_dir"] + "/" + "PREDs_{bp}_Fold_{foldnum}_X1_X2_G_E_GE.csv", foldnum=config["FOLDNUM"], bp=config["BP"]),
-        expand(config["model_dir"] + "/" + "PREDs_{bp}_ethn_{ancestry}_X1_X2_G_E_GE.csv", ancestry=config["Ancestry"], bp=config["BP"])
+        expand(config["gwas_dir"] + "/Hadamard_GRM_Fold_{foldnum}_{bp}_{pval}.RData", foldnum=config["FOLDNUM"], bp=config["BP"], pval=config["PVAL"]),
+        expand(config["gwas_dir"] + "/Hadamard_GRM_ancestry_{ancestry}_{bp}_{pval}.RData", ancestry=config["Ancestry"], bp=config["BP"], pval=config["PVAL"])
+
 
 # Step 1: Filter SNP List per Ancestry
 
@@ -786,6 +787,46 @@ rule pred_model_ethn_X1_X2_G_E_GE:
         Rscript {params.SCRIPT} -d {params.INPUTDIR} -t {input.data} -o {params.INPUTDIR} -s {params.scratch} -r {output.preds} -a {input.ethn} -p {input.pcs} -v {input.envvar} -e {input.eigen} -q {input.GE}
         """
 
+rule create_plink_training_sets_fold_files:
+    input:
+        model_dir=config["model_dir"]
+    output:
+        train_keep=config["gwas_dir"] + "/Train_Set_{foldnum}.txt",
+        test_keep=config["gwas_dir"] + "/Test_Set_{foldnum}.txt"
+    params:
+        script=config["SCRIPT"] + "/folds_train_test_sets_gwas_snpxenv_snakemake.R",
+        output_dir=config["gwas_dir"]
+    resources:
+        cpus=1, mem_mb=10000, time_min=1000
+    shell:
+        """
+        source /opt/intel/oneapi/mkl/2023.2.0/env/vars.sh intel64
+        module load R/4.2.3
+        export MKL_NUM_THREADS=1
+
+        Rscript {params.script} -m {input.model_dir} -o {params.output_dir} -n {wildcards.foldnum}
+        """
+
+rule create_plink_training_sets_ancestry_files:
+    input:
+        ancestry_files=config["model_dir"] + "/{ancestry}_ids.txt"
+    output:
+        train_keep=config["gwas_dir"] + "/Train_exclude_{ancestry}.txt",
+        test_keep=config["gwas_dir"] + "/Test_{ancestry}.txt"
+    params:
+        script=config["SCRIPT"] + "/ancestries_train_test_sets_gwas_snpxenv_snakemake.R",
+        output_dir=config["gwas_dir"]
+    resources:
+        cpus=1, mem_mb=10000, time_min=1000
+    shell:
+        """
+        source /opt/intel/oneapi/mkl/2023.2.0/env/vars.sh intel64
+        module load R/4.2.3
+        export MKL_NUM_THREADS=1
+
+        Rscript {params.script} -a {input.ancestry_files} -o {params.output_dir} -e {wildcards.ancestry}
+        """
+
 rule gwas_snp_env_folds:
     input:
         bfile=config["filtered_chr_dir"] + "/" + "merged_geno_common_snps_selected_indiv.bed",
@@ -852,16 +893,36 @@ rule gwas_snp_env_ancestry:
         touch {output.done}
         """
 
+rule filter_snps:
+    input:
+        plink_results=config["gwas_dir"]
+    output:
+        summary=config["gwas_dir"] + "/summary_hits_{pval}.txt"
+    params:
+        script=config["SCRIPT"] + "/filtering_pvalue_plink_gwas_snakemake.R",
+        input_dir=config["gwas_dir"],
+        output_dir=config["gwas_dir"]
+    resources:
+        cpus=10, mem_mb=100000, time_min=1000
+    shell:
+        """
+        source /opt/intel/oneapi/mkl/2023.2.0/env/vars.sh intel64
+        module load R/4.2.3
+        export MKL_NUM_THREADS=1
+
+        Rscript {params.script} -i {params.input_dir} -o {params.output_dir} -p {wildcards.pval}
+        """
+
 import os
 
-def filter_existing_files(foldnum, bp):
-    """Filter only existing files for the specific foldnum and bp"""
+def filter_existing_files(foldnum, bp, pval):
+    """Filter only existing files for the specific foldnum bp and pval"""
     gwas_dir = config["gwas_dir"]
     env_list = config["ENV"]  # List of environments
 
     existing_files = []
     for env in env_list:
-        file_path = f"{gwas_dir}/gxe_{env}_{foldnum}.{bp}0s_filtered.txt"
+        file_path = f"{gwas_dir}/gxe_{env}_{foldnum}.{bp}0s_filtered_{pval}.txt"
         if os.path.exists(file_path):  # ✅ Check if file exists
             existing_files.append(file_path)
 
@@ -870,10 +931,10 @@ def filter_existing_files(foldnum, bp):
 rule hadamard_grm_folds:
     input:
         bfile=config["filtered_chr_dir"] + "/merged_geno_common_snps_selected_indiv.bed",
-        filtered_snps=lambda wildcards: filter_existing_files(wildcards.foldnum, wildcards.bp),  # ✅ Fix: Pass foldnum & bp explicitly
+        filtered_snps=lambda wildcards: filter_existing_files(wildcards.foldnum, wildcards.bp, wildcards.pval),  # ✅ Fix: Pass foldnum & bp explicitly
         envmat=config["common_snps_dir"] + "/Emat_20250106.RData"
     output:
-        grm=config["gwas_dir"] + "/Hadamard_GRM_Fold{foldnum}_{bp}.RData"
+        grm=config["gwas_dir"] + "/Hadamard_GRM_Fold_{foldnum}_{bp}_{pval}.RData"
     params:
         INPUTDIR=config["gwas_dir"],
         SCRIPT=config["SCRIPT"] + "/interaction_grm.R"
@@ -897,14 +958,14 @@ rule hadamard_grm_folds:
 
 import os
 
-def filter_existing_files(ancestry, bp):
-    """Filter only existing files for the specific ancestry and bp"""
+def filter_existing_files(ancestry, bp, pval):
+    """Filter only existing files for the specific ancestry, bp and pval"""
     gwas_dir = config["gwas_dir"]
     env_list = config["ENV"]  # List of environments
 
     existing_files = []
     for env in env_list:
-        file_path = f"{gwas_dir}/gxe_{env}_{ancestry}.{bp}0s_filtered.txt"
+        file_path = f"{gwas_dir}/gxe_{env}_{ancestry}.{bp}0s_filtered_{pval}.txt"
         if os.path.exists(file_path):  # ✅ Check if file exists
             existing_files.append(file_path)
 
@@ -913,10 +974,10 @@ def filter_existing_files(ancestry, bp):
 rule hadamard_grm_ancestry:
     input:
         bfile=config["filtered_chr_dir"] + "/merged_geno_common_snps_selected_indiv.bed",
-        filtered_snps=lambda wildcards: filter_existing_files(wildcards.ancestry, wildcards.bp),
+        filtered_snps=lambda wildcards: filter_existing_files(wildcards.ancestry, wildcards.bp, wildcards.pval),
         envmat=config["common_snps_dir"] + "/Emat_20250106.RData"
     output:
-        grm=config["gwas_dir"] + "/Hadamard_GRM_ancestry{ancestry}_{bp}.RData"
+        grm=config["gwas_dir"] + "/Hadamard_GRM_ancestry_{ancestry}_{bp}_{pval}.RData"
     params:
         INPUTDIR=config["gwas_dir"],
         SCRIPT=config["SCRIPT"] + "/interaction_grm_ancestry.R"

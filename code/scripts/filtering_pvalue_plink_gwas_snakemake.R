@@ -74,14 +74,14 @@ for (interaction_term in interaction_terms) {
       next
     }
 
-    output_file <- file.path(opt$output_dir, paste0(sub(".glm.linear", "", file_name), "_filtered.txt"))
+    output_file <- file.path(opt$output_dir, paste0(sub(".glm.linear", "", file_name), "_filtered_", opt$pval_threshold, ".txt"))
     fwrite(results_filtered, output_file, sep = "\t", quote = FALSE)
     print(paste("💾 Saved filtered results to", output_file))
   }
 }
 
 # Save summary results
-summary_file <- file.path(opt$output_dir, "summary_hits.txt")
+summary_file <- file.path(opt$output_dir, paste0("summary_hits_", opt$pval_threshold, ".txt"))
 fwrite(summary_results, summary_file, sep = "\t", quote = FALSE)
 print(paste("📊 Summary of hits saved to", summary_file))
 

@@ -9,6 +9,8 @@ CHR: ['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17
 GRM: ['plink', 'pcrelate']
 BP: ['DP', 'SP', 'PP']
 FOLDNUM: ['1','2','3','4','5']
+ENV: ['Townsend', 'act0_d', 'TVtime', 'sleep_d', 'smoking_now', 'veg_cook', 'fish_oily', 'fish_lean', 'meat_proc', 'poultry', 'beef', 'lamb', 'pork', 'cheese', 'salt', 'tea', 'alc1', 'waist', 'getup', 'coffee', 'smoked_past', 'BFP', 'sleep_dev']
+PVAL: [1e-6, 1e-3]
 plink_executable: "/data2/morgante_lab/kgoda/software/plink1.9/plink"
 gcta_executable: "/data2/morgante_lab/kgoda/software/gcta64/gcta-1.94.1-linux-kernel-3-x86_64/gcta-1.94.1"
 out_dir: "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output"
@@ -22,5 +24,4 @@ scratch_dir: "/scratch3/kgoda/ukbiobank_files/tmp/snakemake_runs"
 EXT: ".bed"
 SCRIPT: "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/code/scripts"
 gwas_dir: "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/gwas_snp_env"
-ENV: ['Townsend', 'act0_d', 'TVtime', 'sleep_d', 'smoking_now', 'veg_cook', 'fish_oily', 'fish_lean', 'meat_proc', 'poultry', 'beef', 'lamb', 'pork', 'cheese', 'salt', 'tea', 'alc1', 'waist', 'getup', 'coffee', 'smoked_past', 'BFP', 'sleep_dev']
 plink_executable_gwas: "/data2/morgante_lab/kgoda/software/plink2"
