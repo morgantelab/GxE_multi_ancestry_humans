@@ -34,7 +34,9 @@ option_list <- list(
   make_option(c("-q", "--GE"), type = "character", default = NULL,
               help = "Path to the scaled PCs RDS file", metavar = "character"),
   make_option(c("-u", "--GEselect"), type = "character", default = NULL,
-              help = "Path to the hadamard GEselect file", metavar = "character")
+              help = "Path to the hadamard GEselect file", metavar = "character"),
+  make_option(c("-m", "--pval"), type = "character", default = NULL,
+              help = "pvalue number", metavar = "character")
 )
 
 opt_parser <- OptionParser(option_list = option_list)
@@ -181,4 +183,4 @@ model <- BGLR(y=y, ETA=ETA, nIter=iter, burnIn=burnin, thin=thin, verbose=verb, 
 
 # Combine predictions and observed values into a data frame
 preds <- data.frame(ID=rownames(y), Observed=model$y, Predicted=model$yHat)
-write.csv(preds, file=file.path(opt$output, paste0("PREDs_", type, "_Fold_", fold_number, "_X1_X2_G_E_GE_GEselect.csv")), row.names=FALSE)
+write.csv(preds, file=file.path(opt$output, paste0("PREDs_", type, "_Fold_", fold_number, "pval", opt$pval, "_X1_X2_G_E_GE_GEselect.csv")), row.names=FALSE)

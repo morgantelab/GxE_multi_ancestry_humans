@@ -24,6 +24,8 @@ option_list <- list(
               help = "fold num", metavar = "character"),
   make_option(c("-p", "--bp"), type = "character", default = NULL,
               help = "BP", metavar = "character"),
+  make_option(c("-v", "--pval"), type = "character", default = NULL,
+              help = "pval", metavar = "character"),
   make_option(c("-o", "--output"), type = "character", default = NULL,
               help = "Output directory for saving results", metavar = "character")
 
@@ -42,6 +44,7 @@ interaction_terms <- c("Townsend", "act0_d", "TVtime", "sleep_d", "smoking_now",
 # Define parameters from command-line arguments
 fold <- opt$fold
 bp_type <- opt$bp
+pval <- opt$pval
 plink_results_dir <- opt$dir
 geno_data_path <- opt$bfile
 env_data_path <- opt$envmat
@@ -60,7 +63,9 @@ env_matrix <- Emat
 snp_files_passed <- unlist(strsplit(opt$snps, " "))
 
 # Get dynamically found filtered files
-filtered_files <- list.files(path = plink_results_dir, pattern = paste0("_", fold, ".", bp_type, "0s_filtered.txt$"), full.names = TRUE)
+filtered_files <- list.files(path = plink_results_dir,
+                             pattern = paste0("_", fold, ".", bp_type, "0s_filtered_", pval, ".txt$"),
+                             full.names = TRUE)
 
 # Combine both lists (deduplicating if necessary)
 filtered_files <- unique(c(filtered_files, snp_files_passed))  # ✅ Ensure all provided files are included
@@ -74,13 +79,13 @@ num_envs_used <- 0  # Counter for environments used
 # Loop through each known environment term
 for (env_term in interaction_terms) {
 
-  print(paste("🔹 Processing environment:", env_term, "for Fold:", fold, "BP:", bp_type))
+  print(paste("🔹 Processing environment:", env_term, "for Fold:", fold, "BP:", bp_type, "Pval:", pval))
 
   # Identify the corresponding filtered file for this fold, BP, and environment
-  filtered_file <- filtered_files[grepl(paste0("gxe_", env_term, "_", fold, ".", bp_type, "0s_filtered.txt$"), filtered_files)]
+  filtered_file <- filtered_files[grepl(paste0("gxe_", env_term, "_", fold, ".", bp_type, "0s_filtered_", pval, ".txt$"), filtered_files)]
 
   if (length(filtered_file) == 0) {
-    print(paste("⚠️ No filtered SNP file found for:", env_term, "in Fold", fold, "BP:", bp_type))
+    print(paste("⚠️ No filtered SNP file found for:", env_term, "in Fold", fold, "BP:", bp_type, "Pval:", pval))
     next
   }
 
@@ -91,7 +96,7 @@ for (env_term in interaction_terms) {
   # Filter SNP matrix to keep only relevant SNPs
   snp_indices <- which(snp_names %in% env_snps)
   if (length(snp_indices) == 0) {
-    print(paste("⚠️ No SNPs found in genotype data for:", env_term, "in Fold", fold, "BP:", bp_type))
+    print(paste("⚠️ No SNPs found in genotype data for:", env_term, "in Fold", fold, "BP:", bp_type, "Pval:", pval))
     next
   }
 
@@ -131,7 +136,7 @@ for (env_term in interaction_terms) {
       K_snp <- outer(centered, centered) / (2 * p * (1 - p))
 
       # Compute Hadamard product using `hadamard()`
-      K_snp_env <- K_snp_env + hadamard.prod(K_snp, K_env)  # ✅ Using `hadamard()`
+      K_snp_env <- K_snp_env + hadamard.prod(K_snp, K_env)
     }
 
     return(K_snp_env / num_snps)  # Averaging over SNPs
@@ -148,9 +153,9 @@ for (env_term in interaction_terms) {
 # Compute the final full averaged GRM for this fold and BP
 if (num_envs_used > 0) {
   K_fold_grm <- K_fold_grm / num_envs_used  # ✅ Averaging over environments
-  fold_output_file <- file.path(output_dir, paste0("Hadamard_GRM_Fold", fold, "_", bp_type, ".RData"))
+  fold_output_file <- file.path(output_dir, paste0("Hadamard_GRM_Fold", fold, "_", bp_type, "_", pval, ".RData"))
   save(K_fold_grm, file = fold_output_file)
-  print(paste("💾 Saved Hadamard GRM for Fold", fold, "BP:", bp_type, "to", fold_output_file))
+  print(paste("💾 Saved Hadamard GRM for Fold", fold, "BP:", bp_type, "Pval:", pval, "to", fold_output_file))
 } else {
-  print(paste("⚠️ No environments were successfully processed for Fold", fold, "BP:", bp_type, ". Full fold GRM was not computed."))
+  print(paste("⚠️ No environments were successfully processed for Fold", fold, "BP:", bp_type, ", PVAL:", pval, ". Full fold GRM was not computed."))
 }
