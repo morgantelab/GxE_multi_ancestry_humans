@@ -787,6 +787,9 @@ rule pred_model_ethn_X1_X2_G_E_GE:
         Rscript {params.SCRIPT} -d {params.INPUTDIR} -t {input.data} -o {params.INPUTDIR} -s {params.scratch} -r {output.preds} -a {input.ethn} -p {input.pcs} -v {input.envvar} -e {input.eigen} -q {input.GE}
         """
 
+
+
+
 rule create_plink_training_sets_fold_files:
     input:
         model_dir=config["model_dir"]
@@ -794,7 +797,7 @@ rule create_plink_training_sets_fold_files:
         train_keep=config["gwas_dir"] + "/Train_Set_{foldnum}.txt",
         test_keep=config["gwas_dir"] + "/Test_Set_{foldnum}.txt"
     params:
-        script=config["SCRIPT"] + "/folds_train_test_sets_gwas_snpxenv_snakemake.R",
+        script=config["SCRIPT"] + "/train_test_sets_folds_gwas_snpxenv_snakemake.R",
         output_dir=config["gwas_dir"]
     resources:
         cpus=1, mem_mb=10000, time_min=1000
@@ -814,7 +817,7 @@ rule create_plink_training_sets_ancestry_files:
         train_keep=config["gwas_dir"] + "/Train_exclude_{ancestry}.txt",
         test_keep=config["gwas_dir"] + "/Test_{ancestry}.txt"
     params:
-        script=config["SCRIPT"] + "/ancestries_train_test_sets_gwas_snpxenv_snakemake.R",
+        script=config["SCRIPT"] + "/train_test_sets_ethn_gwas_snpxenv_snakemake.R",
         output_dir=config["gwas_dir"]
     resources:
         cpus=1, mem_mb=10000, time_min=1000
@@ -899,7 +902,7 @@ rule filter_snps:
     output:
         summary=config["gwas_dir"] + "/summary_hits_{pval}.txt"
     params:
-        script=config["SCRIPT"] + "/filtering_pvalue_plink_gwas_snakemake.R",
+        script=config["SCRIPT"] + "/pvalue_filtering_gwas_snpxenv_snakemake.R",
         input_dir=config["gwas_dir"],
         output_dir=config["gwas_dir"]
     resources:
@@ -981,7 +984,7 @@ rule hadamard_grm_ancestry:
         grm=config["gwas_dir"] + "/Hadamard_GRM_Ancestry{ancestry}_{bp}_{pval}.RData"
     params:
         INPUTDIR=config["gwas_dir"],
-        SCRIPT=config["SCRIPT"] + "/interaction_grm_ancestry_snakemake.R"
+        SCRIPT=config["SCRIPT"] + "/interaction_grm_ethn_snakemake.R"
     resources:
         cpus=10, mem_mb=150000, time_min=3000
     shell:
@@ -1015,7 +1018,7 @@ rule pred_model_fold_X1_X2_G_E_GE_GEselect:
     params:
         INPUTDIR=config["model_dir"],
         scratch=config["scratch_dir"],
-        SCRIPT=config["SCRIPT"] + "/" + "predicting_fold_X1_X2_E_G_GE_GEselect.R"
+        SCRIPT=config["SCRIPT"] + "/" + "predicting_folds_X1_X2_E_G_GE_GEselect_snakemake.R"
     resources: cpus=10, mem_mb=150000, time_min=3000
     shell:
         """
@@ -1039,7 +1042,7 @@ rule pred_model_ethn_X1_X2_G_E_GE_GEselect:
     params:
         INPUTDIR=config["model_dir"],
         scratch=config["scratch_dir"],
-        SCRIPT=config["SCRIPT"] + "/" + "predicting_ethn_X1_X2_E_G_GE_GEselect.R"
+        SCRIPT=config["SCRIPT"] + "/" + "predicting_ethn_X1_X2_E_G_GE_GEselect_snakemake.R"
     resources: cpus=10, mem_mb=150000, time_min=3000
     shell:
         """
