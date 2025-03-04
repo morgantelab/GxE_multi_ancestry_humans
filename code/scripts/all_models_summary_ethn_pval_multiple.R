@@ -29,16 +29,21 @@ pvals <- c(1e-05, 1e-06, 0.001)  # Only applicable for GEselect
 # Loop over traits, ancestries, and models
 for (trait in traits) {
   for (ancestry in ancestries) {
+    # Load ethnicity IDs
+    ethn_file <- file.path(base_dir, paste0(ancestry, "_ids.txt"))
+    if (!file.exists(ethn_file)) {
+      cat("Missing ancestry ID file for", ancestry, "\n")
+      next
+    }
+
+    ethn_ids <- read.table(ethn_file)$V1  # Read ethnicity IDs correctly
+
     for (model in models) {
-      
       if (model == "X1_X2_G_E_GE_GEselect") {
-        # Loop over p-values only for GEselect model
         for (pval in pvals) {
-          # Construct file name including the pval component
-          preds_file <- file.path(base_dir, 
+          preds_file <- file.path(base_dir,
                                   paste0("PREDs_", trait, "_ethn_", ancestry, "pval", pval, "_", model, ".csv"))
-          
-          # Check if the prediction file exists; if not, record NA values in results
+
           if (!file.exists(preds_file)) {
             cat("Skipping Trait", trait, "Ancestry", ancestry, "Pval", pval, "Model", model, "due to missing file\n")
             results <- rbind(results, data.frame(Ancestry = ancestry,
@@ -50,26 +55,27 @@ for (trait in traits) {
                                                  stringsAsFactors = FALSE))
             next
           }
-          
-          # Load prediction dataset
+
           preds_df <- read_csv(preds_file)
-          
+
+          # Keep only the individuals in ethn_ids
+          preds_filtered <- preds_df %>% filter(ID %in% ethn_ids)
+
           # Fill missing values from the scaled dataset
-          preds_filled <- preds_df %>%
+          preds_filled <- preds_filtered %>%
             left_join(dataset %>% select(ID, paste0(trait, "0s")), by = "ID") %>%
             mutate(Observed = ifelse(is.na(Observed), get(paste0(trait, "0s")), Observed)) %>%
             select(-matches(paste0(trait, "0s")))
-          
-          # Save the updated dataset with the pval in the filename
-          updated_file <- file.path(base_dir, 
+
+          # Save updated dataset
+          updated_file <- file.path(base_dir,
                                     paste0("Updated_PREDs_", trait, "_ethn_", ancestry, "pval", pval, "_", model, ".csv"))
           write_csv(preds_filled, updated_file)
-          
+
           # Compute R² and correlation
           r_squared <- cor(preds_filled$Observed, preds_filled$Predicted, use = "complete.obs")^2
           correlation <- cor(preds_filled$Observed, preds_filled$Predicted, use = "complete.obs")
-          
-          # Append results
+
           results <- rbind(results, data.frame(Ancestry = ancestry,
                                                Trait = trait,
                                                Model = model,
@@ -77,53 +83,52 @@ for (trait in traits) {
                                                R_squared = r_squared,
                                                Correlation = correlation,
                                                stringsAsFactors = FALSE))
-          
+
           cat("Trait:", trait, "Ancestry:", ancestry, "Pval:", pval, "Model:", model,
               "R^2:", r_squared, "Correlation:", correlation, "\n")
         }
       } else {
-        # For non-GEselect models, no pval component is in the file name
-        current_pval <- NA
         preds_file <- file.path(base_dir, paste0("PREDs_", trait, "_ethn_", ancestry, "_", model, ".csv"))
-        
+
         if (!file.exists(preds_file)) {
           cat("Skipping Trait", trait, "Ancestry", ancestry, "Model", model, "due to missing file\n")
           results <- rbind(results, data.frame(Ancestry = ancestry,
                                                Trait = trait,
                                                Model = model,
-                                               Pval = current_pval,
+                                               Pval = NA,
                                                R_squared = NA,
                                                Correlation = NA,
                                                stringsAsFactors = FALSE))
           next
         }
-        
-        # Load prediction dataset
+
         preds_df <- read_csv(preds_file)
-        
+
+        # Keep only the individuals in ethn_ids
+        preds_filtered <- preds_df %>% filter(ID %in% ethn_ids)
+
         # Fill missing values from the scaled dataset
-        preds_filled <- preds_df %>%
+        preds_filled <- preds_filtered %>%
           left_join(dataset %>% select(ID, paste0(trait, "0s")), by = "ID") %>%
           mutate(Observed = ifelse(is.na(Observed), get(paste0(trait, "0s")), Observed)) %>%
           select(-matches(paste0(trait, "0s")))
-        
-        # Save the updated dataset without the pval component in the filename
+
+        # Save updated dataset
         updated_file <- file.path(base_dir, paste0("Updated_PREDs_", trait, "_ethn_", ancestry, "_", model, ".csv"))
         write_csv(preds_filled, updated_file)
-        
+
         # Compute R² and correlation
         r_squared <- cor(preds_filled$Observed, preds_filled$Predicted, use = "complete.obs")^2
         correlation <- cor(preds_filled$Observed, preds_filled$Predicted, use = "complete.obs")
-        
-        # Append results
+
         results <- rbind(results, data.frame(Ancestry = ancestry,
                                              Trait = trait,
                                              Model = model,
-                                             Pval = current_pval,
+                                             Pval = NA,
                                              R_squared = r_squared,
                                              Correlation = correlation,
                                              stringsAsFactors = FALSE))
-        
+
         cat("Trait:", trait, "Ancestry:", ancestry, "Model:", model,
             "R^2:", r_squared, "Correlation:", correlation, "\n")
       }
@@ -131,8 +136,8 @@ for (trait in traits) {
   }
 }
 
-# Save the summary results (missing values are represented as NA)
-summary_file <- file.path(base_dir, "all_model_summary_folds_pval_ethn.csv")
+# Save the summary results
+summary_file <- file.path(base_dir, "all_model_summary_pval_ethn_corrected.csv")
 write_csv(results, summary_file)
 
 cat("Results saved to", summary_file, "\n")
