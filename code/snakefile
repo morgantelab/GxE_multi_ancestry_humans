@@ -4,9 +4,12 @@ configfile: "config.yaml"
 
 rule all:
     input:
-        expand(config["model_dir"] + "/" + "PREDs_{bp}_Fold_{foldnum}pval{pval}_X1_X2_G_E_GE_GEselect.csv", foldnum=config["FOLDNUM"], bp=config["BP"], pval=config["PVAL"]),
-        expand(config["model_dir"] + "/" + "PREDs_{bp}_ethn_{ancestry}pval{pval}_X1_X2_G_E_GE_GEselect.csv", ancestry=config["Ancestry"], bp=config["BP"], pval=config["PVAL"])
+        expand(config["sample_ids_dir"] + "/" + "Emat_with_sex_age.RDS"),
+        expand(config["sample_ids_dir"] + "/" + "Emat_eigen_with_sex_age.RDS")
 
+#### Start of rules ####
+
+## Creating GRMs ##
 
 # Step 1: Filter SNP List per Ancestry
 
@@ -1051,3 +1054,26 @@ rule pred_model_ethn_X1_X2_G_E_GE_GEselect:
         export MKL_NUM_THREADS=10
         Rscript {params.SCRIPT} -d {params.INPUTDIR} -t {input.data} -o {params.INPUTDIR} -s {params.scratch} -r {output.preds} -a {input.ethn} -p {input.pcs} -v {input.envvar} -e {input.eigen} -q {input.GE} -u {input.GEselect} -m {wildcards.pval}
         """
+
+#### Sex and Age added to the Environment Variable Matrix. ####
+
+## E matrix creating and eigen of E matrix ##
+
+rule creating_Emat:
+    input:
+        data=config["sample_ids_dir"] + "/" + "scaled_dataset_20250106.Rdata"
+    output:
+        emat=config["sample_ids_dir"] + "/" + "Emat_with_sex_age.RDS",
+        eigen_emat=config["sample_ids_dir"] + "/" + "Emat_eigen_with_sex_age.RDS"
+    params:
+        OUTDIR=config["sample_ids_dir"],
+        SCRIPT=config["SCRIPT"] + "/" + "Emat_creating_with_sex_age.R"
+    resources: cpus=10, mem_mb=100000, time_min=3000
+    shell:
+        """
+        source /opt/intel/oneapi/mkl/2023.2.0/env/vars.sh intel64
+        module load R/4.2.3
+        export MKL_NUM_THREADS=1
+        Rscript {params.SCRIPT} -i {input.data} -d {params.OUTDIR}
+        """
+
