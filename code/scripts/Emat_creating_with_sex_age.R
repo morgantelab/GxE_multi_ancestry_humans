@@ -40,6 +40,12 @@ if (!exists("dataset")) {
 # Compute sleep deviation
 dataset$sleep_dev <- (dataset$sleep - mean(dataset$sleep))^2
 
+# Define environmental variables, EXCLUDING AOPs and AOPss - ran but not used. output in Emat_with_sex_age_not_used folder in data.
+# Evars <- c("Sex_SI", "Townsend", "act0_d", "TVtime", "sleep_d",
+#            "smoking_now", "veg_cook", "fish_oily", "fish_lean", "meat_proc",
+#            "poultry", "beef", "lamb", "pork", "cheese", "salt", "tea", "alc1",
+#            "waist", "getup", "coffee", "smoked_past", "BFP", "sleep_dev")
+
 # Define environmental variables, EXCLUDING AOPs and AOPss
 Evars <- c("AOPss", "Sex_SI", "Townsend", "act0_d", "TVtime", "sleep_d",
            "smoking_now", "veg_cook", "fish_oily", "fish_lean", "meat_proc",
@@ -54,6 +60,12 @@ if (length(missing_vars) > 0) {
 
 # Convert selected columns to matrix and scale
 Emat_scaled <- scale(as.matrix(dataset[Evars]))
+
+# # Extract already scaled AOPs and AOPss - ran but not used. output in Emat_with_sex_age_not_used folder in data.
+# if (!all(c("AOPs", "AOPss") %in% names(dataset))) {
+#   stop("Error: AOPs or AOPss not found in dataset.")
+# }
+# AOP_mat <- as.matrix(dataset[, c("AOPs", "AOPss")])  # Use as.matrix to ensure proper structure
 
 # Extract already scaled AOPs
 if (!"AOPs" %in% names(dataset)) {

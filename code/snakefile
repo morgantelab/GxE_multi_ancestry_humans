@@ -4,8 +4,7 @@ configfile: "config.yaml"
 
 rule all:
     input:
-        expand(config["sample_ids_dir"] + "/" + "Emat_with_sex_age.RDS"),
-        expand(config["sample_ids_dir"] + "/" + "Emat_eigen_with_sex_age.RDS")
+        expand(config["model_dir"] + "/" + "done_{bp}_pcrelate_S_A_X2.done", bp=config["BP"])
 
 #### Start of rules ####
 
@@ -1077,3 +1076,29 @@ rule creating_Emat:
         Rscript {params.SCRIPT} -i {input.data} -d {params.OUTDIR}
         """
 
+## Variance Components Estimation BGLR Models ##
+
+## Variance Components Estimation BGLR Models ##
+
+rule model_X2:
+    input:
+        data=config["sample_ids_dir"] + "/" + "scaled_dataset_20250106.Rdata",
+        pcs=config["filtered_chr_dir"] + "/" + "scaled_pcs_plink.rds"
+    output:
+        done=config["model_dir"] + "/" + "done_{bp}_pcrelate_S_A_X2.done"
+    params:
+        INPUTDIR=config["model_dir"],
+        scratch=config["scratch_dir"],
+        SCRIPT=config["SCRIPT"] + "/" + "model_S_A_X2.R"
+
+    resources: cpus=10, mem_mb=50000, time_min=3000
+    shell:
+        """
+        source /opt/intel/oneapi/mkl/2023.2.0/env/vars.sh intel64
+        module load R/4.2.3
+        export MKL_NUM_THREADS=10
+        Rscript {params.SCRIPT} -d {params.INPUTDIR} -t {input.data} -p {input.pcs} -o {params.INPUTDIR} -s {params.scratch} -b {wildcards.bp}
+
+        # Create a completion flag
+        touch {output.done}
+        """
