@@ -4,7 +4,18 @@ configfile: "config.yaml"
 
 rule all:
     input:
-        expand(config["model_dir"] + "/" + "done_{bp}_pcrelate_S_A_X2.done", bp=config["BP"])
+        expand(config["model_dir"] + "/" + "done_{bp}_{grm}_S_A_X2.done", bp=config["BP"], grm=config["GRM"]),
+        expand(config["model_dir"] + "/" + "done_{bp}_{grm}_S_A_X2_E.done", bp=config["BP"], grm=config["GRM"]),
+        expand(config["model_dir"] + "/" + "done_{bp}_{grm}_S_A_X2_G.done", bp=config["BP"], grm=config["GRM"]),
+        expand(config["model_dir"] + "/" + "done_{bp}_{grm}_S_A_X2_G_E.done", bp=config["BP"], grm=config["GRM"]),
+        expand(config["model_dir"] + "/" + "PREDs_{bp}_ethn_{ancestry}_S_A_X2.csv", bp=config["BP"], ancestry=config["Ancestry"]),
+        expand(config["model_dir"] + "/" + "PREDs_{bp}_ethn_{ancestry}_S_A_X2_G.csv", bp=config["BP"], ancestry=config["Ancestry"]),
+        expand(config["model_dir"] + "/" + "PREDs_{bp}_ethn_{ancestry}_S_A_X2_E.csv", bp=config["BP"], ancestry=config["Ancestry"]),
+        expand(config["model_dir"] + "/" + "PREDs_{bp}_ethn_{ancestry}_S_A_X2_G_E.csv", bp=config["BP"], ancestry=config["Ancestry"]),
+        expand(config["model_dir"] + "/" + "PREDs_{bp}_Fold_{foldnum}_S_A_X2.csv", bp=config["BP"], foldnum=config["FOLDNUM"]),
+        expand(config["model_dir"] + "/" + "PREDs_{bp}_Fold_{foldnum}_S_A_X2_G.csv", bp=config["BP"], foldnum=config["FOLDNUM"]),
+        expand(config["model_dir"] + "/" + "PREDs_{bp}_Fold_{foldnum}_S_A_X2_E.csv", bp=config["BP"], foldnum=config["FOLDNUM"]),
+        expand(config["model_dir"] + "/" + "PREDs_{bp}_Fold_{foldnum}_S_A_X2_G_E.csv", bp=config["BP"], foldnum=config["FOLDNUM"])
 
 #### Start of rules ####
 
@@ -1076,16 +1087,17 @@ rule creating_Emat:
         Rscript {params.SCRIPT} -i {input.data} -d {params.OUTDIR}
         """
 
-## Variance Components Estimation BGLR Models ##
 
+## Variance Components Estimation BGLR Models ##
+## Variance Components Estimation BGLR Models ##
 ## Variance Components Estimation BGLR Models ##
 
 rule model_X2:
     input:
-        data=config["sample_ids_dir"] + "/" + "scaled_dataset_20250106.Rdata",
+        data=config["data_dir"] + "/" + "scaled_dataset_20250106.Rdata",
         pcs=config["filtered_chr_dir"] + "/" + "scaled_pcs_plink.rds"
     output:
-        done=config["model_dir"] + "/" + "done_{bp}_pcrelate_S_A_X2.done"
+        done=config["model_dir"] + "/" + "done_{bp}_{grm}_S_A_X2.done"
     params:
         INPUTDIR=config["model_dir"],
         scratch=config["scratch_dir"],
@@ -1097,8 +1109,259 @@ rule model_X2:
         source /opt/intel/oneapi/mkl/2023.2.0/env/vars.sh intel64
         module load R/4.2.3
         export MKL_NUM_THREADS=10
-        Rscript {params.SCRIPT} -d {params.INPUTDIR} -t {input.data} -p {input.pcs} -o {params.INPUTDIR} -s {params.scratch} -b {wildcards.bp}
+        Rscript {params.SCRIPT} -d {params.INPUTDIR} -t {input.data} -p {input.pcs} -o {params.INPUTDIR} -s {params.scratch} -b {wildcards.bp} -g {wildcards.grm}
 
         # Create a completion flag
         touch {output.done}
         """
+
+rule model_X2_E:
+    input:
+        data=config["data_dir"] + "/" + "scaled_dataset_20250106.Rdata",
+        pcs=config["filtered_chr_dir"] + "/" + "scaled_pcs_plink.rds",
+        emat=config["data_dir"] + "/" + "Emat_eigen_with_sex_age.RDS"
+    output:
+        done=config["model_dir"] + "/" + "done_{bp}_{grm}_S_A_X2_E.done"
+    params:
+        INPUTDIR=config["model_dir"],
+        scratch=config["scratch_dir"],
+        SCRIPT=config["SCRIPT"] + "/" + "model_S_A_X2_E.R"
+
+    resources: cpus=10, mem_mb=150000, time_min=3000
+    shell:
+        """
+        source /opt/intel/oneapi/mkl/2023.2.0/env/vars.sh intel64
+        module load R/4.2.3
+        export MKL_NUM_THREADS=10
+        Rscript {params.SCRIPT} -d {params.INPUTDIR} -t {input.data} -p {input.pcs} -o {params.INPUTDIR} -s {params.scratch} -b {wildcards.bp} -g {wildcards.grm} -e {input.emat}
+
+        # Create a completion flag
+        touch {output.done}
+        """
+
+rule model_X2_G:
+    input:
+        data=config["data_dir"] + "/" + "scaled_dataset_20250106.Rdata",
+        pcs=config["filtered_chr_dir"] + "/" + "scaled_pcs_plink.rds",
+        gen_eigen=config["filtered_chr_dir"] + "/" + "pca_for_pcrelate.rds"
+    output:
+        done=config["model_dir"] + "/" + "done_{bp}_{grm}_S_A_X2_G.done"
+    params:
+        INPUTDIR=config["model_dir"],
+        scratch=config["scratch_dir"],
+        SCRIPT=config["SCRIPT"] + "/" + "model_S_A_X2_G.R"
+
+    resources: cpus=10, mem_mb=150000, time_min=3000
+    shell:
+        """
+        source /opt/intel/oneapi/mkl/2023.2.0/env/vars.sh intel64
+        module load R/4.2.3
+        export MKL_NUM_THREADS=10
+        Rscript {params.SCRIPT} -d {params.INPUTDIR} -t {input.data} -p {input.pcs} -o {params.INPUTDIR} -s {params.scratch} -b {wildcards.bp} -g {wildcards.grm} -w {input.gen_eigen}
+
+        # Create a completion flag
+        touch {output.done}
+        """
+
+rule model_X2_G_E:
+    input:
+        data=config["data_dir"] + "/" + "scaled_dataset_20250106.Rdata",
+        pcs=config["filtered_chr_dir"] + "/" + "scaled_pcs_plink.rds",
+        gen_eigen=config["filtered_chr_dir"] + "/" + "pca_for_pcrelate.rds",
+        emat=config["data_dir"] + "/" + "Emat_eigen_with_sex_age.RDS"
+    output:
+        done=config["model_dir"] + "/" + "done_{bp}_{grm}_S_A_X2_G_E.done"
+    params:
+        INPUTDIR=config["model_dir"],
+        scratch=config["scratch_dir"],
+        SCRIPT=config["SCRIPT"] + "/" + "model_S_A_X2_G_E.R"
+
+    resources: cpus=10, mem_mb=150000, time_min=3000
+    shell:
+        """
+        source /opt/intel/oneapi/mkl/2023.2.0/env/vars.sh intel64
+        module load R/4.2.3
+        export MKL_NUM_THREADS=10
+        Rscript {params.SCRIPT} -d {params.INPUTDIR} -t {input.data} -p {input.pcs} -o {params.INPUTDIR} -s {params.scratch} -b {wildcards.bp} -g {wildcards.grm} -w {input.gen_eigen} -e {input.emat}
+
+        # Create a completion flag
+        touch {output.done}
+        """
+
+## Predictions for Random cross validation with BGLR Models ##
+## Predictions for Random cross validation with BGLR Models ##
+## Predictions for Random cross validation with BGLR Models ##
+
+rule pred_model_rnd_S_A_X2:
+    input:
+        data=config["data_dir"] + "/" + "scaled_dataset_20250106.Rdata",
+        folds=config["model_dir"] + "/" + "Fold_{foldnum}.rds",
+        pcs=config["filtered_chr_dir"] + "/" + "scaled_pcs_plink.rds"
+    output:
+        preds=config["model_dir"] + "/" + "PREDs_{bp}_Fold_{foldnum}_S_A_X2.csv"
+    params:
+        INPUTDIR=config["model_dir"],
+        scratch=config["scratch_dir"],
+        SCRIPT=config["SCRIPT"] + "/" + "pred_model_rnd_S_A_X2.R"
+    resources: cpus=1, mem_mb=50000, time_min=3000
+    shell:
+        """
+        source /opt/intel/oneapi/mkl/2023.0.0/env/vars.sh intel64
+        module load R/4.2.3
+        export MKL_NUM_THREADS=1
+        Rscript {params.SCRIPT} -d {params.INPUTDIR} -t {input.data} -p {input.pcs} -o {params.INPUTDIR} -s {params.scratch} -f {input.folds} -b {wildcards.bp} -n {wildcards.foldnum}
+        """
+
+rule pred_model_rnd_S_A_X2_E:
+    input:
+        data=config["data_dir"] + "/" + "scaled_dataset_20250106.Rdata",
+        folds=config["model_dir"] + "/" + "Fold_{foldnum}.rds",
+        pcs=config["filtered_chr_dir"] + "/" + "scaled_pcs_plink.rds",
+        emat=config["data_dir"] + "/" + "Emat_eigen_with_sex_age.RDS"
+    output:
+        preds=config["model_dir"] + "/" + "PREDs_{bp}_Fold_{foldnum}_S_A_X2_E.csv"
+    params:
+        INPUTDIR=config["model_dir"],
+        scratch=config["scratch_dir"],
+        SCRIPT=config["SCRIPT"] + "/" + "pred_model_rnd_S_A_X2_E.R"
+    resources: cpus=10, mem_mb=150000, time_min=3000
+    shell:
+        """
+        source /opt/intel/oneapi/mkl/2023.0.0/env/vars.sh intel64
+        module load R/4.2.3
+        export MKL_NUM_THREADS=10
+        Rscript {params.SCRIPT} -d {params.INPUTDIR} -t {input.data} -o {params.INPUTDIR} -s {params.scratch} -f {input.folds} -p {input.pcs} -e {input.emat} -b {wildcards.bp} -n {wildcards.foldnum}
+        """
+
+rule pred_model_rnd_S_A_X2_G:
+    input:
+        data=config["data_dir"] + "/" + "scaled_dataset_20250106.Rdata",
+        folds=config["model_dir"] + "/" + "Fold_{foldnum}.rds",
+        pcs=config["filtered_chr_dir"] + "/" + "scaled_pcs_plink.rds",
+        gen_eigen=config["filtered_chr_dir"] + "/" + "pca_for_pcrelate.rds"
+    output:
+        preds=config["model_dir"] + "/" + "PREDs_{bp}_Fold_{foldnum}_S_A_X2_G.csv"
+    params:
+        INPUTDIR=config["model_dir"],
+        scratch=config["scratch_dir"],
+        SCRIPT=config["SCRIPT"] + "/" + "pred_model_rnd_S_A_X2_G.R"
+    resources: cpus=10, mem_mb=150000, time_min=3000
+    shell:
+        """
+        source /opt/intel/oneapi/mkl/2023.0.0/env/vars.sh intel64
+        module load R/4.2.3
+        export MKL_NUM_THREADS=10
+        Rscript {params.SCRIPT} -d {params.INPUTDIR} -t {input.data} -o {params.INPUTDIR} -s {params.scratch} -f {input.folds} -p {input.pcs} -w {input.gen_eigen} -b {wildcards.bp} -n {wildcards.foldnum}
+        """
+
+rule pred_model_rnd_S_A_X2_G_E:
+    input:
+        data=config["data_dir"] + "/" + "scaled_dataset_20250106.Rdata",
+        folds=config["model_dir"] + "/" + "Fold_{foldnum}.rds",
+        pcs=config["filtered_chr_dir"] + "/" + "scaled_pcs_plink.rds",
+        gen_eigen=config["filtered_chr_dir"] + "/" + "pca_for_pcrelate.rds",
+        emat=config["data_dir"] + "/" + "Emat_eigen_with_sex_age.RDS"
+    output:
+        preds=config["model_dir"] + "/" + "PREDs_{bp}_Fold_{foldnum}_S_A_X2_G_E.csv"
+    params:
+        INPUTDIR=config["model_dir"],
+        scratch=config["scratch_dir"],
+        SCRIPT=config["SCRIPT"] + "/" + "pred_model_rnd_S_A_X2_G_E.R"
+    resources: cpus=10, mem_mb=150000, time_min=3000
+    shell:
+        """
+        source /opt/intel/oneapi/mkl/2023.2.0/env/vars.sh intel64
+        module load R/4.2.3
+        export MKL_NUM_THREADS=10
+        Rscript {params.SCRIPT} -d {params.INPUTDIR} -t {input.data} -o {params.INPUTDIR} -s {params.scratch} -f {input.folds} -p {input.pcs} -e {input.emat} -w {input.gen_eigen} -b {wildcards.bp} -n {wildcards.foldnum}
+        """
+
+## Predictions for Across ethnicity cross validation with BGLR Models ##
+## Predictions for Across ethnicity cross validation with BGLR Models ##
+## Predictions for Across ethnicity cross validation with BGLR Models ##
+
+
+rule pred_model_ethn_S_A_X2:
+    input:
+        data=config["data_dir"] + "/" + "scaled_dataset_20250106.Rdata",
+        ethn=config["model_dir"] + "/" + "{ancestry}_ids.txt",
+        pcs=config["filtered_chr_dir"] + "/" + "scaled_pcs_plink.rds"
+    output:
+        preds=config["model_dir"] + "/" + "PREDs_{bp}_ethn_{ancestry}_S_A_X2.csv"
+    params:
+        INPUTDIR=config["model_dir"],
+        scratch=config["scratch_dir"],
+        SCRIPT=config["SCRIPT"] + "/" + "pred_model_ethn_S_A_X2.R"
+    resources: cpus=10, mem_mb=50000, time_min=3000
+    shell:
+        """
+        source /opt/intel/oneapi/mkl/2023.0.0/env/vars.sh intel64
+        module load R/4.2.3
+        export MKL_NUM_THREADS=10
+        Rscript {params.SCRIPT} -d {params.INPUTDIR} -t {input.data} -o {params.INPUTDIR} -s {params.scratch} -a {input.ethn} -p {input.pcs} -b {wildcards.bp} -n {wildcards.ancestry}
+        """
+
+rule pred_model_ethn_S_A_X2_E:
+    input:
+        data=config["data_dir"] + "/" + "scaled_dataset_20250106.Rdata",
+        ethn=config["model_dir"] + "/" + "{ancestry}_ids.txt",
+        pcs=config["filtered_chr_dir"] + "/" + "scaled_pcs_plink.rds",
+        emat=config["data_dir"] + "/" + "Emat_eigen_with_sex_age.RDS"
+    output:
+        preds=config["model_dir"] + "/" + "PREDs_{bp}_ethn_{ancestry}_S_A_X2_E.csv"
+    params:
+        INPUTDIR=config["model_dir"],
+        scratch=config["scratch_dir"],
+        SCRIPT=config["SCRIPT"] + "/" + "pred_model_ethn_S_A_X2_E.R"
+    resources: cpus=10, mem_mb=50000, time_min=3000
+    shell:
+        """
+        source /opt/intel/oneapi/mkl/2023.0.0/env/vars.sh intel64
+        module load R/4.2.3
+        export MKL_NUM_THREADS=10
+        Rscript {params.SCRIPT} -d {params.INPUTDIR} -t {input.data} -o {params.INPUTDIR} -s {params.scratch} -a {input.ethn} -p {input.pcs} -e {input.emat} -b {wildcards.bp} -n {wildcards.ancestry}
+        """
+
+rule pred_model_ethn_S_A_X2_G:
+    input:
+        data=config["data_dir"] + "/" + "scaled_dataset_20250106.Rdata",
+        ethn=config["model_dir"] + "/" + "{ancestry}_ids.txt",
+        pcs=config["filtered_chr_dir"] + "/" + "scaled_pcs_plink.rds",
+        gen_eigen=config["filtered_chr_dir"] + "/" + "pca_for_pcrelate.rds"
+    output:
+        preds=config["model_dir"] + "/" + "PREDs_{bp}_ethn_{ancestry}_S_A_X2_G.csv"
+    params:
+        INPUTDIR=config["model_dir"],
+        scratch=config["scratch_dir"],
+        SCRIPT=config["SCRIPT"] + "/" + "pred_model_ethn_S_A_X2_G.R"
+    resources: cpus=10, mem_mb=50000, time_min=3000
+    shell:
+        """
+        source /opt/intel/oneapi/mkl/2023.0.0/env/vars.sh intel64
+        module load R/4.2.3
+        export MKL_NUM_THREADS=10
+        Rscript {params.SCRIPT} -d {params.INPUTDIR} -t {input.data} -o {params.INPUTDIR} -s {params.scratch} -a {input.ethn} -p {input.pcs} -w {input.gen_eigen} -b {wildcards.bp} -n {wildcards.ancestry}
+        """
+
+rule pred_model_ethn_S_A_X2_G_E:
+    input:
+        data=config["data_dir"] + "/" + "scaled_dataset_20250106.Rdata",
+        ethn=config["model_dir"] + "/" + "{ancestry}_ids.txt",
+        pcs=config["filtered_chr_dir"] + "/" + "scaled_pcs_plink.rds",
+        eigen=config["filtered_chr_dir"] + "/" + "pca_for_pcrelate.rds",
+        emat=config["data_dir"] + "/" + "Emat_eigen_with_sex_age.RDS"
+    output:
+        preds=config["model_dir"] + "/" + "PREDs_{bp}_ethn_{ancestry}_S_A_X2_G_E.csv"
+    params:
+        INPUTDIR=config["model_dir"],
+        scratch=config["scratch_dir"],
+        SCRIPT=config["SCRIPT"] + "/" + "pred_model_ethn_S_A_X2_G_E.R"
+    resources: cpus=10, mem_mb=150000, time_min=3000
+    shell:
+        """
+        source /opt/intel/oneapi/mkl/2023.2.0/env/vars.sh intel64
+        module load R/4.2.3
+        export MKL_NUM_THREADS=10
+        Rscript {params.SCRIPT} -d {params.INPUTDIR} -t {input.data} -o {params.INPUTDIR} -s {params.scratch} -a {input.ethn} -p {input.pcs} -e {input.emat} -w {input.eigen} -b {wildcards.bp} -n {wildcards.ancestry}
+        """
+
