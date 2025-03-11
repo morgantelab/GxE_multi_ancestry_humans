@@ -4,12 +4,7 @@ configfile: "config.yaml"
 
 rule all:
     input:
-        expand(config["model_dir"] + "/" + "done_{bp}_{grm}_S_A_X2.done", bp=config["BP"], grm=config["GRM"]),
-        expand(config["model_dir"] + "/" + "done_{bp}_{grm}_S_A_X2_G.done", bp=config["BP"], grm=config["GRM"]),
-        expand(config["model_dir"] + "/" + "done_{bp}_{grm}_S_A_X2_E.done", bp=config["BP"], grm=config["GRM"]),
-        expand(config["model_dir"] + "/" + "done_{bp}_{grm}_S_A_X2_G_E.done", bp=config["BP"], grm=config["GRM"]),
-        expand(config["model_dir"] + "/" + "done_{bp}_{grm}_S_A_X2_G_E_GE.done", bp=config["BP"], grm=config["GRM"])
-
+        expand(config["gwas_dir"] + "/" + "gxe_{env}_{foldnum}_S_A.done", env=config["ENV"], foldnum=config["FOLDNUM"])
 
 #### Start of rules ####
 
@@ -795,7 +790,10 @@ rule pred_model_ethn_X1_X2_G_E_GE:
         """
 
 
-
+#### Interaction GRM ####
+#### Interaction GRM ####
+#### Interaction GRM ####
+#### Interaction GRM ####
 
 rule create_plink_training_sets_fold_files:
     input:
@@ -1457,5 +1455,42 @@ rule pred_model_ethn_S_A_X2_G_E_GE:
         module load R/4.2.3
         export MKL_NUM_THREADS=10
         Rscript {params.SCRIPT} -d {params.INPUTDIR} -t {input.data} -o {params.INPUTDIR} -s {params.scratch} -a {input.ethn} -p {input.pcs} -e {input.emat} -w {input.eigen} -b {wildcards.bp} -n {wildcards.ancestry} -x {input.gemat}
+        """
+
+#### Sex and Age Interaction GRM GWAS ####
+#### Sex and Age Interaction GRM GWAS ####
+#### Sex and Age Interaction GRM GWAS ####
+#### Sex and Age Interaction GRM GWAS ####
+
+rule gwas_snp_env_folds_S_A:
+    input:
+        bfile=config["filtered_chr_dir"] + "/" + "merged_geno_common_snps_selected_indiv.bed",
+        covar=config["gwas_dir"] + "/" + "covar_pheno_sex_age2_scaled.txt",
+        train=config["gwas_dir"] + "/" + "Train_Set_{foldnum}.txt"
+    output:
+        done=config["gwas_dir"] + "/" + "gxe_{env}_{foldnum}_S_A.done"
+    params:
+        plink_executable_gwas = config["plink_executable_gwas"],
+        COV=config["gwas_dir"] + "/" + "covar_pheno.txt",
+        IPREFIX=config["filtered_chr_dir"] + "/" + "merged_geno_common_snps_selected_indiv",
+        OPREFIX="gxe_{env}_{foldnum}_S_A",
+        GWASDIR=config["gwas_dir"],
+        TRAINSET=config["gwas_dir"] + "/" + "Train_Set_{foldnum}.txt"
+    resources:
+        cpus=1, mem_mb=10000, time_min=1440
+    shell:
+        """
+        cd {params.GWASDIR}
+
+        {params.plink_executable_gwas} \
+        --bfile {params.IPREFIX} \
+        --keep {params.TRAINSET} \
+        --pheno {params.COV} --pheno-name DP0s, SP0s, PP0s \
+        --covar {params.COV} --covar-name X1-X10,{wildcards.env} \
+        --glm interaction \
+        --out {params.OPREFIX}
+
+        # Create a completion flag
+        touch {output.done}
         """
 
