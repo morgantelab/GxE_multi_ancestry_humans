@@ -1,3 +1,6 @@
+rm(list=ls()); gc()
+set.seed(1123)
+
 # Load required libraries
 library(data.table)
 library(Matrix)
@@ -26,7 +29,7 @@ option_list <- list(
   make_option(c("-n", "--number"), type = "character", default = NULL,
               help = "taking in grm to get type", metavar = "character"),
   make_option(c("-e", "--emat"), type = "character", default = NULL,
-              help = "taking in Emat", metavar = "character")  
+              help = "taking in Emat", metavar = "character")
 )
 
 opt_parser <- OptionParser(option_list = option_list)

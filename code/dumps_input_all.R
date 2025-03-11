@@ -73,7 +73,27 @@ rule all:
   expand(config["model_dir"] + "/" + "PREDs_{bp}_ethn_{ancestry}_X1_X2_G_E.csv", bp=config["BP"], ancestry=config["Ancestry"]),
   expand(config["model_dir"] + "/" + "PREDs_{bp}_ethn_{ancestry}_X1_X2_G_E_GE.csv", bp=config["BP"], ancestry=config["Ancestry"])
 
+rule all:
+  input:
+  expand(config["model_dir"] + "/" + "done_{bp}_{grm}_S_A_X2.done", bp=config["BP"], grm=config["GRM"]),
+expand(config["model_dir"] + "/" + "done_{bp}_{grm}_S_A_X2_E.done", bp=config["BP"], grm=config["GRM"]),
+expand(config["model_dir"] + "/" + "done_{bp}_{grm}_S_A_X2_G.done", bp=config["BP"], grm=config["GRM"]),
+expand(config["model_dir"] + "/" + "done_{bp}_{grm}_S_A_X2_G_E.done", bp=config["BP"], grm=config["GRM"]),
+expand(config["model_dir"] + "/" + "PREDs_{bp}_ethn_{ancestry}_S_A_X2.csv", bp=config["BP"], ancestry=config["Ancestry"]),
+expand(config["model_dir"] + "/" + "PREDs_{bp}_ethn_{ancestry}_S_A_X2_G.csv", bp=config["BP"], ancestry=config["Ancestry"]),
+expand(config["model_dir"] + "/" + "PREDs_{bp}_ethn_{ancestry}_S_A_X2_E.csv", bp=config["BP"], ancestry=config["Ancestry"]),
+expand(config["model_dir"] + "/" + "PREDs_{bp}_ethn_{ancestry}_S_A_X2_G_E.csv", bp=config["BP"], ancestry=config["Ancestry"]),
+expand(config["model_dir"] + "/" + "PREDs_{bp}_Fold_{foldnum}_S_A_X2.csv", bp=config["BP"], foldnum=config["FOLDNUM"]),
+expand(config["model_dir"] + "/" + "PREDs_{bp}_Fold_{foldnum}_S_A_X2_G.csv", bp=config["BP"], foldnum=config["FOLDNUM"]),
+expand(config["model_dir"] + "/" + "PREDs_{bp}_Fold_{foldnum}_S_A_X2_E.csv", bp=config["BP"], foldnum=config["FOLDNUM"]),
+expand(config["model_dir"] + "/" + "PREDs_{bp}_Fold_{foldnum}_S_A_X2_G_E.csv", bp=config["BP"], foldnum=config["FOLDNUM"])
 
-
+rule all:
+  input:
+  expand(config["model_dir"] + "/" + "done_{bp}_{grm}_S_A_X2.done", bp=config["BP"], grm=config["GRM"]),
+expand(config["model_dir"] + "/" + "done_{bp}_{grm}_S_A_X2_G.done", bp=config["BP"], grm=config["GRM"]),
+expand(config["model_dir"] + "/" + "done_{bp}_{grm}_S_A_X2_E.done", bp=config["BP"], grm=config["GRM"]),
+expand(config["model_dir"] + "/" + "done_{bp}_{grm}_S_A_X2_G_E.done", bp=config["BP"], grm=config["GRM"]),
+expand(config["model_dir"] + "/" + "done_{bp}_{grm}_S_A_X2_G_E_GE.done", bp=config["BP"], grm=config["GRM"])
 
 

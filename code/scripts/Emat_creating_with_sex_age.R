@@ -73,7 +73,7 @@ if (!"AOPs" %in% names(dataset)) {
 }
 AOP_mat <- as.matrix(dataset[,"AOPs", drop=FALSE])  # Ensure it's a matrix
 
-# Combine scaled Emat with unscaled AOPs and AOPss
+# Combine scaled Emat with unscaled AOPs
 Emat <- cbind(AOP_mat, Emat_scaled)
 
 # Assign row names
@@ -91,7 +91,10 @@ rownames(E_eigen$vectors) <- rownames(Emat)
 
 # Save outputs
 saveRDS(E_eigen, file=eigen_path)
-save(Emat, file=emat_path)
+saveRDS(Emat, file=emat_path)
+
+# March 10th fix. had saved as RDS but save code was wrong and RData. Now fixed. below not needed in script.
+#saveRDS(Emat, file = "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/Emat_with_sex_age.RDS")
 
 cat("Eigenvalues and eigenvectors saved to:", eigen_path, "\n")
 cat("Scaled environmental matrix (Emat) saved to:", emat_path, "\n")

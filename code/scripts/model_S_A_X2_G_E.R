@@ -1,3 +1,6 @@
+rm(list=ls()); gc()
+set.seed(1123)
+
 # Load required libraries
 library(data.table)
 library(Matrix)
@@ -114,5 +117,36 @@ print("Model ETA created")
 
 # Run BGLR model
 
-model <- BGLR(y=y, ETA=ETA, nIter=iter, burnIn=burnin, thin=thin, verbose=verb, saveAt=paste(opt$scratch, '/', type, '_run_pcrelate_pcs_std_S_A_X2_G_E_', sep=''))
+#model <- BGLR(y=y, ETA=ETA, nIter=iter, burnIn=burnin, thin=thin, verbose=verb, saveAt=paste(opt$scratch, '/', type, '_run_pcrelate_pcs_std_S_A_X2_G_E_', sep=''))
 
+## Collecting results ##
+
+### Sampled regression effects ###
+
+# Construct the correct file path dynamically
+model_output_prefix <- paste0(opt$scratch, "/", type, "_run_pcrelate_pcs_std_S_A_X2_G_E_")
+
+### additive genetic random effects ###
+B1 <- read.table(paste0(model_output_prefix, "ETA_X2_b.dat"), header = TRUE)
+B2 <- readBinMat(paste0(model_output_prefix, "ETA_G_b.bin"))
+B3 <- readBinMat(paste0(model_output_prefix, "ETA_E_b.bin"))
+
+### dataframe with variance partition ###
+varabs <- matrix(NA, nrow_varabs, 3); colnames(varabs) <- c("V_X2", "V_G", "V_E")
+
+print("filling up cols of varab")
+
+# Fill variance components
+varabs[, 1] <- matrixStats::colVars(ETA$X2$X %*% t(B1))[-c(1:(burnin/thin))]
+varabs[, 2] <- matrixStats::colVars(tcrossprod(ETA$G$X, B2))
+varabs[, 3] <- matrixStats::colVars(tcrossprod(ETA$E$X, B3))
+
+print("varab cols done now saving varab")
+
+# Dynamic output filename
+output_file <- file.path(opt$output, paste0("varabs_", type, "_S_A_X2_G_E", ".csv"))
+
+# Save variance components
+write.csv(varabs, file = output_file, row.names = TRUE)
+
+print("varab saved")

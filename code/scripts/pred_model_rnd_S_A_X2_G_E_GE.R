@@ -22,12 +22,18 @@ option_list <- list(
               help = "Output directory for saving results", metavar = "character"),
   make_option(c("-s", "--scratch"), type = "character", default = "/scratch3/kgoda/ukbiobank_files/tmp/snakemake_runs",
               help = "Temporary directory for storing model files", metavar = "character"),
+  make_option(c("-f", "--fold"), type = "character", default = NULL,
+              help = "taking in fold file name to get ids", metavar = "character"),
   make_option(c("-b", "--bp"), type = "character", default = NULL,
               help = "taking in bp to get type", metavar = "character"),
-  make_option(c("-g", "--grm"), type = "character", default = NULL,
-              help = "taking in grm to get type", metavar = "character"),
+  make_option(c("-n", "--num"), type = "character", default = NULL,
+              help = "taking in num to get fold number", metavar = "character"),
   make_option(c("-w", "--gen_eigen"), type = "character", default = NULL,
-              help = "taking in pca for pcrelate grm to create W", metavar = "character")
+              help = "taking in pca for pcrelate grm to create W", metavar = "character"),
+  make_option(c("-e", "--emat"), type = "character", default = NULL,
+              help = "taking in Emat", metavar = "character"),
+  make_option(c("-x", "--gemat"), type = "character", default = NULL,
+              help = "taking in GE", metavar = "character")
 )
 
 opt_parser <- OptionParser(option_list = option_list)
@@ -51,10 +57,14 @@ setwd(opt$dir)
 #grm_source <- parsed_info[3]  # Extract the GRM source (e.g., plink, pcrelate)
 
 type <- opt$bp
-grm_source <- opt$grm
+fold_number <- opt$num
 
 # Load dataset
 load(opt$data)
+
+# Load fold
+fold <- readRDS(opt$fold)
+fold_ids <- fold$ID
 
 # Load eigen results
 eigen_results <- readRDS(opt$gen_eigen)
@@ -77,9 +87,44 @@ matched_dataset <- dataset[match(individual_ids, dataset$ID), ]
 y <- matched_dataset[[paste0(type, "0s")]]
 rownames(y) <- rownames(W)
 
+# Set the IDs in fold_1 to NA in y
+if (!is.null(rownames(y))) {
+  y[rownames(y) %in% fold_ids] <- NA
+} else {
+  stop("Row names for y are missing. Ensure y has rownames corresponding to IDs.")
+}
+
 # Load scaled PCs and match to individual IDs
 pcs_scaled <- readRDS(opt$pcs)
 P <- pcs_scaled[match(individual_ids, pcs_scaled$ID), 2:11]
+
+# Load eigen of E
+E_eigen <- readRDS(opt$emat)
+E_eigenvectors <- E_eigen$vectors
+E_eigenvalues <- E_eigen$values
+
+# Filter and scale eigenvectors by positive eigenvalues
+E_positive_indices <- which(E_eigenvalues > 0)
+E_filtered_eigenvectors <- E_eigenvectors[, E_positive_indices]
+E_filtered_eigenvalues <- E_eigenvalues[E_positive_indices]
+for(i in 1:ncol(E_filtered_eigenvectors)) {
+  E_filtered_eigenvectors[, i] <- E_filtered_eigenvectors[, i] * sqrt(E_filtered_eigenvalues[i])
+}
+E <- E_filtered_eigenvectors
+
+# Load eigen of GE
+GE_eigen <- readRDS(opt$gemat)
+GE_eigenvectors <- GE_eigen$vectors
+GE_eigenvalues <- GE_eigen$values
+
+# Filter and scale eigenvectors by positive eigenvalues
+GE_positive_indices <- which(GE_eigenvalues > 0)
+GE_filtered_eigenvectors <- GE_eigenvectors[, GE_positive_indices]
+GE_filtered_eigenvalues <- GE_eigenvalues[GE_positive_indices]
+for(i in 1:ncol(GE_filtered_eigenvectors)) {
+  GE_filtered_eigenvectors[, i] <- GE_filtered_eigenvectors[, i] * sqrt(GE_filtered_eigenvalues[i])
+}
+GE <- GE_filtered_eigenvectors
 
 # Model setup
 iter <- 90000
@@ -89,7 +134,9 @@ verb <- T
 nrow_varabs <- (iter-burnin)/thin
 
 ETA <- list(X2=list(X=P, model="FIXED", saveEffects=TRUE),
-            G=list(X=W, model="BRR", saveEffects=TRUE)
+            G=list(X=W, model="BRR", saveEffects=TRUE),
+            E=list(X=E, model="BRR", saveEffects=TRUE),
+            GxE=list(X=GE, model="BRR", saveEffects=TRUE)
 )
 
 if (!is.numeric(ETA$X2$X)) {
@@ -100,34 +147,10 @@ print("Model ETA created")
 
 # Run BGLR model
 
-#model <- BGLR(y=y, ETA=ETA, nIter=iter, burnIn=burnin, thin=thin, verbose=verb, saveAt=paste(opt$scratch, '/', type, '_run_pcrelate_pcs_std_S_A_X2_G_', sep=''))
+model <- BGLR(y=y, ETA=ETA, nIter=iter, burnIn=burnin, thin=thin, verbose=verb, saveAt=paste(opt$scratch, '/PREDs_', type, '_fold_', fold_number, '_S_A_X2_G_E_GE_', sep=''))
 
-## Collecting results ##
+# Combine predictions and observed values into a data frame
+preds <- data.frame(ID=rownames(y), Observed=model$y, Predicted=model$yHat)
+write.csv(preds, file=file.path(opt$output, paste0("PREDs_", type, "_Fold_", fold_number, "_S_A_X2_G_E_GE.csv")), row.names=FALSE)
 
-### Sampled regression effects ###
 
-# Construct the correct file path dynamically
-model_output_prefix <- paste0(opt$scratch, "/", type, "_run_pcrelate_pcs_std_S_A_X2_G_")
-
-### additive genetic random effects ###
-B1 <- read.table(paste0(model_output_prefix, "ETA_X2_b.dat"), header = TRUE)
-B2 <- readBinMat(paste0(model_output_prefix, "ETA_G_b.bin"))
-
-### dataframe with variance partition ###
-varabs <- matrix(NA, nrow_varabs, 2); colnames(varabs) <- c("V_X2", "V_G")
-
-print("filling up cols of varab")
-
-# Fill variance components
-varabs[, 1] <- matrixStats::colVars(ETA$X2$X %*% t(B1))[-c(1:(burnin/thin))]
-varabs[, 2] <- matrixStats::colVars(tcrossprod(ETA$G$X, B2))
-
-print("varab cols done now saving varab")
-
-# Dynamic output filename
-output_file <- file.path(opt$output, paste0("varabs_", type, "_S_A_X2_G", ".csv"))
-
-# Save variance components
-write.csv(varabs, file = output_file, row.names = TRUE)
-
-print("varab saved")

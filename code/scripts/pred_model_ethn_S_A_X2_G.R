@@ -1,3 +1,6 @@
+rm(list=ls()); gc()
+set.seed(1123)
+
 # Load required libraries
 library(data.table)
 library(Matrix)
