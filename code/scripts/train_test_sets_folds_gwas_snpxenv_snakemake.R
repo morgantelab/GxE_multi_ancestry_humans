@@ -8,11 +8,11 @@ library(readr)
 
 # Define command-line arguments
 option_list <- list(
-  make_option(c("-m", "--model_dir"), type = "character", default = NULL, 
+  make_option(c("-m", "--model_dir"), type = "character", default = NULL,
               help = "Directory containing fold .rds files", metavar = "character"),
-  make_option(c("-o", "--output_dir"), type = "character", default = NULL, 
-              help = "Directory to save PLINK keep files", metavar = "character"),
-  make_option(c("-n", "--num_folds"), type = "integer", default = 5, 
+  make_option(c("-o", "--output_dir"), type = "character", default = NULL,
+              help = "Directory to save PLINK txt files", metavar = "character"),
+  make_option(c("-n", "--num_folds"), type = "integer", default = 5,
               help = "Number of folds (default: 5)", metavar = "integer")
 )
 
@@ -33,21 +33,21 @@ if (is.null(model_dir) | is.null(output_dir)) {
 for (i in 1:num_folds) {
   # Read all folds
   folds <- lapply(1:num_folds, function(j) readRDS(file.path(model_dir, paste0("Fold_", j, ".rds"))))
-  
+
   # Create training and test sets
   test_set <- folds[[i]]  # Leave this fold out for testing
   train_set <- do.call(rbind, folds[-i])  # Combine remaining folds for training
-  
+
   # Extract IDs and create PLINK FID IID format
-  test_keep <- data.frame(FID = test_set$ID, IID = test_set$ID)
-  train_keep <- data.frame(FID = train_set$ID, IID = train_set$ID)
-  
-  # Save as PLINK-readable keep files
-  write.table(train_keep, file.path(output_dir, paste0("Train_Set_", i, ".keep")), 
+  test_txt <- data.frame(FID = test_set$ID, IID = test_set$ID)
+  train_txt <- data.frame(FID = train_set$ID, IID = train_set$ID)
+
+  # Save as PLINK-readable txt files
+  write.table(train_txt, file.path(output_dir, paste0("Train_Set_", i, ".txt")),
               quote = FALSE, row.names = FALSE, col.names = FALSE, sep = "\t")
-  
-  write.table(test_keep, file.path(output_dir, paste0("Test_Set_", i, ".keep")), 
+
+  write.table(test_txt, file.path(output_dir, paste0("Test_Set_", i, ".txt")),
               quote = FALSE, row.names = FALSE, col.names = FALSE, sep = "\t")
-  
-  cat(paste0("Created PLINK keep files for Train_Set_", i, " and Test_Set_", i, " in ", output_dir, "\n"))
+
+  cat(paste0("Created PLINK txt files for Train_Set_", i, " and Test_Set_", i, " in ", output_dir, "\n"))
 }

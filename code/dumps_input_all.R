@@ -97,3 +97,9 @@ expand(config["model_dir"] + "/" + "done_{bp}_{grm}_S_A_X2_G_E.done", bp=config[
 expand(config["model_dir"] + "/" + "done_{bp}_{grm}_S_A_X2_G_E_GE.done", bp=config["BP"], grm=config["GRM"])
 
 
+## used with issues in S_A runs ##
+env = config["ENV"]
+
+wildcard_constraints:
+  env = '|'.join([x for x in env])
+

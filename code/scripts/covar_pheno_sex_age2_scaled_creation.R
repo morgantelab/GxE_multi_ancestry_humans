@@ -11,6 +11,6 @@ data <- fread("covar_pheno.txt")
 # Scale the 'sex' and 'age2' columns
 data[, `:=`(sex = scale(sex), age2 = scale(age2))]
 
-# Save the modified dataset as an RDS file
-saveRDS(data, "covar_pheno_sex_age2_scaled.rds")
+# Save the modified dataset
+fwrite(data, "covar_pheno_sex_age2_scaled.txt", sep="\t", quote=FALSE)
 
