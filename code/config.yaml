@@ -9,8 +9,8 @@ CHR: ['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17
 GRM: ['pcrelate']
 BP: ['DP', 'SP', 'PP']
 FOLDNUM: ['1','2','3','4','5']
-#ENV: ['Townsend', 'act0_d', 'TVtime', 'sleep_d','smoking_now', 'veg_cook', 'fish_oily', 'fish_lean', 'meat_proc', 'poultry', 'beef', 'lamb', 'pork', 'cheese', 'salt', 'tea', 'alc1', 'waist', 'getup', 'coffee', 'smoked_past', 'BFP', 'sleep_dev']
-ENV: ['age']
+ENV: ['Townsend', 'act0_d', 'TVtime', 'sleep_d','smoking_now', 'veg_cook', 'fish_oily', 'fish_lean', 'meat_proc', 'poultry', 'beef', 'lamb', 'pork', 'cheese', 'salt', 'tea', 'alc1', 'waist', 'getup', 'coffee', 'smoked_past', 'BFP', 'sleep_dev']
+#ENV: ['age']
 PVAL: [1e-05, 1e-06, 0.001]
 plink_executable: "/data2/morgante_lab/kgoda/software/plink1.9/plink"
 gcta_executable: "/data2/morgante_lab/kgoda/software/gcta64/gcta-1.94.1-linux-kernel-3-x86_64/gcta-1.94.1"

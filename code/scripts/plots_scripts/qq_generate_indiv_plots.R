@@ -8,12 +8,12 @@ results_dir <- "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/g
 output_dir <- "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/plots/"
 
 #List of 23 environments
-# envs <- c("Townsend", "act0_d", "TVtime", "sleep_d", "smoking_now",
-#           "veg_cook", "fish_oily", "fish_lean", "meat_proc", "poultry",
-#           "beef", "lamb", "pork", "cheese", "salt", "tea", "alc1",
-#           "waist", "getup", "coffee", "smoked_past", "BFP", "sleep_dev")
+envs <- c("Townsend", "act0_d", "TVtime", "sleep_d", "smoking_now",
+          "veg_cook", "fish_oily", "fish_lean", "meat_proc", "poultry",
+          "beef", "lamb", "pork", "cheese", "salt", "tea", "alc1",
+          "waist", "getup", "coffee", "smoked_past", "BFP", "sleep_dev")
 
-envs <- c("sex", "age", "age2")
+#envs <- c("sex", "age", "age2")
 
 # Function to generate a QQ plot
 generate_qq_plot <- function(p_values, title, output_file) {
@@ -35,7 +35,7 @@ for (env in envs) {
   print(paste("Processing Environment:", env))
 
   # Find all files corresponding to this environment
-  env_files <- list.files(results_dir, pattern=paste0("S_A_gxe_", env, "_full_dataset.*\\.glm\\.linear$"), full.names=TRUE)
+  env_files <- list.files(results_dir, pattern=paste0("gxe_gwas_", env, "_full_dataset.*\\.glm\\.linear$"), full.names=TRUE)
 
   for (file in env_files) {
     print(paste("Reading file:", file))
@@ -68,7 +68,7 @@ for (env in envs) {
     plot_name <- gsub("\\.glm\\.linear$", "", file_name)  # Remove extension
 
     # Generate QQ Plot
-    qqplot_file <- file.path(output_dir, paste0("qqplot_full_dataset_", plot_name, ".png"))
+    qqplot_file <- file.path(output_dir, paste0("qqplot_with_covar_full_dataset_", plot_name, ".png"))
     generate_qq_plot(plink_results$P, paste("QQ Plot Full Dataset:", env), qqplot_file)
   }
 }

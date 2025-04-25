@@ -103,3 +103,19 @@ env = config["ENV"]
 wildcard_constraints:
   env = '|'.join([x for x in env])
 
+
+
+
+# Snakefile
+
+configfile: "config.yaml"
+
+env = config["ENV"]
+
+wildcard_constraints:
+  env = '|'.join([x for x in env])
+
+rule all:
+  input:
+  expand(config["gwas_dir"] + "/" + "gxe_gwas_{env}_full_dataset.done", env=config["ENV"])
+

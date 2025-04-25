@@ -7,11 +7,11 @@ results_dir <- "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/g
 output_dir <- "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/gwas_snp_env/"
 
 # List of environments for which interaction terms are being analyzed
-envs <- c("sex", "age", "age2")
-# envs <- c("Townsend", "act0_d", "TVtime", "sleep_d", "smoking_now",
-#           "veg_cook", "fish_oily", "fish_lean", "meat_proc", "poultry",
-#           "beef", "lamb", "pork", "cheese", "salt", "tea", "alc1",
-#           "waist", "getup", "coffee", "smoked_past", "BFP", "sleep_dev")
+#envs <- c("sex", "age", "age2")
+envs <- c("Townsend", "act0_d", "TVtime", "sleep_d", "smoking_now",
+           "veg_cook", "fish_oily", "fish_lean", "meat_proc", "poultry",
+           "beef", "lamb", "pork", "cheese", "salt", "tea", "alc1",
+           "waist", "getup", "coffee", "smoked_past", "BFP", "sleep_dev")
 
 
 # Loop through each environment
@@ -19,7 +19,7 @@ for (env in envs) {
   print(paste("Processing Environment:", env))
 
   # Find all files corresponding to this environment
-  env_files <- list.files(results_dir, pattern=paste0("S_A_gxe_", env, "_full_dataset.*\\.glm\\.linear$"), full.names=TRUE)
+  env_files <- list.files(results_dir, pattern=paste0("gxe_gwas_", env, "_full_dataset.*\\.glm\\.linear$"), full.names=TRUE)
 
   for (file in env_files) {
     print(paste("Reading file:", file))
