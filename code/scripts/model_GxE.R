@@ -167,7 +167,7 @@ B1 <- read.table(paste(opt$scratch, '/', type, '_', grm_source, '_run_GxE_pcrela
 B2 <- read.table(paste(opt$scratch, '/', type, '_', grm_source, '_run_GxE_pcrelate_pcs_plink_unscaled_demographics_ETA_X2_b.dat', sep=''), header=TRUE)
 B3 <- readBinMat(paste(opt$scratch, '/', type, '_', grm_source, '_run_GxE_pcrelate_pcs_plink_unscaled_demographics_ETA_G_b.bin', sep=''))
 B4 <- readBinMat(paste(opt$scratch, '/', type, '_', grm_source, '_run_GxE_pcrelate_pcs_plink_unscaled_demographics_ETA_E_b.bin', sep=''))
-B5 <- readBinMat(paste(opt$scratch, '/', type, '_', grm_source, '_run_GxE_pcrelate_pcs_plink_unscaled_demographics_ETA_GE_b.bin', sep=''))
+B5 <- readBinMat(paste(opt$scratch, '/', type, '_', grm_source, '_run_GxE_pcrelate_pcs_plink_unscaled_demographics_ETA_GxE_b.bin', sep=''))
 
 # Calculate variance components
 varabs <- matrix(NA, nrow_varabs, 5); colnames(varabs) <- c("V_X1", "V_X2", "V_G", "V_E", "V_GxE")
@@ -177,7 +177,7 @@ varabs[, 1] <- matrixStats::colVars(ETA$X1$X %*% t(B1))[-c(1:(burnin/thin))]
 varabs[, 2] <- matrixStats::colVars(ETA$X2$X %*% t(B2))[-c(1:(burnin/thin))]
 varabs[, 3] <- matrixStats::colVars(tcrossprod(ETA$G$X, B3))
 varabs[, 4] <- matrixStats::colVars(tcrossprod(ETA$E$X, B4))
-varabs[, 5] <- matrixStats::colVars(tcrossprod(ETA$GE$X, B4))
+varabs[, 5] <- matrixStats::colVars(tcrossprod(ETA$GxE$X, B5))
 
 # Save variance components
 write.csv(varabs, file=file.path(opt$output, paste0("varabs_", type, "_", grm_source, "_GxE_pcrelate_pcs_plink_unscaled_demographics.csv")), row.names=TRUE)

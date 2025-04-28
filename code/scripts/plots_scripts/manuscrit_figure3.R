@@ -17,7 +17,7 @@ load("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/data2_20240
 
 # Merge with ethnicity data
 eigenvec_pcrelate_df <- data.frame(ID = rownames(eigenvec_data_pcrelate$vectors),
-                                   eigenvec_data_pcrelate$vectors, 
+                                   eigenvec_data_pcrelate$vectors,
                                    stringsAsFactors = FALSE)
 
 # Ensure IDs are characters
@@ -47,15 +47,15 @@ pc1_vs_pc2_plot <- ggplot(merged_data_pcrelate, aes(x = PC1, y = PC2, color = et
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank(),
     axis.text = element_text(color = "black"),
-    axis.title = element_text(face = "bold"),
-    legend.title = element_text(face = "bold"),
+    axis.title = element_text(),
+    legend.title = element_blank(),
     legend.position = "right"
   ) +
-  scale_color_manual(values = ethnicity_colors, name = "Ethnicity") +
+  scale_color_manual(values = ethnicity_colors) +
   labs(x = "Principal Component 1",
        y = "Principal Component 2")
 
 # Save the plot
-ggsave(filename = paste0(plot_save_dir, "Figure3_PC1_vs_PC2.png"), 
-       plot = pc1_vs_pc2_plot, 
+ggsave(filename = paste0(plot_save_dir, "Figure3_PC1_vs_PC2.png"),
+       plot = pc1_vs_pc2_plot,
        width = 8, height = 6, dpi = 300)
