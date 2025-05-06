@@ -1,3 +1,4 @@
+set.seed(1123)
 # Load necessary libraries
 library(genio)
 library(data.table)
@@ -6,7 +7,7 @@ library(optparse)
 
 # Define command-line options
 option_list <- list(
-  make_option(c("-d", "--dir"), type = "character", default = NULL, 
+  make_option(c("-d", "--dir"), type = "character", default = NULL,
               help = "path to the working directory", metavar = "character"),
   make_option(c("-i", "--input"), type = "character", default = NULL,
               help = "path to the GRM matrix RData file", metavar = "character"),

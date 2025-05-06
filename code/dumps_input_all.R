@@ -119,3 +119,9 @@ rule all:
   input:
   expand(config["gwas_dir"] + "/" + "gxe_gwas_{env}_full_dataset.done", env=config["ENV"])
 
+
+
+expand(config["model_dir"] + "/" + "varabs_{bp}_{grm}_GxE_pcrelate_pcs_plink_unscaled_demographics.csv", bp=config["BP"], grm=config["GRM"]),
+expand(config["model_dir"] + "/" + "varabs_{bp}_{grm}_GxE_pcrelate_pcs_plink_scaled_demographics.csv", bp=config["BP"], grm=config["GRM"])
+
+

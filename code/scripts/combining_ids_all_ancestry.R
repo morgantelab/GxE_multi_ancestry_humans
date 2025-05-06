@@ -1,3 +1,5 @@
+set.seed(1123)
+
 setwd("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/filtered_chr")
 
 # Read each ID list

@@ -1,10 +1,12 @@
+set.seed(1123)
+
 library(data.table)
 library(Matrix)
 library(optparse)
 
 # Define command-line options
 option_list <- list(
-  make_option(c("-d", "--dir"), type = "character", default = NULL, 
+  make_option(c("-d", "--dir"), type = "character", default = NULL,
               help = "path to the working directory", metavar = "character"),
   make_option(c("-i", "--input"), type = "character", default = NULL,
               help = "path to the GRM matrix RData file", metavar = "character"),
@@ -27,7 +29,7 @@ setwd(opt$dir)
 
 print("loading grm")
 # Load GRM matrix from the provided input file
-load(opt$input)
+readRDS(opt$input)
 print("grm loaded")
 
 print("computing eigen")

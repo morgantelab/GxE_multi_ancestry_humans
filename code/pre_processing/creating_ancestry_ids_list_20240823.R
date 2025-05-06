@@ -1,6 +1,8 @@
 ## creating ancestry id files ##
 
-setwd("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/model")
+set.seed(1123)
+
+setwd("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/")
 
 load("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/scaled_dataset_20250106.Rdata")
 

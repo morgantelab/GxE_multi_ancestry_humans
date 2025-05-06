@@ -1,3 +1,4 @@
+set.seed(1123)
 # Load the SNPRelate package
 library(SNPRelate)
 library(optparse)

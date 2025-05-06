@@ -4,19 +4,91 @@ configfile: "config.yaml"
 
 rule all:
     input:
-        expand(config["model_dir"] + "/" + "varabs_{bp}_{grm}_GxE_pcrelate_pcs_plink_unscaled_demographics.csv", bp=config["BP"], grm=config["GRM"]),
-        expand(config["model_dir"] + "/" + "varabs_{bp}_{grm}_GxE_pcrelate_pcs_plink_scaled_demographics.csv", bp=config["BP"], grm=config["GRM"])
+     config["filtered_chr_dir"] + "/" + "pca_for_pcrelate.rds",
+     config["filtered_chr_dir"] + "/" + "pca_for_plink.rds"
+
 
 #### Start of rules ####
 
+## Creating Dataset ##
+rule preprocess_ukb_selected_vars:
+    input:
+        vars_csv = "/data2/morgante_lab/data/ukbiobank/variables_processed/UKB_selected_variables.csv",
+        raw_csv = "/data2/morgante_lab/data/ukbiobank/variables_processed/ukb45105_selected.csv"
+    output:
+        processed_rdata = config["data_dir"] + "/data1_20250501_only_analysis_vars.rds"
+    params:
+        script = config["SCRIPT"] + "/preprocessing_step1_setup_dataset_only_analysis_vars.R"
+    resources:
+        cpus=1, mem_mb=10000, time_min=1440
+    shell:
+        """
+        source /opt/intel/oneapi/mkl/2023.2.0/env/vars.sh intel64
+        module load R/4.2.3
+        export MKL_NUM_THREADS=1
+        Rscript {params.script} --vars_csv {input.vars_csv} --raw_csv {input.raw_csv} --out_rdata {output.processed_rdata}
+        """
+
+rule preprocess_step2:
+    input:
+        input_rds = config["data_dir"] +"/data1_20250501_only_analysis_vars.rds",
+        withdrawn = "/data2/morgante_lab/data/ukbiobank/ind_to_remove/withdraw62347_281_20240209.txt",
+        missing_geno = config["data_dir"] + "/missing_ids.txt"
+    output:
+        filtered_rdata = config["data_dir"] + "/data2_20250501_only_analysis_vars.rds"
+    params:
+        script = config["SCRIPT"] + "/preprocessing_step2_setup_dataset_only_analysis_vars.R"
+    resources:
+        cpus=1, mem_mb=10000, time_min=1440
+    shell:
+        """
+        source /opt/intel/oneapi/mkl/2023.2.0/env/vars.sh intel64
+        module load R/4.2.3
+        export MKL_NUM_THREADS=1
+
+        Rscript {params.script} \
+        --input_rds {input.input_rds} \
+        --withdrawn {input.withdrawn} \
+        --missing_geno {input.missing_geno} \
+        --output_rds {output.filtered_rdata}
+        """
+## Create Ancestry IDs lists ##
+rule create_ancestry_ids:
+    input:
+        input_rds = config["data_dir"] + "/data2_20250501_only_analysis_vars.rds"
+    output:
+        asian = config["data_dir"] + "/asian_ids.txt",
+        white = config["data_dir"] + "/white_ids.txt",
+        mixed = config["data_dir"] + "/mixed_ids.txt",
+        black = config["data_dir"] + "/black_ids.txt",
+        chinese = config["data_dir"] + "/chinese_ids.txt"
+    params:
+        script = config["SCRIPT"] + "/create_ancestry_ids.R"
+    resources:
+        cpus=1, mem_mb=10000, time_min=1440
+    shell:
+        """
+        source /opt/intel/oneapi/mkl/2023.2.0/env/vars.sh intel64
+        module load R/4.2.3
+        export MKL_NUM_THREADS=1
+
+        Rscript {params.script} \
+        --input_rds {input.input_rds} \
+        --asian {output.asian} \
+        --white {output.white} \
+        --mixed {output.mixed} \
+        --black {output.black} \
+        --chinese {output.chinese}
+        """
+
 ## Creating GRMs ##
 
-# Step 1: Filter SNP List per Ancestry
+# Step 2: Filter SNP List per Ancestry
 
 rule filter_snplist_per_ancestry:
     input:
-        bfile=config["geno_dir"] + "/" + "ukb22418_c{chr}_b0_v2_s488243" + config["EXT"],
-        sample_ids=config["sample_ids_dir"] + "/" + "{ancestry}_ids.txt"
+        bfile=config["geno_dir"] + "/" + "ukb22418_c{chr}_b0_v2_s488243.bed",
+        sample_ids=config["data_dir"] + "/" + "{ancestry}_ids.txt"
     output:
         SNPLIST=config["snp_list_dir"] + "/" + "{ancestry}_filtered_all_chr{chr}.snplist"
     params:
@@ -142,7 +214,7 @@ rule merge_chr_common_snps:
 rule pruned_grm_ancestry:
     input:
         bfile=config["filtered_chr_dir"] + "/" + "merged_geno_common_snps.bed",
-        sample_ids=config["sample_ids_dir"] + "/" + "{ancestry}_ids.txt"
+        sample_ids=config["data_dir"] + "/" + "{ancestry}_ids.txt"
     output:
         GRM_pruned=config["filtered_chr_dir"] + "/" + "pruned_grm_{ancestry}.rel.id"
     params:
@@ -166,7 +238,64 @@ rule pruned_grm_ancestry:
         --out {params.OPREFIX}
         """
 
-##NEED TO ADD script for sampling white and creating merged id list.
+rule sample_white_ids:
+    input:
+        ids = config["filtered_chr_dir"] + "/pruned_grm_white.rel.id"
+    output:
+        sampled = config["filtered_chr_dir"] + "/sampled_white_ids.rel.id"
+    params:
+        n_sample = 15000,
+        seed = 1123
+    resources:
+        cpus=1, mem_mb=10000, time_min=1440
+    run:
+        import pandas as pd
+        import numpy as np
+
+        # Set random seed for reproducibility
+        np.random.seed(params.seed)
+
+        # Read the white .rel.id file
+        id_data = pd.read_csv(input.ids, sep="\t", header=None)
+
+        # Sample n individuals without replacement
+        if params.n_sample > len(id_data):
+            raise ValueError(f"Requested sample size {params.n_sample} exceeds available IDs ({len(id_data)})")
+
+        sampled = id_data.sample(n=params.n_sample, replace=False)
+
+        # Save sampled IDs
+        sampled.to_csv(output.sampled, sep="\t", index=False, header=False)
+
+        print(f"Sampled {params.n_sample} individuals from {input.ids} and saved to {output.sampled}")
+
+
+rule merge_rel_ids:
+    input:
+        lambda wildcards: expand(
+            config["filtered_chr_dir"] + "/pruned_grm_{ancestry}.rel.id",
+            ancestry=config["Ancestry"]
+        ) + [config["filtered_chr_dir"] + "/sampled_white_ids.rel.id"]
+    output:
+        merged = config["filtered_chr_dir"] + "/merged_ids.rel.id"
+    params:
+        seed = 1123
+    resources:
+        cpus=1, mem_mb=10000, time_min=1440
+    run:
+        import pandas as pd
+        import numpy as np
+
+        # Set random seed for reproducibility
+        np.random.seed(params.seed)
+
+        # Load and concatenate all input ID files
+        dfs = [pd.read_csv(f, sep="\t", header=None) for f in input]
+        merged = pd.concat(dfs).drop_duplicates()
+
+        # Save merged IDs without row/column names
+        merged.to_csv(output.merged, sep="\t", index=False, header=False)
+        print(f"Merged {len(input)} ID files into: {output.merged}")
 
 # Step 4: GRM using plink
 
@@ -199,24 +328,24 @@ rule grm_by_plink:
 
 # Step 5: create grm using fabio struct method
 
-rule grm_by_struct_mtd:
-    input:
-        bfile=config["filtered_chr_dir"] + "/" + "merged_geno_common_snps.bed",
-        dataset=config["sample_ids_dir"] + "/" + "data2_20240930.RData",
-	      ids=config["filtered_chr_dir"] + "/" + "merged_ids.rel.id"
-    output:
-        eigen_struct=config["filtered_chr_dir"] + "/" + "eigen_by_struct.rds"
-    params:
-        INPUTDIR=config["filtered_chr_dir"],
-        SCRIPT=config["SCRIPT"] + "/" + "eigen_by_struct.R"
-    resources: cpus=55, mem_mb=1400000, time_min=5000
-    shell:
-        """
-        source /opt/intel/oneapi/mkl/2023.2.0/env/vars.sh intel64
-        module load R/4.2.3
-        export MKL_NUM_THREADS=55
-        Rscript {params.SCRIPT} -d {params.INPUTDIR} -b {input.bfile} -s {input.dataset} -i {input.ids} -o {output}
-        """
+#rule grm_by_struct_mtd:
+#    input:
+#        bfile=config["filtered_chr_dir"] + "/" + "merged_geno_common_snps.bed",
+#        dataset=config["data_dir"] + "/" + "data2_20240930.RData",
+#	      ids=config["filtered_chr_dir"] + "/" + "merged_ids.rel.id"
+#    output:
+#        eigen_struct=config["filtered_chr_dir"] + "/" + "eigen_by_struct.rds"
+#    params:
+#        INPUTDIR=config["filtered_chr_dir"],
+#        SCRIPT=config["SCRIPT"] + "/" + "eigen_by_struct.R"
+#    resources: cpus=55, mem_mb=1400000, time_min=5000
+#    shell:
+#        """
+#        source /opt/intel/oneapi/mkl/2023.2.0/env/vars.sh intel64
+#        module load R/4.2.3
+#        export MKL_NUM_THREADS=55
+#        Rscript {params.SCRIPT} -d {params.INPUTDIR} -b {input.bfile} -s {input.dataset} -i {input.ids} -o {output}
+#        """
 
 # Step 6: Make bed geno of selected indv
 
@@ -225,7 +354,9 @@ rule merged_geno_common_snps_selected_indv:
         bfile=config["filtered_chr_dir"] + "/" + "merged_geno_common_snps.bed",
         all_ids=config["filtered_chr_dir"] + "/" + "merged_ids.rel.id"
     output:
-        merged_geno_common_snps_selected_indv=config["filtered_chr_dir"] + "/" + "merged_geno_common_snps_selected_indiv.bed"
+        bed=config["filtered_chr_dir"] + "/" + "merged_geno_common_snps_selected_indiv.bed",
+        bim=config["filtered_chr_dir"] + "/" + "merged_geno_common_snps_selected_indiv.bim",
+        fam=config["filtered_chr_dir"] + "/" + "merged_geno_common_snps_selected_indiv.fam"
     params:
         plink_executable = config["plink_executable"],
         THREADS=10,
@@ -275,15 +406,15 @@ rule grm_by_pcrelate:
     input:
         gds=config["filtered_chr_dir"] + "/" + "merged_geno_common_snps_selected_indiv.gds"
     output:
-        kinship_matrix=config["filtered_chr_dir"] + "/" + "king_kinship_matrix_for_pcrelate.RData",
+        kinship_matrix=config["filtered_chr_dir"] + "/" + "king_kinship_matrix_for_pcrelate.rds",
         pcair_results=config["filtered_chr_dir"] + "/" + "pcair_for_pcrelate_results.rds",
         pcrelate_results=config["filtered_chr_dir"] + "/" + "pcrelate_calcs.rds",
-        grm_matrix=config["filtered_chr_dir"] + "/" + "grm_matrix_pcrelate_5pcs.RData"
+        grm_matrix=config["filtered_chr_dir"] + "/" + "grm_matrix_pcrelate_5pcs.rds"
     params:
         INPUTDIR=config["filtered_chr_dir"],
         SCRIPT=config["SCRIPT"] + "/" + "grm_by_pcrelate.R",
         cores=55
-    resources: cpus=55, mem_mb=1000000, time_min=5000
+    resources: cpus=55, mem_mb=2000000, time_min=7000
     shell:
         """
         source /opt/intel/oneapi/mkl/2023.2.0/env/vars.sh intel64
@@ -305,7 +436,7 @@ rule pca_for_grm_by_plink:
         INPUTDIR=config["filtered_chr_dir"],
 	IPREFIX=config["filtered_chr_dir"] + "/" + "grm_by_plink",
         SCRIPT=config["SCRIPT"] + "/" + "pca_for_grm_by_plink_using_eigen_in_R.R"
-    resources: cpus=1, mem_mb=60000, time_min=3000
+    resources: cpus=1, mem_mb=250000, time_min=3000
     shell:
         """
         source /opt/intel/oneapi/mkl/2023.2.0/env/vars.sh intel64
@@ -318,13 +449,13 @@ rule pca_for_grm_by_plink:
 
 rule pca_for_grm_by_pcrelate:
     input:
-        grm=config["filtered_chr_dir"] + "/" + "grm_matrix_pcrelate_5pcs.RData"
+        grm=config["filtered_chr_dir"] + "/" + "grm_matrix_pcrelate_5pcs.rds"
     output:
         pca_results=config["filtered_chr_dir"] + "/" + "pca_for_pcrelate.rds"
     params:
         INPUTDIR=config["filtered_chr_dir"],
         SCRIPT=config["SCRIPT"] + "/" + "pca_for_grm_by_pcrelate.R"
-    resources: cpus=1, mem_mb=150000, time_min=3000
+    resources: cpus=1, mem_mb=250000, time_min=3000
     shell:
         """
         source /opt/intel/oneapi/mkl/2023.2.0/env/vars.sh intel64
@@ -333,8 +464,22 @@ rule pca_for_grm_by_pcrelate:
         Rscript {params.SCRIPT} -d {params.INPUTDIR} -i {input.grm} -o {output.pca_results}
         """
 
+
+
+
+
+
+
+
+
+
+
+
+
 ##need scaled dataset script
+## need scaled demographics script (think if want all rules with scaled demographics or duplicate the rules?)
 ###Need scaled pcs script
+##Need code for Emat creation
 
 # Step 11: Models
 
@@ -377,6 +522,8 @@ rule model_X1_X2:
         Rscript {params.SCRIPT} -d {params.INPUTDIR} -t {input.data} -p {input.pcs} -o {params.INPUTDIR} -s {params.scratch} -r {output.varabs}
         """
 
+### need E creation script ###
+
 #11.3
 rule model_X1_X2_E:
     input:
@@ -398,6 +545,73 @@ rule model_X1_X2_E:
         Rscript {params.SCRIPT} -d {params.INPUTDIR} -t {input.data} -p {input.pcs} -o {params.INPUTDIR} -s {params.scratch} -r {output.varabs} -v {input.envvar}
         """
 
+#11.5
+rule model_X1_X2_G_E_pcs_plink:
+    input:
+        data=config["sample_ids_dir"] + "/" + "scaled_dataset_20250106.Rdata",
+        eigen=config["filtered_chr_dir"] + "/" + "pca_for_{grm}.rds",
+ 	      pcs=config["filtered_chr_dir"] + "/" + "scaled_pcs_plink.rds",
+        envvar=config["model_dir"] + "/" + "E_eigen_G_E.rds"
+    output:
+         vcem=config["model_dir"] + "/" + "VCEm_{bp}_{grm}_run_G_E_pcrelate_pcs_plink.csv",
+         varabs=config["model_dir"] + "/" + "varabs_{bp}_{grm}_run_G_E_pcrelate_pcs_plink.csv"
+    params:
+         INPUTDIR=config["model_dir"],
+         scratch=config["scratch_dir"],
+         SCRIPT=config["SCRIPT"] + "/" + "model_X1_X2_G_E.R"
+    resources: cpus=10, mem_mb=150000, time_min=3000
+    shell:
+         """
+         ml R/4.1.2
+         export OPENBLAS_NUM_THREADS=1
+         export OMP_NUM_THREADS=1
+         Rscript {params.SCRIPT} -d {params.INPUTDIR} -t {input.data} -e {input.eigen} -p {input.pcs} -v {input.envvar} -o {params.INPUTDIR} -s {params.scratch} -r {output.varabs}
+         """
+##NEED ADD G PCRELATE WITH PLINK PCS WITHOUT E
+
+rule model_GxE:
+    input:
+        data=config["data_dir"] + "/" + "scaled_dataset_20250106.Rdata",
+        eigen=config["filtered_chr_dir"] + "/" + "pca_for_{grm}.rds",
+        envvar=config["model_dir"] + "/" + "E_eigen_G_E.rds",
+        pcs=config["filtered_chr_dir"] + "/" + "scaled_pcs_plink.rds",
+        GE=config["model_dir"] + "/" + "eigen_GE_{grm}.rds"
+    output:
+        varabs=config["model_dir"] + "/" + "varabs_{bp}_{grm}_GxE_pcrelate_pcs_plink_unscaled_demographics.csv"
+    params:
+        INPUTDIR=config["model_dir"],
+        scratch=config["scratch_dir"],
+        SCRIPT=config["SCRIPT"] + "/" + "model_GxE.R"
+    resources: cpus=10, mem_mb=150000, time_min=3000
+    shell:
+        """
+        source /opt/intel/oneapi/mkl/2023.2.0/env/vars.sh intel64
+        module load R/4.2.3
+        export MKL_NUM_THREADS=10
+        Rscript {params.SCRIPT} -d {params.INPUTDIR} -t {input.data} -e {input.eigen} -q {input.GE} -v {input.envvar} -p {input.pcs} -o {params.INPUTDIR} -s {params.scratch} -r {output.varabs}
+        """
+
+rule model_GxE_scaled_demographics:
+    input:
+        data=config["data_dir"] + "/" + "scaled_dataset_20250425.RData",
+        eigen=config["filtered_chr_dir"] + "/" + "pca_for_{grm}.rds",
+        envvar=config["model_dir"] + "/" + "E_eigen_G_E.rds",
+        pcs=config["filtered_chr_dir"] + "/" + "scaled_pcs_plink.rds",
+        GE=config["model_dir"] + "/" + "eigen_GE_{grm}.rds"
+    output:
+        varabs=config["model_dir"] + "/" + "varabs_{bp}_{grm}_GxE_pcrelate_pcs_plink_scaled_demographics.csv"
+    params:
+        INPUTDIR=config["model_dir"],
+        scratch=config["scratch_dir"],
+        SCRIPT=config["SCRIPT"] + "/" + "model_GxE_scaled_demographics.R"
+    resources: cpus=10, mem_mb=150000, time_min=3000
+    shell:
+        """
+        source /opt/intel/oneapi/mkl/2023.2.0/env/vars.sh intel64
+        module load R/4.2.3
+        export MKL_NUM_THREADS=10
+        Rscript {params.SCRIPT} -d {params.INPUTDIR} -t {input.data} -e {input.eigen} -q {input.GE} -v {input.envvar} -p {input.pcs} -o {params.INPUTDIR} -s {params.scratch} -r {output.varabs}
+        """
 
 
 
@@ -465,8 +679,6 @@ rule model_X1_X2_G_pcs_indiv:
         Rscript {params.SCRIPT} -d {params.INPUTDIR} -t {input.data} -e {input.eigen} -p {input.pcs} -o {params.INPUTDIR} -s {params.scratch} -r {output.varabs}
         """
 
-##Need code for Emat creation
-
 #extra
 rule model_X1_G_E:
     input:
@@ -488,30 +700,6 @@ rule model_X1_G_E:
         export MKL_NUM_THREADS=10
         Rscript {params.SCRIPT} -d {params.INPUTDIR} -t {input.data} -e {input.eigen} -v {input.envvar} -o {params.INPUTDIR} -s {params.scratch} -r {output.varabs}
         """
-
-#11.5
-rule model_X1_X2_G_E_pcs_plink:
-    input:
-        data=config["sample_ids_dir"] + "/" + "scaled_dataset_20250106.Rdata",
-        eigen=config["filtered_chr_dir"] + "/" + "pca_for_{grm}.rds",
- 	      pcs=config["filtered_chr_dir"] + "/" + "scaled_pcs_plink.rds",
-        envvar=config["model_dir"] + "/" + "E_eigen_G_E.rds"
-    output:
-         vcem=config["model_dir"] + "/" + "VCEm_{bp}_{grm}_run_G_E_pcrelate_pcs_plink.csv",
-         varabs=config["model_dir"] + "/" + "varabs_{bp}_{grm}_run_G_E_pcrelate_pcs_plink.csv"
-    params:
-         INPUTDIR=config["model_dir"],
-         scratch=config["scratch_dir"],
-         SCRIPT=config["SCRIPT"] + "/" + "model_G_E_pcrelate_pcs_plink.R"
-    resources: cpus=10, mem_mb=150000, time_min=3000
-    shell:
-         """
-         ml R/4.1.2
-         export OPENBLAS_NUM_THREADS=1
-         export OMP_NUM_THREADS=1
-         Rscript {params.SCRIPT} -d {params.INPUTDIR} -t {input.data} -e {input.eigen} -p {input.pcs} -v {input.envvar} -o {params.INPUTDIR} -s {params.scratch} -r {output.varabs}
-         """
-##NEED ADD G PCRELATE WITH PLINK PCS WITHOUT E
 
 #extra
 rule model_GE:
@@ -536,52 +724,8 @@ rule model_GE:
         Rscript {params.SCRIPT} -d {params.INPUTDIR} -t {input.data} -e {input.eigen} -q {input.GE} -v {input.envvar} -o {params.INPUTDIR} -s {params.scratch} -r {output.varabs}
         """
 
-#NEED ADD GE+PCS
-rule model_GxE:
-    input:
-        data=config["data_dir"] + "/" + "scaled_dataset_20250106.Rdata",
-        eigen=config["filtered_chr_dir"] + "/" + "pca_for_{grm}.rds",
-        envvar=config["model_dir"] + "/" + "E_eigen_G_E.rds",
-        pcs=config["filtered_chr_dir"] + "/" + "scaled_pcs_plink.rds",
-        GE=config["model_dir"] + "/" + "eigen_GE_{grm}.rds"
-    output:
-        varabs=config["model_dir"] + "/" + "varabs_{bp}_{grm}_GxE_pcrelate_pcs_plink_unscaled_demographics.csv"
-    params:
-        INPUTDIR=config["model_dir"],
-        scratch=config["scratch_dir"],
-        SCRIPT=config["SCRIPT"] + "/" + "model_GxE.R"
-    resources: cpus=10, mem_mb=150000, time_min=3000
-    shell:
-        """
-        source /opt/intel/oneapi/mkl/2023.2.0/env/vars.sh intel64
-        module load R/4.2.3
-        export MKL_NUM_THREADS=10
-        Rscript {params.SCRIPT} -d {params.INPUTDIR} -t {input.data} -e {input.eigen} -q {input.GE} -v {input.envvar} -p {input.pcs} -o {params.INPUTDIR} -s {params.scratch} -r {output.varabs}
-        """
 
-rule model_GxE_scaled_demographics:
-    input:
-        data=config["data_dir"] + "/" + "scaled_dataset_20250425.RData",
-        eigen=config["filtered_chr_dir"] + "/" + "pca_for_{grm}.rds",
-        envvar=config["model_dir"] + "/" + "E_eigen_G_E.rds",
-        pcs=config["filtered_chr_dir"] + "/" + "scaled_pcs_plink.rds",
-        GE=config["model_dir"] + "/" + "eigen_GE_{grm}.rds"
-    output:
-        varabs=config["model_dir"] + "/" + "varabs_{bp}_{grm}_GxE_pcrelate_pcs_plink_scaled_demographics.csv"
-    params:
-        INPUTDIR=config["model_dir"],
-        scratch=config["scratch_dir"],
-        SCRIPT=config["SCRIPT"] + "/" + "model_GxE_scaled_demographics.R"
-    resources: cpus=10, mem_mb=150000, time_min=3000
-    shell:
-        """
-        source /opt/intel/oneapi/mkl/2023.2.0/env/vars.sh intel64
-        module load R/4.2.3
-        export MKL_NUM_THREADS=10
-        Rscript {params.SCRIPT} -d {params.INPUTDIR} -t {input.data} -e {input.eigen} -q {input.GE} -v {input.envvar} -p {input.pcs} -o {params.INPUTDIR} -s {params.scratch} -r {output.varabs}
-        """
-
-#Predictions
+###### Predictions #######
 
 #NEED add fold creation
 
@@ -850,6 +994,41 @@ rule pred_model_ethn_X1_X2_G_E_GE:
         export MKL_NUM_THREADS=10
         Rscript {params.SCRIPT} -d {params.INPUTDIR} -t {input.data} -o {params.INPUTDIR} -s {params.scratch} -r {output.preds} -a {input.ethn} -p {input.pcs} -v {input.envvar} -e {input.eigen} -q {input.GE}
         """
+
+
+#### GxE-GWAS ####
+
+rule gwas_snp_env_full_dataset:
+    input:
+        bfile=config["filtered_chr_dir"] + "/" + "merged_geno_common_snps_selected_indiv.bed",
+        covar=config["gwas_dir"] + "/" + "covar_pheno.txt"
+    output:
+        done=config["gwas_dir"] + "/" + "gxe_gwas_{env}_full_dataset.done"
+    params:
+        plink_executable_gwas = config["plink_executable_gwas"],
+        COV=config["gwas_dir"] + "/" + "covar_pheno.txt",
+        IPREFIX=config["filtered_chr_dir"] + "/" + "merged_geno_common_snps_selected_indiv",
+        OPREFIX="gxe_gwas_{env}_full_dataset",
+        GWASDIR=config["gwas_dir"]
+    resources:
+        cpus=1, mem_mb=10000, time_min=1440
+    shell:
+        """
+        cd {params.GWASDIR}
+
+        {params.plink_executable_gwas} \
+        --bfile {params.IPREFIX} \
+        --pheno {params.COV} --pheno-name DP0s, SP0s, PP0s \
+        --covar {params.COV} --covar-name age,age2,sex,X1-X10,{wildcards.env} \
+        --glm interaction \
+        --parameters 1-15,29 \
+        --out {params.OPREFIX}
+
+        # Create a completion flag
+        touch {output.done}
+        """
+
+
 
 
 #### Interaction GRM ####
@@ -1554,34 +1733,3 @@ rule S_A_gwas_snp_env_full_dataset:
         touch {output.done}
         """
 
-####
-
-rule gwas_snp_env_full_dataset:
-    input:
-        bfile=config["filtered_chr_dir"] + "/" + "merged_geno_common_snps_selected_indiv.bed",
-        covar=config["gwas_dir"] + "/" + "covar_pheno.txt"
-    output:
-        done=config["gwas_dir"] + "/" + "gxe_gwas_{env}_full_dataset.done"
-    params:
-        plink_executable_gwas = config["plink_executable_gwas"],
-        COV=config["gwas_dir"] + "/" + "covar_pheno.txt",
-        IPREFIX=config["filtered_chr_dir"] + "/" + "merged_geno_common_snps_selected_indiv",
-        OPREFIX="gxe_gwas_{env}_full_dataset",
-        GWASDIR=config["gwas_dir"]
-    resources:
-        cpus=1, mem_mb=10000, time_min=1440
-    shell:
-        """
-        cd {params.GWASDIR}
-
-        {params.plink_executable_gwas} \
-        --bfile {params.IPREFIX} \
-        --pheno {params.COV} --pheno-name DP0s, SP0s, PP0s \
-        --covar {params.COV} --covar-name age,age2,sex,X1-X10,{wildcards.env} \
-        --glm interaction \
-        --parameters 1-15,29 \
-        --out {params.OPREFIX}
-
-        # Create a completion flag
-        touch {output.done}
-        """

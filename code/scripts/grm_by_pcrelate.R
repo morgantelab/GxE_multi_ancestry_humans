@@ -1,3 +1,4 @@
+set.seed(1123)
 # Load necessary libraries
 library(SNPRelate)
 library(GENESIS)
@@ -59,7 +60,7 @@ king_kinship_mat <- king_kinship$kinship
 colnames(king_kinship_mat) <- rownames(king_kinship_mat) <- king_kinship$sample.id
 
 # Save the KING kinship matrix
-save(king_kinship_mat, file = opt$kinship)
+saveRDS(king_kinship_mat, file = opt$kinship)
 
 # Close the GDS file after analysis
 snpgdsClose(gds)
@@ -102,7 +103,7 @@ iids <- as.character(getScanID(diversity_genoData))
 grm_matrix_pcrelate_5pcs <- pcrelateToMatrix(mypcrelate_5pcs, sample.include = iids, thresh = NULL)
 
 # Save the GRM matrix
-save(grm_matrix_pcrelate_5pcs, file = opt$grm)
+saveRDS(grm_matrix_pcrelate_5pcs, file = opt$grm)
 
 # Close genotype data objects
 close(diversity_geno)
