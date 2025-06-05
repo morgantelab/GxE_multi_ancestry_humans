@@ -37,7 +37,7 @@ E_eigen <- eigen(E)
 rownames(E_eigen$vectors) <- rownames(Emat)
 
 # Save the eigenvalues and eigenvectors to an RDS file
-#saveRDS(E_eigen, file = opt$output)
+saveRDS(E_eigen, file = opt$output)
 
 #save(dataset, file="data3_20241106.RData")
 save(Emat, file="Emat_20250106.RData")

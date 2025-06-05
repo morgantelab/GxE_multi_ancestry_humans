@@ -1,3 +1,4 @@
+##THIS IS WRONG SCRIPT
 # Clear workspace and set seed for reproducibility
 rm(list=ls()); gc()
 set.seed(1123)
@@ -119,28 +120,28 @@ update_observed_values <- function(df, filename) {
     warning(sprintf("Skipping %s: Missing ID, Observed, or Predicted column.", filename))
     return(list(data = df, r_squared = NA))
   }
-  
+
   # Extract trait from filename
   trait <- extract_trait(filename)
   trait_column <- paste0(trait, "0s")  # Match dataset column (e.g., DP → DP0s)
-  
+
   # Check if the trait column exists in dataset
   if (!(trait_column %in% colnames(dataset))) {
     warning(sprintf("Skipping %s: Trait column %s not found in dataset.", filename, trait_column))
     return(list(data = df, r_squared = NA))
   }
-  
+
   # Replace NA values in Observed column where ID matches
   id_match <- match(df$ID, dataset$ID)  # Find matching indices
   valid_indices <- which(!is.na(id_match) & is.na(df$Observed))  # Only replace NA values
-  
+
   if (length(valid_indices) > 0) {
     df$Observed[valid_indices] <- dataset[[trait_column]][id_match[valid_indices]]
   }
-  
+
   # Compute R-squared after updating Observed
   r_squared <- calculate_r_squared(df$Observed, df$Predicted)
-  
+
   return(list(data = df, r_squared = r_squared))
 }
 

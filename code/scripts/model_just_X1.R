@@ -1,3 +1,4 @@
+set.seed(1123)
 # Load required libraries
 library(data.table)
 library(Matrix)
@@ -12,7 +13,7 @@ option_list <- list(
   make_option(c("-d", "--dir"), type = "character", default = NULL,
               help = "path to the working directory", metavar = "character"),
   make_option(c("-t", "--data"), type = "character", default = NULL,
-              help = "Path to the scaled dataset RData file", metavar = "character"),
+              help = "Path to the scaled dataset RDS file", metavar = "character"),
   make_option(c("-o", "--output"), type = "character", default = NULL,
               help = "Output directory for saving results", metavar = "character"),
   make_option(c("-s", "--scratch"), type = "character", default = "/scratch3/kgoda/ukbiobank_files/tmp/snakemake_runs",
@@ -43,7 +44,7 @@ type <- parsed_info[2]  # Extract the type (e.g., sp, dp, pp)
 grm <- parsed_info[3]
 
 # Load dataset
-load(opt$data)
+dataset<- readRDS(opt$data)
 
 # Prepare phenotype vector based on type
 ### Extract the phenotype vectors ###
@@ -51,9 +52,10 @@ y <- dataset[[paste0(type, "0s")]]
 rownames(y) <- dataset$ID
 
 # Prepare covariate matrix
-X <- dataset[, c("AOPs", "AOPss", "Sex_SI")]
+X <- dataset[, c("AOPs", "AOPsss", "Sex_SIs")]
 X$AOPs <- as.vector(X$AOPs)
-X$AOPss <- as.vector(X$AOPss)
+X$AOPsss <- as.vector(X$AOPsss)
+X$Sex_SIs <- as.vector(X$Sex_SIs)
 rownames(X) <- dataset$ID
 
 # Model setup

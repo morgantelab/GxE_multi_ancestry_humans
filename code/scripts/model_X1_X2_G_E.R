@@ -1,3 +1,4 @@
+set.seed(1123)
 # Load required libraries
 library(data.table)
 library(Matrix)
@@ -12,7 +13,7 @@ option_list <- list(
   make_option(c("-d", "--dir"), type = "character", default = NULL,
               help = "path to the working directory", metavar = "character"),
   make_option(c("-t", "--data"), type = "character", default = NULL,
-              help = "Path to the scaled dataset RData file", metavar = "character"),
+              help = "Path to the scaled dataset RDS file", metavar = "character"),
   make_option(c("-e", "--eigen"), type = "character", default = NULL,
               help = "Path to the eigen results RDS file", metavar = "character"),
   make_option(c("-v", "--envvars"), type = "character", default = NULL,
@@ -49,7 +50,7 @@ type <- parsed_info[2]  # Extract the type (e.g., sp, dp, pp)
 grm_source <- parsed_info[3]  # Extract the GRM source (e.g., plink, pcrelate)
 
 # Load dataset
-load(opt$data)
+dataset<-readRDS(opt$data)
 
 # Load eigen results
 eigen_results <- readRDS(opt$eigen)
@@ -72,9 +73,10 @@ matched_dataset <- dataset[match(individual_ids, dataset$ID), ]
 y <- matched_dataset[[paste0(type, "0s")]]
 
 # Prepare covariate matrix
-X <- matched_dataset[, c("AOPs", "AOPss", "Sex_SI")]
+X <- matched_dataset[, c("AOPs", "AOPsss", "Sex_SIs")]
 X$AOPs <- as.vector(X$AOPs)
-X$AOPss <- as.vector(X$AOPss)
+X$AOPsss <- as.vector(X$AOPsss)
+X$Sex_SIs <- as.vector(X$Sex_SIs)
 rownames(X) <- rownames(W)
 
 # Load scaled PCs and match to individual IDs
@@ -126,24 +128,6 @@ print("Model ETA created")
 
 model <- BGLR(y=y, ETA=ETA, nIter=iter, burnIn=burnin, thin=thin, verbose=verb, saveAt=paste(opt$scratch, '/', type, '_', grm_source, '_run_G_E_pcrelate_pcs_plink_', sep=''))
 
-###Collecting results###
-# Load results from BGLR output
-zz0 <- read.table(paste(opt$scratch, '/', type, '_', grm_source, '_run_G_E_pcrelate_pcs_plink_mu.dat', sep=''), header=F)
-colnames(zz0) <- "int"
-
-zz1 <- read.table(paste(opt$scratch, '/', type, '_', grm_source, '_run_G_E_pcrelate_pcs_plink_ETA_G_varB.dat', sep=''), header=F)
-colnames(zz1) <- "G"
-
-zz2 <- read.table(paste(opt$scratch, '/', type, '_', grm_source, '_run_G_E_pcrelate_pcs_plink_ETA_E_varB.dat', sep=''), header=F)
-colnames(zz2) <- "E"
-
-zz9 <- read.table(paste(opt$scratch, '/', type, '_', grm_source, '_run_G_E_pcrelate_pcs_plink_varE.dat', sep=''), header=F)
-colnames(zz9) <- "res"
-
-# Combine results into a dataframe and save
-VCEm <- data.frame(zz0, zz1, zz2, zz9)
-write.csv(VCEm, file=file.path(opt$output, paste0("VCEm_", type, "_", grm_source, "_run_G_E_pcrelate_pcs_plink.csv")), row.names=TRUE)
-
 # Sampled regression effects
 B1 <- read.table(paste(opt$scratch, '/', type, '_', grm_source, '_run_G_E_pcrelate_pcs_plink_ETA_X1_b.dat', sep=''), header=TRUE)
 B2 <- read.table(paste(opt$scratch, '/', type, '_', grm_source, '_run_G_E_pcrelate_pcs_plink_ETA_X2_b.dat', sep=''), header=TRUE)
@@ -160,5 +144,5 @@ varabs[, 3] <- matrixStats::colVars(tcrossprod(ETA$G$X, B3))
 varabs[, 4] <- matrixStats::colVars(tcrossprod(ETA$E$X, B4))
 
 # Save variance components
-write.csv(varabs, file=file.path(opt$output, paste0("varabs_", type, "_", grm_source, "_run_G_E_pcrelate_pcs_plink.csv")), row.names=TRUE)
+write.csv(varabs, file=file.path(opt$output, paste0("varabs_", type, "_", grm_source, "_X1_X2_G_E.csv")), row.names=TRUE)
 print("Variance partition results saved")

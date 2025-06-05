@@ -8,8 +8,7 @@ library(dplyr)
 setwd("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data")
 
 # Load dataset
-load("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/data2_20240930.RData")
-dataset <- dtt
+dataset <- readRDS("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/data3_20250514.rds")
 
 # Read in the list of IDs
 id_list <- read.table("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/filtered_chr/merged_ids.rel.id", header = FALSE)$V1

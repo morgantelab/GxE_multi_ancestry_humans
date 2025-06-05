@@ -19,7 +19,7 @@ envs <- c("Townsend", "act0_d", "TVtime", "sleep_d", "smoking_now",
 n_snps <- 302688
 n_envs <- length(envs)
 n_traits <- 3
-total_tests <- n_snps
+total_tests <- n_snps * n_envs
 bonf_threshold <- 0.05 / total_tests
 
 cat("Bonferroni threshold:\n", bonf_threshold, "\n\n")
@@ -30,26 +30,26 @@ summary_list <- list()
 # Loop through each environment
 for (env in envs) {
   cat("Processing Environment:", env, "\n")
-  
+
   env_files <- list.files(results_dir, pattern = paste0("gxe_gwas_", env, "_full_dataset.*\\.glm\\.linear$"), full.names = TRUE)
-  
+
   for (file in env_files) {
-    trait <- ifelse(str_detect(file, "DP0s"), "DBP",
-                    ifelse(str_detect(file, "SP0s"), "SBP",
+    trait <- ifelse(str_detect(file, "DP0s"), "DP",
+                    ifelse(str_detect(file, "SP0s"), "SP",
                            ifelse(str_detect(file, "PP0s"), "PP", NA)))
-    
+
     if (is.na(trait)) next  # Skip if trait not identified
-    
+
     plink_results <- fread(file)
     setnames(plink_results,
              c("#CHROM", "POS", "ID", "REF", "ALT", "A1", "TEST", "OBS_CT", "BETA", "SE", "T_STAT", "P", "ERRCODE"),
              c("CHR", "BP", "SNP", "REF", "ALT", "A1", "TEST", "N", "Beta", "SE", "T", "P", "ERRCODE"),
              skip_absent = TRUE)
-    
+
     interaction_term <- paste0("ADDx", env)
     interaction_results <- plink_results[TEST == interaction_term]
     interaction_results[, P := as.numeric(P)]
-    
+
     n_bonf <- sum(interaction_results$P < bonf_threshold, na.rm = TRUE)
     summary_list[[length(summary_list) + 1]] <- data.table(Environment = env,
                                                            Trait = trait,

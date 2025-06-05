@@ -125,3 +125,31 @@ expand(config["model_dir"] + "/" + "varabs_{bp}_{grm}_GxE_pcrelate_pcs_plink_uns
 expand(config["model_dir"] + "/" + "varabs_{bp}_{grm}_GxE_pcrelate_pcs_plink_scaled_demographics.csv", bp=config["BP"], grm=config["GRM"])
 
 
+rule all:
+  input:
+  config["filtered_chr_dir"] + "/" + "pca_for_pcrelate.rds",
+config["filtered_chr_dir"] + "/" + "pca_for_plink.rds"
+
+# Snakefile
+
+configfile: "config.yaml"
+
+env = config["ENV"]
+grm = config["GRM"]
+bp = config["BP"]
+
+wildcard_constraints:
+  env = '|'.join([x for x in env]),
+grm = '|'.join([x for x in grm])
+
+
+rule all:
+  input:
+  expand(config["model_dir"] + "/" + "varabs_{bp}_{grm}_just_X1.csv", bp=config["BP"], grm=config["GRM"]),
+expand(config["model_dir"] + "/" + "varabs_{bp}_{grm}_just_X1_X2.csv", bp=config["BP"], grm=config["GRM"]),
+expand(config["model_dir"] + "/" + "varabs_{bp}_{grm}_X1_X2_G.csv", bp=config["BP"], grm=config["GRM"]),
+expand(config["model_dir"] + "/" + "varabs_{bp}_{grm}_X1_X2_E.csv", bp=config["BP"], grm=config["GRM"]),
+expand(config["model_dir"] + "/" + "varabs_{bp}_{grm}_X1_X2_G_E.csv", bp=config["BP"], grm=config["GRM"])
+
+
+

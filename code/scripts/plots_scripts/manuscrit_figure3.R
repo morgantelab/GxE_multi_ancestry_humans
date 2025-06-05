@@ -13,7 +13,7 @@ plot_save_dir <- "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/plot
 eigenvec_data_pcrelate <- readRDS("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/filtered_chr/pca_for_pcrelate.rds")
 
 # Load phenotype/ethnicity data
-load("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/data2_20240930.RData")
+dtt <- readRDS("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/data3_20250514.rds")
 
 # Merge with ethnicity data
 eigenvec_pcrelate_df <- data.frame(ID = rownames(eigenvec_data_pcrelate$vectors),
@@ -56,6 +56,6 @@ pc1_vs_pc2_plot <- ggplot(merged_data_pcrelate, aes(x = PC1, y = PC2, color = et
        y = "Principal Component 2")
 
 # Save the plot
-ggsave(filename = paste0(plot_save_dir, "Figure3_PC1_vs_PC2.png"),
+ggsave(filename = paste0(plot_save_dir, "Figure3_PC1_vs_PC2.pdf"),
        plot = pc1_vs_pc2_plot,
-       width = 8, height = 6, dpi = 300)
+       width = 8, height = 6)

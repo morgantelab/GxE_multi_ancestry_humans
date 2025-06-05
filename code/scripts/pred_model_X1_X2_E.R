@@ -1,3 +1,5 @@
+set.seed(1123)
+
 ### Running Predictions for model with just X ###
 rm(list=ls()); gc()
 
@@ -43,7 +45,7 @@ type <- parsed_info[2]  # Extract the type component
 fold_number <- parsed_info[4]  # Extract the fold component without ".csv"
 
 # Load dataset
-load(opt$data)
+dataset <- readRDS(opt$data)
 
 # Load fold
 fold <- readRDS(opt$fold)
@@ -62,17 +64,17 @@ if (!is.null(rownames(y))) {
 
 ### X is the incidence matrix for the 'fixed' covariates (no penalisation, no shrinkage). here age and sex ###
 ### Extract the covariate matrix ###
-X <- dataset[, c("AOPs", "AOPss", "Sex_SI")]
+X <- dataset[, c("AOPs", "AOPsss", "Sex_SIs")]
 X$AOPs <- as.vector(X$AOPs)
-X$AOPss <- as.vector(X$AOPss)
+X$AOPsss <- as.vector(X$AOPsss)
+X$Sex_SIs <- as.vector(X$Sex_SIs)
 rownames(X) <- dataset$ID
 
 print("initial X created")
 
 # Load scaled PCs and match to individual IDs
 pcs_scaled <- readRDS(opt$pcs)
-matched_pcs <- pcs_scaled[match(dataset$ID, pcs_scaled$ID), 2:11]
-P <- matched_pcs
+P <- pcs_scaled[match(dataset$ID, pcs_scaled$ID), 2:11]
 
 # Load eigen of E
 E_eigen <- readRDS(opt$envvars)

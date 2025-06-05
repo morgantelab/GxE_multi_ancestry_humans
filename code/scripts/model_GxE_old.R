@@ -76,9 +76,9 @@ matched_dataset <- dataset[match(individual_ids, dataset$ID), ]
 y <- matched_dataset[[paste0(type, "0s")]]
 
 # Prepare covariate matrix
-X <- matched_dataset[, c("AOPs", "AOPsss", "Sex_SIs")]
+X <- matched_dataset[, c("AOPs", "AOPss", "Sex_SI")]
 X$AOPs <- as.vector(X$AOPs)
-X$AOPss <- as.vector(X$AOPsss)
+X$AOPss <- as.vector(X$AOPss)
 rownames(X) <- rownames(W)
 
 # Load scaled PCs and match to individual IDs
@@ -142,32 +142,32 @@ print("Model ETA created")
 
 # Run BGLR model
 
-model <- BGLR(y=y, ETA=ETA, nIter=iter, burnIn=burnin, thin=thin, verbose=verb, saveAt=paste(opt$scratch, '/', type, '_', grm_source, '_run_GxE_pcrelate_pcs_plink_scaled_demographics_', sep=''))
+model <- BGLR(y=y, ETA=ETA, nIter=iter, burnIn=burnin, thin=thin, verbose=verb, saveAt=paste(opt$scratch, '/', type, '_', grm_source, '_run_GxE_pcrelate_pcs_plink_unscaled_demographics_', sep=''))
 
 ###Collecting results###
 # Load results from BGLR output
-#zz0 <- read.table(paste(opt$scratch, '/', type, '_', grm_source, '_run_GxE_pcrelate_pcs_plink_scaled_demographics_mu.dat', sep=''), header=F)
+#zz0 <- read.table(paste(opt$scratch, '/', type, '_', grm_source, '_run_GxE_pcrelate_pcs_plink_unscaled_demographics_mu.dat', sep=''), header=F)
 #colnames(zz0) <- "int"
 
-#zz1 <- read.table(paste(opt$scratch, '/', type, '_', grm_source, '_run_GxE_pcrelate_pcs_plink_scaled_demographics_ETA_G_varB.dat', sep=''), header=F)
+#zz1 <- read.table(paste(opt$scratch, '/', type, '_', grm_source, '_run_GxE_pcrelate_pcs_plink_unscaled_demographics_ETA_G_varB.dat', sep=''), header=F)
 #colnames(zz1) <- "G"
 
-#zz2 <- read.table(paste(opt$scratch, '/', type, '_', grm_source, '_run_GxE_pcrelate_pcs_plink_scaled_demographics_ETA_E_varB.dat', sep=''), header=F)
+#zz2 <- read.table(paste(opt$scratch, '/', type, '_', grm_source, '_run_GxE_pcrelate_pcs_plink_unscaled_demographics_ETA_E_varB.dat', sep=''), header=F)
 #colnames(zz2) <- "E"
 
-#zz9 <- read.table(paste(opt$scratch, '/', type, '_', grm_source, '_run_GxE_pcrelate_pcs_plink_scaled_demographics_varE.dat', sep=''), header=F)
+#zz9 <- read.table(paste(opt$scratch, '/', type, '_', grm_source, '_run_GxE_pcrelate_pcs_plink_unscaled_demographics_varE.dat', sep=''), header=F)
 #colnames(zz9) <- "res"
 
 # Combine results into a dataframe and save
 #VCEm <- data.frame(zz0, zz1, zz2, zz9)
-#write.csv(VCEm, file=file.path(opt$output, paste0("VCEm_", type, "_", grm_source, "_run_GxE_pcrelate_pcs_plink_scaled_demographics.csv")), row.names=TRUE)
+#write.csv(VCEm, file=file.path(opt$output, paste0("VCEm_", type, "_", grm_source, "_run_GxE_pcrelate_pcs_plink_unscaled_demographics.csv")), row.names=TRUE)
 
 # Sampled regression effects
-B1 <- read.table(paste(opt$scratch, '/', type, '_', grm_source, '_run_GxE_pcrelate_pcs_plink_scaled_demographics_ETA_X1_b.dat', sep=''), header=TRUE)
-B2 <- read.table(paste(opt$scratch, '/', type, '_', grm_source, '_run_GxE_pcrelate_pcs_plink_scaled_demographics_ETA_X2_b.dat', sep=''), header=TRUE)
-B3 <- readBinMat(paste(opt$scratch, '/', type, '_', grm_source, '_run_GxE_pcrelate_pcs_plink_scaled_demographics_ETA_G_b.bin', sep=''))
-B4 <- readBinMat(paste(opt$scratch, '/', type, '_', grm_source, '_run_GxE_pcrelate_pcs_plink_scaled_demographics_ETA_E_b.bin', sep=''))
-B5 <- readBinMat(paste(opt$scratch, '/', type, '_', grm_source, '_run_GxE_pcrelate_pcs_plink_scaled_demographics_ETA_GxE_b.bin', sep=''))
+B1 <- read.table(paste(opt$scratch, '/', type, '_', grm_source, '_run_GxE_pcrelate_pcs_plink_unscaled_demographics_ETA_X1_b.dat', sep=''), header=TRUE)
+B2 <- read.table(paste(opt$scratch, '/', type, '_', grm_source, '_run_GxE_pcrelate_pcs_plink_unscaled_demographics_ETA_X2_b.dat', sep=''), header=TRUE)
+B3 <- readBinMat(paste(opt$scratch, '/', type, '_', grm_source, '_run_GxE_pcrelate_pcs_plink_unscaled_demographics_ETA_G_b.bin', sep=''))
+B4 <- readBinMat(paste(opt$scratch, '/', type, '_', grm_source, '_run_GxE_pcrelate_pcs_plink_unscaled_demographics_ETA_E_b.bin', sep=''))
+B5 <- readBinMat(paste(opt$scratch, '/', type, '_', grm_source, '_run_GxE_pcrelate_pcs_plink_unscaled_demographics_ETA_GxE_b.bin', sep=''))
 
 # Calculate variance components
 varabs <- matrix(NA, nrow_varabs, 5); colnames(varabs) <- c("V_X1", "V_X2", "V_G", "V_E", "V_GxE")
@@ -180,5 +180,5 @@ varabs[, 4] <- matrixStats::colVars(tcrossprod(ETA$E$X, B4))
 varabs[, 5] <- matrixStats::colVars(tcrossprod(ETA$GxE$X, B5))
 
 # Save variance components
-write.csv(varabs, file=file.path(opt$output, paste0("varabs_", type, "_", grm_source, "_GxE_pcrelate_pcs_plink_scaled_demographics.csv")), row.names=TRUE)
+write.csv(varabs, file=file.path(opt$output, paste0("varabs_", type, "_", grm_source, "_GxE_pcrelate_pcs_plink_unscaled_demographics.csv")), row.names=TRUE)
 print("Variance partition results saved")

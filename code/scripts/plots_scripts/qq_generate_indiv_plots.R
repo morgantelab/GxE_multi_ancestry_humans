@@ -1,4 +1,7 @@
 rm(list=ls()); gc()
+
+set.seed(1123)
+
 library(data.table)
 library(ggplot2)
 library(qqman)
@@ -68,7 +71,7 @@ for (env in envs) {
     plot_name <- gsub("\\.glm\\.linear$", "", file_name)  # Remove extension
 
     # Generate QQ Plot
-    qqplot_file <- file.path(output_dir, paste0("qqplot_with_covar_full_dataset_", plot_name, ".png"))
+    qqplot_file <- file.path(output_dir, paste0("qqplot_with_scaled_covar_full_dataset_", plot_name, ".png"))
     generate_qq_plot(plink_results$P, paste("QQ Plot Full Dataset:", env), qqplot_file)
   }
 }

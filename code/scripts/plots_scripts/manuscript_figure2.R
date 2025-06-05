@@ -13,7 +13,7 @@ plot_save_dir <- "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/plot
 eigenvec_data_plink <- readRDS("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/filtered_chr/pca_for_plink.rds")
 
 # Load phenotype/ethnicity data
-load("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/data2_20240930.RData")
+dtt <- readRDS("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/data3_20250514.rds")
 
 # Merge with ethnicity data
 eigenvec_plink_df <- data.frame(ID = rownames(eigenvec_data_plink$vectors),
@@ -56,6 +56,6 @@ pc1_vs_pc2_plot <- ggplot(merged_data_plink, aes(x = PC1, y = PC2, color = ethn1
        y = "Principal Component 2")
 
 # Save the plot
-ggsave(filename = paste0(plot_save_dir, "Figure2_PC1_vs_PC2_PLINK.png"),
+ggsave(filename = paste0(plot_save_dir, "Figure2_PC1_vs_PC2_PLINK.pdf"),
        plot = pc1_vs_pc2_plot,
-       width = 8, height = 6, dpi = 300)
+       width = 8, height = 6)

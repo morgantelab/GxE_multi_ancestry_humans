@@ -29,7 +29,7 @@ setwd(opt$dir)
 
 print("loading grm")
 # Load GRM matrix from the provided input file
-readRDS(opt$input)
+grm_matrix_pcrelate_5pcs <- readRDS(opt$input)
 print("grm loaded")
 
 print("computing eigen")
