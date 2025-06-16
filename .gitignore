@@ -22,5 +22,12 @@ plotss
 plotss/*
 code/extra/*
 code/workflowr/*
+code/scripts/plots_scripts/plots_extra
 code/scripts/plots_scripts/plots_extra/*
 code/scripts/processing_scripts/*
+docs
+code/._submit_snakemake.sh
+code/._slurm-1229984.out
+code/._config.yaml
+code/._.DS_Store
+code/.snakemake

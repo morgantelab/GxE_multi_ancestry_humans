@@ -482,27 +482,6 @@ rule grm_by_plink:
         --out {params.OPREFIX}
         """
 
-# Step 5: create grm using fabio struct method
-
-#rule grm_by_struct_mtd:
-#    input:
-#        bfile=config["filtered_chr_dir"] + "/" + "merged_geno_common_snps.bed",
-#        dataset=config["data_dir"] + "/" + "data2_20240930.RData",
-#	      ids=config["filtered_chr_dir"] + "/" + "merged_ids.rel.id"
-#    output:
-#        eigen_struct=config["filtered_chr_dir"] + "/" + "eigen_by_struct.rds"
-#    params:
-#        INPUTDIR=config["filtered_chr_dir"],
-#        SCRIPT=config["SCRIPT"] + "/" + "eigen_by_struct.R"
-#    resources: cpus=55, mem_mb=1400000, time_min=5000
-#    shell:
-#        """
-#        source /opt/intel/oneapi/mkl/2023.2.0/env/vars.sh intel64
-#        module load R/4.2.3
-#        export MKL_NUM_THREADS=55
-#        Rscript {params.SCRIPT} -d {params.INPUTDIR} -b {input.bfile} -s {input.dataset} -i {input.ids} -o {output}
-#        """
-
 # Step 6: Make bed geno of selected indv
 
 rule merged_geno_common_snps_selected_indv:
@@ -589,7 +568,7 @@ rule pca_for_grm_by_plink:
         pca_results=config["filtered_chr_dir"] + "/" + "pca_for_plink.rds"
     params:
         INPUTDIR=config["filtered_chr_dir"],
-	IPREFIX=config["filtered_chr_dir"] + "/" + "grm_by_plink",
+	      IPREFIX=config["filtered_chr_dir"] + "/" + "grm_by_plink",
         SCRIPT=config["SCRIPT"] + "/" + "pca_for_grm_by_plink_using_eigen_in_R.R"
     resources: cpus=10, mem_mb=250000, time_min=3000
     shell:
