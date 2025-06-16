@@ -31,3 +31,5 @@ code/._slurm-1229984.out
 code/._config.yaml
 code/._.DS_Store
 code/.snakemake
+code/workflowr
+
