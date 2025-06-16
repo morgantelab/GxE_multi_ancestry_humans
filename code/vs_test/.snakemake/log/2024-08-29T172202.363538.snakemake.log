@@ -1,3 +1,0 @@
-KeyError in line 48 of /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/vs_test/snakefile.yaml:
-'paths'
-  File "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/vs_test/snakefile.yaml", line 48, in <module>
