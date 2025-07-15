@@ -1,3 +1,6 @@
+rm(list=ls()); gc()
+set.seed(1123)
+
 # Load necessary libraries
 library(ggplot2)
 library(dplyr)
@@ -6,11 +9,11 @@ library(gridExtra)
 library(grid)
 
 # Load dataset
-file_path <- "C:/Users/Aishwarya/Downloads/subset_dataset_figure1-2.csv" 
+file_path <- "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/subset_dataset_figure1.csv"
 df <- read_csv(file_path)
 
 # Capitalize only the first letter of each ethnicity value
-df$ethn1_consolidated <- paste0(toupper(substring(df$ethn1_consolidated, 1, 1)), 
+df$ethn1_consolidated <- paste0(toupper(substring(df$ethn1_consolidated, 1, 1)),
                                 tolower(substring(df$ethn1_consolidated, 2)))
 
 # Define ethnicity color mapping
@@ -38,7 +41,7 @@ ethnicity_order <- c("Asian", "White", "Black", "Mixed", "Chinese")
 # Create figure (A) - Diastolic Blood Pressure (DP0a)
 fig_a <- ggplot(df, aes(x = factor(ethn1_consolidated, levels = ethnicity_order), y = DP0a, fill = ethn1_consolidated)) +
   geom_boxplot(color = "black", alpha = 0.7) +
-  stat_summary(fun = mean, geom = "point", shape = 23, size = 3.5, 
+  stat_summary(fun = mean, geom = "point", shape = 23, size = 3.5,
                fill = "deepskyblue3", color = "black") +
   scale_fill_manual(values = ethnicity_colors) +
   scale_x_discrete(labels = ethnicity_order) +
@@ -48,7 +51,7 @@ fig_a <- ggplot(df, aes(x = factor(ethn1_consolidated, levels = ethnicity_order)
 # Create figure (B) - Systolic Blood Pressure (SP0a)
 fig_b <- ggplot(df, aes(x = factor(ethn1_consolidated, levels = ethnicity_order), y = SP0a, fill = ethn1_consolidated)) +
   geom_boxplot(color = "black", alpha = 0.7) +
-  stat_summary(fun = mean, geom = "point", shape = 23, size = 3.5, 
+  stat_summary(fun = mean, geom = "point", shape = 23, size = 3.5,
                fill = "deepskyblue3", color = "black") +
   scale_fill_manual(values = ethnicity_colors) +
   scale_x_discrete(labels = ethnicity_order) +
@@ -58,7 +61,7 @@ fig_b <- ggplot(df, aes(x = factor(ethn1_consolidated, levels = ethnicity_order)
 # Create figure (C) - Pulse Pressure (PP0a) with improved y-axis
 fig_c <- ggplot(df, aes(x = factor(ethn1_consolidated, levels = ethnicity_order), y = PP0a, fill = ethn1_consolidated)) +
   geom_boxplot(color = "black", alpha = 0.7) +
-  stat_summary(fun = mean, geom = "point", shape = 23, size = 3.5, 
+  stat_summary(fun = mean, geom = "point", shape = 23, size = 3.5,
                fill = "deepskyblue3", color = "black") +
   scale_fill_manual(values = ethnicity_colors) +
   scale_x_discrete(labels = ethnicity_order) +
@@ -81,8 +84,8 @@ fig_d <- ggplot(ethnicity_counts, aes(x = factor(ethn1_consolidated, levels = et
 # Function to add labels (A, B, C, D) **INSIDE** the plot
 add_label <- function(plot, label) {
   arrangeGrob(
-    textGrob(label, x = 0.1, y = 0.50, just = "left", gp = gpar(fontsize = 14, fontface = "bold")), 
-    plot, 
+    textGrob(label, x = 0.1, y = 0.50, just = "left", gp = gpar(fontsize = 14, fontface = "bold")),
+    plot,
     heights = c(0.05, 1),  # Reduced label height
     ncol = 1
   )
