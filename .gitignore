@@ -10,9 +10,9 @@ analysis/*png
 analysis/*html
 analysis/*_cache
 analysis/site_libs
-data
+data/
 data/*RData
-output
+output/
 code/.snakemake/*
 code/.snakemake/metadata/*
 code/._snakefile
