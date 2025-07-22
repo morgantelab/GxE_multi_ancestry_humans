@@ -1,8 +1,0 @@
-Building DAG of jobs...
-InputFunctionException in line 10 of /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/code/snakefile:
-Error:
-  AttributeError: 'Wildcards' object has no attribute 'ancestry'
-Wildcards:
-
-Traceback:
-  File "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/code/snakefile", line 13, in <lambda>

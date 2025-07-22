@@ -34,3 +34,4 @@ code/.snakemake
 code/workflowr
 dump
 code_copy
+code/dump

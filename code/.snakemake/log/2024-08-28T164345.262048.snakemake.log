@@ -1,4 +1,0 @@
-Building DAG of jobs...
-MissingInputException in line 13 of /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/code/snakefile:
-Missing input files for rule filter_snplist_per_ancestry:
-/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/{wildcard.ancestry}_sample_ids.txt

@@ -1,6 +1,0 @@
-setwd("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/")
-library(workflowr)
-wflow_git_config()
-wflow_status()
-wflow_open("analysis/first_report.Rmd")
-wflow_publish("analysis/*.Rmd", "Initial publishing of workflowr reports")
