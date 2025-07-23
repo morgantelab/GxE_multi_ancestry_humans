@@ -11,7 +11,7 @@ library(cowplot)
 library(scales)
 
 # Load the summary file
-summary_file <- "C:/Users/Aishwarya/Downloads/all_model_summary_ethn_corrected.csv"
+summary_file <- "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/model/all_model_summary_ethn_corrected.csv"
 summary_data <- read_csv(summary_file)
 
 # Define levels
@@ -104,4 +104,4 @@ all_plots <- plot_grid(plot_list[[1]], plot_list[[2]], plot_list[[3]],
 final_plot <- plot_grid(all_plots, legend, rel_widths = c(0.9, 0.15))
 
 # Save the final PDF
-ggsave("C:/Users/Aishwarya/Desktop/figure_2.pdf", height = 30, width = 24, dpi = 300, device = "pdf")
+ggsave("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/plots/Figure_5.pdf", height = 30, width = 24, dpi = 300, device = "pdf")

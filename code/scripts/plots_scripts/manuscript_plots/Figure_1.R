@@ -100,11 +100,8 @@ final_plot <- grid.arrange(
   ncol = 2, nrow = 2
 )
 
-# Save all figures as PNG with **STRICT SIZE**
-#ggsave("C:/Users/Aishwarya/Desktop/khushi didi.png", final_plot, width = 8, height = 8, dpi = 300)
-
 # Save all figures in one PDF with **STRICT SIZE**
-pdf ("C:/Users/Aishwarya/Desktop/all.pdf", width = 8, height = 8)
+pdf ("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/plots/Figure_1.pdf", width = 8, height = 8)
 grid.arrange(
   add_label(fig_a, "A"),
   add_label(fig_b, "B"),

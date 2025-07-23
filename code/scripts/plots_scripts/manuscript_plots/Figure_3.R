@@ -9,38 +9,38 @@ library(dplyr)
 # Define plot save directory
 plot_save_dir <- "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/plots/"
 
-# --- Load Eigen Data ---
-eigenvec_data_pcrelate <- readRDS("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/filtered_chr/pca_for_pcrelate.rds")
+# --- Load lifestyle PCA Data ---
+eigenvec_data_lifestyle <- readRDS("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/E_eigen.rds")
 
 # Load phenotype/ethnicity data
 dtt <- readRDS("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/data3_20250514.rds")
 
 # Merge with ethnicity data
-eigenvec_pcrelate_df <- data.frame(ID = rownames(eigenvec_data_pcrelate$vectors),
-                                   eigenvec_data_pcrelate$vectors,
-                                   stringsAsFactors = FALSE)
+eigenvec_lifestyle_df <- data.frame(ID = rownames(eigenvec_data_lifestyle$vectors),
+                                eigenvec_data_lifestyle$vectors,
+                                stringsAsFactors = FALSE)
 
 # Ensure IDs are characters
-eigenvec_pcrelate_df$ID <- as.character(eigenvec_pcrelate_df$ID)
+eigenvec_lifestyle_df$ID <- as.character(eigenvec_lifestyle_df$ID)
 dtt$ID <- as.character(dtt$ID)
 
 # Merge datasets by ID
-merged_data_pcrelate <- merge(eigenvec_pcrelate_df, dtt, by = "ID")
+merged_data_lifestyle <- merge(eigenvec_lifestyle_df, dtt, by = "ID")
 
 # Rename PCs clearly
-colnames(merged_data_pcrelate)[2:ncol(eigenvec_pcrelate_df)] <- paste0("PC", 1:(ncol(eigenvec_pcrelate_df) - 1))
+colnames(merged_data_lifestyle)[2:ncol(eigenvec_lifestyle_df)] <- paste0("PC", 1:(ncol(eigenvec_lifestyle_df) - 1))
 
-# Define ethnicity colors as specified
+# Define ethnicity colors
 ethnicity_colors <- c(
   "White" = "limegreen",
-          "Black" = "orange",
-          "Asian" = "yellow",
-          "Mixed" = "pink",
-          "Chinese" = "red"
+  "Black" = "orange",
+  "Asian" = "yellow",
+  "Mixed" = "pink",
+  "Chinese" = "red"
 )
 
 # Plot PC1 vs PC2 without title, formatted as manuscript
-pc1_vs_pc2_plot <- ggplot(merged_data_pcrelate, aes(x = PC1, y = PC2, color = ethn1_consolidated)) +
+pc1_vs_pc2_plot <- ggplot(merged_data_lifestyle, aes(x = PC1, y = PC2, color = ethn1_consolidated)) +
   geom_point(alpha = 0.7, size = 1.5) +
   theme_bw(base_size = 16) +
   theme(
@@ -56,6 +56,6 @@ pc1_vs_pc2_plot <- ggplot(merged_data_pcrelate, aes(x = PC1, y = PC2, color = et
        y = "Principal Component 2")
 
 # Save the plot
-ggsave(filename = paste0(plot_save_dir, "Figure3_PC1_vs_PC2.pdf"),
+ggsave(filename = paste0(plot_save_dir, "Figure3_PC1_vs_PC2_lifestyle.pdf"),
        plot = pc1_vs_pc2_plot,
        width = 8, height = 6)
