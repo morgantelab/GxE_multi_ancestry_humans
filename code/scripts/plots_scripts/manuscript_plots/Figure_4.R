@@ -1,5 +1,8 @@
 # Clean environment
 rm(list=ls())
+
+set.seed(1123)
+
 # Load necessary libraries
 library(ggplot2)
 library(grid)
@@ -9,10 +12,10 @@ library(tidyr)
 library(stringr)
 library(purrr)
 library(ggpubr)
-library(cowplot)  # For placing labels outside the plot
+library(cowplot)
 
 # Load your CSV file
-df <- read.csv("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/model/vc_means_all_models_with_ci.csv", stringsAsFactors = FALSE)
+df <- read.csv("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/model/figure_4_dataset.csv", stringsAsFactors = FALSE)
 
 # Map Component to friendly legend labels
 component_labels <- c(
@@ -23,68 +26,88 @@ component_labels <- c(
   "V_GxE" = "Genetics-by-lifestyle"
 )
 
-# Only keep rows with components of interest
+# Keep only required components
 df <- df %>% filter(Component %in% names(component_labels))
 
-# Add a pretty label column for plotting
+# Add readable Component label
 df$Component_label <- component_labels[df$Component]
 
-# Recode Model to Model 1, Model 2, ... in order of appearance
-model_levels <- unique(df$Model)
-model_labels <- paste0("Model ", seq_along(model_levels))
-model_map <- setNames(model_labels, model_levels)
-df$Model <- model_map[df$Model]
-
-# Set the desired order for the x-axis (Model 1 to Model 5)
-desired_model_labels <- paste0("Model ", 1:6)
-df$Model <- factor(df$Model, levels = desired_model_labels)
-
-# Ensure Component_label is a factor and ordered as in the legend
-df$Component_label <- factor(df$Component_label, levels = component_labels)
-
-# X-axis labels as "Model 1", "Model 2", ...
-Lables <- desired_model_labels
-
-# Color-blind-friendly palette (Okabe-Ito) for the components
-color_blind_palette <- c(
-  "Demographics" = "#E69F00",        # orange
-  "Structure" = "#56B4E9",          # sky blue
-  "Genetics" = "#009E73",           # green
-  "Lifestyle" = "#F39B7F",          # reddish orange
-  "Genetics-by-lifestyle" = "#0072B2" # blue
+# Model mapping: Model number and component set for assignment
+model_map <- c(
+  "V_X1" = "Model 1: X1",
+  "V_X1_X2" = "Model 2: X1, X2",
+  "V_X1_X2_G" = "Model 3: X1, X2, G",
+  "V_X1_X2_E" = "Model 4: X1, X2, E",
+  "V_X1_X2_G_E" = "Model 5: X1, X2, G, E",
+  "V_X1_X2_G_E_GxE" = "Model 6: X1, X2, G, E, GxE"
 )
 
-# Filter out rows with 0 or NA mean values
-df <- df %>% filter(!is.na(Mean) & Mean != 0)
+# Add new Model_full column for assignment
+df$Model_full <- model_map[df$Model]
 
-# Function to get flexible y-axis limits for each trait
+# For plotting, create a simple Model label for the x-axis
+model_simple_map <- c(
+  "Model 1: X1" = "Model 1",
+  "Model 2: X1, X2" = "Model 2",
+  "Model 3: X1, X2, G" = "Model 3",
+  "Model 4: X1, X2, E" = "Model 4",
+  "Model 5: X1, X2, G, E" = "Model 5",
+  "Model 6: X1, X2, G, E, GxE" = "Model 6"
+)
+df$Model_simple <- model_simple_map[df$Model_full]
+
+# Set model order for plotting
+desired_model_full <- names(model_simple_map)
+desired_model_simple <- unname(model_simple_map)
+
+df$Model_full <- factor(df$Model_full, levels = desired_model_full)
+df$Model_simple <- factor(df$Model_simple, levels = desired_model_simple)
+
+# Ensure Component_label is ordered properly
+df$Component_label <- factor(df$Component_label, levels = component_labels)
+
+# Color palette for components (Genetics and Lifestyle colors swapped)
+color_blind_palette <- c(
+  "Demographics" = "#E69F00",
+  "Structure" = "#56B4E9",
+  "Genetics" = "purple",  # Swapped color
+  "Lifestyle" = "#009E73", # Swapped color
+  "Genetics-by-lifestyle" = "brown"
+)
+
+# Remove NA or zero values
+df <- df %>% filter(!is.na(mean) & mean != 0)
+
+# Flexible Y-limit function
 get_ylim <- function(trait_name) {
-  vals <- df %>% filter(Trait == trait_name) %>% pull(CI_Upper)
+  vals <- df %>% filter(trait == trait_name) %>% pull(ci_upper)
   if(length(vals) == 0) return(c(0, 1))
   max_val <- max(vals, na.rm = TRUE)
-  c(0, max_val * 1.05)  # Slight buffer to prevent cutoff
+  c(0, max_val * 1.05)
 }
 
-# Create individual plots for each trait (no panel label here)
-plot_trait <- function(trait_name, legend_text_size=35) {
-  ylim <- get_ylim(trait_name)
-  ggplot(df %>% filter(Trait == trait_name), 
-         aes(x = Model, y = Mean, color = Component_label)) +
+# Trait plotting function with optional custom ylim
+plot_trait <- function(trait_name, legend_text_size=35, custom_ylim=NULL) {
+  ylim <- if(is.null(custom_ylim)) get_ylim(trait_name) else custom_ylim
+  ggplot(df %>% filter(trait == trait_name),
+         aes(x = Model_simple, y = mean, color = Component_label)) +
     geom_point(position = position_dodge2(width = 1, preserve = "single"), size = 9) +
-    geom_errorbar(aes(ymin = CI_Lower, ymax = CI_Upper), width = 1, 
+    geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper), width = 1,
                   position = position_dodge2(width = 1, preserve = "single")) +
     labs(title = "", x = "", y = "Variance") +
     scale_y_continuous(limits = ylim, expand = c(0, 0)) +
-    scale_x_discrete(labels = Lables, expand = expansion(add = 0.6)) +
-    scale_color_manual(values = color_blind_palette, 
+    scale_x_discrete(labels = desired_model_simple, expand = expansion(add = 0.6)) +
+    scale_color_manual(values = color_blind_palette,
                        labels = names(color_blind_palette)) +
-    theme_minimal() +
+    theme_bw(base_size = 15) +  # White background
     theme(
       legend.position = "bottom",
       legend.title = element_blank(),
       legend.text = element_text(size = legend_text_size),
       legend.key.size = unit(2, "cm"),
-      axis.text.x = element_text(size = 35, color = "black"),
+      legend.background = element_rect(fill = "white", color = NA),
+      legend.box.background = element_rect(fill = "white", color = NA),
+      axis.text.x = element_text(size = 35, color = "black", angle = 0, hjust = 0.5),
       axis.text.y = element_text(size = 35, color = "black"),
       axis.title.x = element_blank(),
       axis.title.y = element_text(size = 35, margin = margin(t = 0, r = 20, b = 0, l = 0)),
@@ -94,26 +117,29 @@ plot_trait <- function(trait_name, legend_text_size=35) {
       axis.line = element_line(color = "black"),
       axis.ticks = element_line(color = "black"),
       axis.ticks.length = unit(0.3, "cm"),
-      panel.border = element_rect(colour = "black", fill=NA, size=2)
+      panel.border = element_rect(colour = "black", fill=NA, size=2),
+      plot.background = element_rect(fill = "white", color = NA)
     )
 }
 
+# Generate individual trait plots
 plot_dp <- plot_trait("DP", legend_text_size=35)
 plot_sp <- plot_trait("SP", legend_text_size=30)
-plot_pp <- plot_trait("PP", legend_text_size=30)
+plot_pp <- plot_trait("PP", legend_text_size=30, custom_ylim=c(-0.5, get_ylim("PP")[2]))
 
-# Arrange plots with common legend (no panel labels here)
-plots_arranged <- ggarrange(plot_dp, plot_sp, plot_pp, ncol=1, 
+# Arrange all plots vertically with common legend
+plots_arranged <- ggarrange(plot_dp, plot_sp, plot_pp, ncol=1,
                             common.legend = TRUE, legend = "bottom")
 
-# Use cowplot to add A, B, C outside the left border
+# Add A, B, C labels to the left
 final <- ggdraw(plots_arranged) +
   draw_plot_label(
     label = c("A", "B", "C"),
-    x = rep(0.01, 3), # far left
-    y = c(0.98, 0.65, 0.32), # adjust for 3 panels
+    x = rep(0.01, 3),
+    y = c(0.98, 0.65, 0.32),
     hjust = 0, vjust = 1,
     fontface = "bold", size = 50, color = "black"
   )
 
+# Save the final PNG with white background
 ggsave("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/plots/Fig4_var_exp_ci.pdf", final, height = 32, width = 24, dpi = 300, device = "pdf")

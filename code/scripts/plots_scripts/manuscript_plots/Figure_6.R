@@ -33,19 +33,6 @@ summary_data_folds <- summary_data %>%
     Model = factor(Model, levels = models)
   )
 
-# Identify problematic rows with non-finite R_squared
-bad_rows <- summary_data_folds %>% filter(!is.finite(R_squared))
-print("Non-finite R_squared rows:")
-print(bad_rows)
-
-# Also check outliers that might be outside y-axis limits
-summary_stats <- summary_data_folds %>%
-  group_by(Trait) %>%
-  summarize(min_R2 = min(R_squared, na.rm = TRUE),
-            max_R2 = max(R_squared, na.rm = TRUE))
-print("R^2 summary by trait:")
-print(summary_stats)
-
 
 # Colorblind-friendly color palette (Set2)
 trait_colors <- c("DP" = "#66C2A5", "SP" = "#8DA0CB", "PP" = "#FC8D62")
@@ -112,3 +99,4 @@ final_plot <- plot_grid(plotlist = plot_list, ncol = 1, align = "v")
 ggsave("/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/plots/Figure_6_boxplot.pdf",
        plot = final_plot,
        width = 16, height = 24, dpi = 300)
+

@@ -11,7 +11,7 @@ library(cowplot)
 library(scales)
 
 # Load the summary file
-summary_file <- "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/model/all_model_summary_ethn_corrected.csv"
+summary_file <- "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/model/all_model_summary_ethn_corrected_use.csv"
 summary_data <- read_csv(summary_file)
 
 # Define levels
