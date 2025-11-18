@@ -1,0 +1,533 @@
+# Snakefile
+
+# configfile: "config.yaml"
+
+
+# data_dir -> data4_dir
+# filtered_chr_dir -> filt4_dir
+# model_dir -> model4_dir
+
+old_data = config["data_dir"]
+# data =     config["data4_dir"]
+# chrdir =   chrdir
+# model =    config["model4_dir"]
+
+
+
+trait_UPPER = ['DP', 'SP', 'PP']
+
+
+env = config["ENV"]
+grm = config["GRM"]
+bp = config["BP"]
+foldnum = config["FOLDNUM"]
+
+wildcard_constraints:
+  env = '|'.join([x for x in env]),
+  # grm = '|'.join([x for x in grm]),
+  foldnum = '|'.join([x for x in foldnum]),
+  traitor="[A-Z]+",
+  grm="[a-z]+",
+
+# nklimko additions
+
+BP=config["BP"]
+GRM=config["GRM"]
+ANC=config["Ancestry"]
+FOLD=config["FOLDNUM"]
+ENV=config["ENV"]
+scratch=config['scratch']
+ukbgen=config['ukbgen']
+
+mam='/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/'
+data =     mam+'data/white_24k/'
+chrdir =   mam+'data/white_24k/filt/'
+modeldir = mam+'data/white_24k/model/'
+nscript =  mam+'code/scripts/white_24k/'
+mod=modeldir
+
+rule all:
+    input:
+        # expand(modeldir + "varabs_{bp}_{grm}_model6.csv", bp=BP, grm=GRM),
+        # expand(chrdir + "pca_for_{grm}.rds", grm='plink'),
+        data + "E_eigen.rds",
+        data + "scaled_pcs_plink.rds",
+        expand(data + "eigen_GxE_{grm}.rds", grm='plink'),
+        chrdir + "pca_for_plink.rds",
+        # expand(mam+'output/white_24k/{traitor}/{grm}/model6_white24k.csv', traitor=trait_UPPER, grm='plink'),
+        data+'covar_pheno.txt',
+        # expand(mam+'output/white_24k/gxegwas/{traitor}/{env}.{traitor}0s.glm.linear', env=env, traitor=trait_UPPER),
+        mam+"data/gpcxe/covar_pheno.txt",
+        expand(mam+'output/gpcxe/gxegwas/{traitor}/{env}.{traitor}0s.glm.linear', env=env, traitor=trait_UPPER),
+        expand(mam+'output/anova/{env}.txt', env=env),
+
+
+### ANOVA
+
+rule mult_anova:
+  input:
+    script=mam+'code/scripts/mult/env_ethn_anova.R',
+    data=mam+'data/mult/anova_input.rds',
+  output:
+    main=mam+'output/anova/{env}.txt',
+  shell:
+    """
+    module load R/4.2.3
+
+    Rscript {input.script} \
+    --datapath {input.data} \
+    --env {wildcards.env} \
+    --outpath {output.main}
+    """
+
+
+
+
+
+
+#### GxE-GWAS ####
+
+## making covar_pheno file for gxe-gwas
+rule white24k_covar_pheno:
+    input:
+        script = nscript+"covar_pheno_creation.R",
+        dataset = data+'data4_20251104.rds',
+        pcs = data+'scaled_pcs_plink.rds',
+        emat = data+'Emat_20251104.RData'
+    output:
+        covar_pheno = data+'covar_pheno.txt'
+    resources:
+        tasks=1, mem_mb_per_cpu=100000, time_min=3000
+    shell:
+        """
+        source /opt/intel/oneapi/mkl/2023.2.0/env/vars.sh intel64
+        module load R/4.2.3
+        export MKL_NUM_THREADS=1
+
+        Rscript {input.script} \
+            --data {input.dataset} \
+            --pcs {input.pcs} \
+            --emat {input.emat} \
+            --output {output.covar_pheno}
+        """
+
+#
+# rule white24k_gxegwas:
+#     input:
+#         bfile=chrdir+ "merged_geno_common_snps_selected_indiv.bed",
+#         covar=data+"covar_pheno.txt"
+#     output:
+#         mam+'output/white_24k/gxegwas/{traitor}/{env}.{traitor}0s.glm.linear'
+#         # done=config["gwas_dir"] + "/" + "gxe_gwas_{env}_full_dataset.done"
+#     params:
+#         plink_executable_gwas = config["plink2_gwas"],
+#         COV=data + "covar_pheno.txt",
+#         IPREFIX=chrdir + "merged_geno_common_snps_selected_indiv",
+#         OPREFIX=mam+'output/white_24k/gxegwas/{traitor}/{env}',
+#         pheno ='{traitor}0s'
+#     resources:
+#         tasks=4, mem_mb_per_cpu=10000, time_min=1440
+#     shell:
+#         """
+#         {params.plink_executable_gwas} \
+#         --threads {resources.tasks} \
+#         --seed 1123 \
+#         --bfile {params.IPREFIX} \
+#         --no-input-missing-phenotype \
+#         --pheno {params.COV} --pheno-name {params.pheno} \
+#         --covar {params.COV} --covar-name age,age2,sex,X1-X10,{wildcards.env},{wildcards.env}__X1-{wildcards.env}__X10 \
+#         --glm interaction \
+#         --parameters 1-25,39 \
+#         --out {params.OPREFIX}
+#
+#         """
+        # Create a completion flag
+        # touch {output.done}
+
+
+rule white24k_model6_24k:
+    input:
+        # script=mam+'data/white_24k/model_6.R',
+        script=mam+'code/scripts/white_24k/m6_white24k.R',
+        data=data + "data4_20251104.rds",
+        eigen=chrdir + "pca_for_{grm}.rds",
+        env=data + "E_eigen.rds",
+        pcs=data + "scaled_pcs_plink.rds",
+        GxE=data + "eigen_GxE_{grm}.rds",
+    output:
+        varcomp = mam+'output/white_24k/{traitor}/{grm}/model6_white24k.csv',
+        fit =     mam+'output/white_24k/{traitor}/{grm}/fit.rds',
+        # varabs=modeldir + "varabs_{bp}_{grm}_model6.csv"
+    params:
+        # INPUTDIR=modeldir,
+        scratch   = scratch+'mult/{traitor}/{grm}/model6_white24/dart_',
+        scratchdir= scratch+'mult/{traitor}/{grm}/model6_white24/',
+    resources:
+      tasks=24, mem_mb_per_cpu=12500, time_min=3000
+    shell:
+        """
+        source /opt/intel/oneapi/mkl/2023.2.0/env/vars.sh intel64
+        module load R/4.2.3
+        export MKL_NUM_THREADS={resources.tasks}
+        export OMP_NUM_THREADS={resources.tasks}
+
+
+        mkdir -p {params.scratchdir}
+
+        Rscript {input.script} \
+        --trait {wildcards.traitor} \
+        --datapath {input.data} \
+        --eigenpath {input.eigen} \
+        --gxe_eigenpath {input.GxE} \
+        --pcpath {input.pcs} \
+        --envpath {input.env} \
+        --outpath {output.fit} \
+        --varpath {output.varcomp} \
+        --scratch {params.scratch}
+        """
+        # mkdir -p {params.INPUTDIR}
+        # Rscript {input.script} -d {params.INPUTDIR} -t {input.data} -e {input.eigen} -q {input.GxE} -v {input.envvar} -p {input.pcs} -o {params.INPUTDIR} -s {params.scratch} -r {output.varabs}
+
+#### Start of rules ####
+
+## Create Ancestry IDs lists ##
+
+## scaling dataset ##
+rule white24k_scale_phenotypes:
+    input:
+        data_rds = old_data + "data2_20250501_only_analysis_vars.rds",
+        id_file = mam+"output/nklimko/grm/white_24k.rel.id"
+    output:
+        # scaled_rds = data + "data3_20250514.rds"
+        scaled_rds = data + "data4_20251104.rds"
+    params:
+        script = nscript + "preprocessing_scalling_dataset.R"
+    resources:
+        tasks=1, mem_mb_per_cpu=10000, time_min=1440
+    shell:
+        """
+        source /opt/intel/oneapi/mkl/2023.2.0/env/vars.sh intel64
+        module load R/4.2.3
+        export MKL_NUM_THREADS=1
+
+        Rscript {params.script} \
+            --input_rds {input.data_rds} \
+            --id_list {input.id_file} \
+            --output_rds {output.scaled_rds}
+        """
+
+## scaling pcs ##
+rule white24k_scale_pcs:
+    input:
+        # pcrelate_rds = chrdir + "pca_for_pcrelate.rds",
+        plink_rds = chrdir + "pca_for_plink.rds"
+    output:
+        # out_pcrelate = data + "scaled_pcs_pcrelate.rds",
+        out_plink = data + "scaled_pcs_plink.rds"
+    params:
+        script = nscript + "scalling_pcs_for_plink_and_pcrelate.R"
+    resources:
+        tasks=1, mem_mb_per_cpu=10000, time_min=1440
+    shell:
+        """
+        source /opt/intel/oneapi/mkl/2023.2.0/env/vars.sh intel64
+        module load R/4.2.3
+        export MKL_NUM_THREADS=1
+
+        Rscript {params.script} \
+            --plink_rds {input.plink_rds} \
+            --out_plink {output.out_plink}
+        """
+            # --pcrelate_rds {input.pcrelate_rds} \
+            # --out_pcrelate {output.out_pcrelate} \
+
+## creating E eigen and matrix ##
+rule white24k_compute_env_kernel:
+    input:
+        input_rds = data + "data4_20251104.rds"
+    output:
+        output_eigen = data + "E_eigen.rds",
+        output_Emat = data + "Emat_20251104.RData"
+    params:
+        script = nscript + "creating_E_eigen.R"
+    resources:
+        tasks=10, mem_mb_per_cpu=10000, time_min=1440
+    shell:
+        """
+        source /opt/intel/oneapi/mkl/2023.2.0/env/vars.sh intel64
+        module load R/4.2.3
+        export MKL_NUM_THREADS=10
+
+        Rscript {params.script} \
+            --input_rds {input.input_rds} \
+            --output_eigen {output.output_eigen} \
+            --output_Emat {output.output_Emat}
+        """
+
+## creating GxE eigen and matrix ##
+rule white24k_compute_gxe_hadamard_eigen:
+    input:
+        plink_grm = chrdir + "grm_by_plink.grm.bin",
+        # pcrelate_grm = chrdir + "grm_matrix_pcrelate_5pcs.rds",
+        emat = data + "Emat_20251104.RData"
+    output:
+        GxE_plink = modeldir + "GxE_hadamard_prod_plink.RData",
+        # GxE_pcrelate = modeldir + "GxE_hadamard_prod_pcrelate.RData",
+        eigen_plink = data + "eigen_GxE_plink.rds",
+        # eigen_pcrelate = data + "eigen_GxE_pcrelate.rds"
+    params:
+        script = nscript + "gxe_hadamard_eigen.R",
+        plink_grm_prefix = chrdir + "grm_by_plink"
+    resources:
+        tasks=10, mem_mb_per_cpu=10000, time_min=3000
+    shell:
+        """
+        source /opt/intel/oneapi/mkl/2023.2.0/env/vars.sh intel64
+        module load R/4.2.3
+        export MKL_NUM_THREADS=10
+
+        Rscript {params.script} \
+            --plink_grm {params.plink_grm_prefix} \
+            --emat {input.emat} \
+            --out_GxE_plink {output.GxE_plink} \
+            --out_eigen_plink {output.eigen_plink} \
+        """
+            # --out_GxE_pcrelate {output.GxE_pcrelate} \
+            # --pcrelate_grm {input.pcrelate_grm} \
+            # --out_eigen_pcrelate {output.eigen_pcrelate}
+
+
+
+
+## Creating GRMs ##
+
+# Step 4: GRM using plink
+
+rule white24k_grm_by_plink:
+    input:
+        bfile=mam + "data/filtered_chr/merged_geno_common_snps.bed",
+        all_ids=mam+"output/nklimko/grm/white_24k.rel.id"
+    output:
+        GRM_plink=chrdir + "grm_by_plink.grm.bin"
+    params:
+        plink_executable = config["plink_executable"],
+        THREADS=10,
+        IPREFIX=mam + "data/filtered_chr/merged_geno_common_snps",
+        OPREFIX="grm_by_plink",
+        CHRDIR=chrdir
+    resources:
+        tasks=10, mem_mb_per_cpu=90000, time_min=3000
+    shell:
+        """
+        cd {params.CHRDIR}
+
+        {params.plink_executable} \
+        --bfile {params.IPREFIX} \
+        --keep {input.all_ids} \
+        --keep-allele-order \
+        --threads {params.THREADS} \
+        --make-grm-bin \
+        --out {params.OPREFIX}
+        """
+
+# Step 6: Make bed geno of selected indv
+
+rule white24k_merged_geno_common_snps_selected_indv:
+    input:
+        bfile=mam + "data/filtered_chr/merged_geno_common_snps.bed",
+        all_ids=mam+"output/nklimko/grm/white_24k.rel.id"
+    output:
+        bed=chrdir + "merged_geno_common_snps_selected_indiv.bed",
+        bim=chrdir + "merged_geno_common_snps_selected_indiv.bim",
+        fam=chrdir + "merged_geno_common_snps_selected_indiv.fam"
+    params:
+        plink_executable = config["plink_executable"],
+        THREADS=10,
+        IPREFIX=mam + "data/filtered_chr/merged_geno_common_snps",
+        OPREFIX="merged_geno_common_snps_selected_indiv",
+        CHRDIR=chrdir
+    resources:
+        tasks=10, mem_mb_per_cpu=90000, time_min=3000
+    shell:
+        """
+        cd {params.CHRDIR}
+
+        {params.plink_executable} \
+        --bfile {params.IPREFIX} \
+        --keep {input.all_ids} \
+        --keep-allele-order \
+        --threads {params.THREADS} \
+        --make-bed \
+        --out {params.OPREFIX}
+        """
+
+# Step 7: convert plink to gds for pcrelate grm
+
+# rule white24k_plink_to_gds:
+#     input:
+#         bed=chrdir + "merged_geno_common_snps_selected_indiv.bed",
+#         bim=chrdir + "merged_geno_common_snps_selected_indiv.bim",
+#         fam=chrdir + "merged_geno_common_snps_selected_indiv.fam"
+#     output:
+#         gds=chrdir + "merged_geno_common_snps_selected_indiv.gds"
+#     params:
+#         INPUTDIR=chrdir,
+#         SCRIPT=nscript + "convert_plink_to_gds.R"
+#     resources: tasks=1, mem_mb_per_cpu=900000, time_min=3000
+#     shell:
+#         """
+#         source /opt/intel/oneapi/mkl/2023.2.0/env/vars.sh intel64
+#         module load R/4.2.3
+#         export MKL_NUM_THREADS=1
+#
+#         Rscript {params.SCRIPT} -d {params.INPUTDIR} -b {input.bed} -i {input.bim} -f {input.fam} -o {output}
+#         """
+
+# Step 8: pcrelate grm
+
+# rule white24k_grm_by_pcrelate:
+#     input:
+#         gds=chrdir + "merged_geno_common_snps_selected_indiv.gds"
+#     output:
+#         kinship_matrix=chrdir + "king_kinship_matrix_for_pcrelate.rds",
+#         pcair_results=chrdir + "pcair_for_pcrelate_results.rds",
+#         pcrelate_results=chrdir + "pcrelate_calcs.rds",
+#         grm_matrix=chrdir + "grm_matrix_pcrelate_5pcs.rds"
+#     params:
+#         INPUTDIR=chrdir,
+#         SCRIPT=nscript + "grm_by_pcrelate.R",
+#         cores=10
+#     resources: tasks=10, mem_mb_per_cpu=25000, time_min=7000
+#     shell:
+#         """
+#         source /opt/intel/oneapi/mkl/2023.2.0/env/vars.sh intel64
+#         module load R/4.2.3
+#         export MKL_NUM_THREADS=1
+#
+#         Rscript {params.SCRIPT} -d {params.INPUTDIR} -g {input.gds} -k {output.kinship_matrix} -p {output.pcair_results} -r {output.pcrelate_results} -m {output.grm_matrix} -c {params.cores}
+#         """
+
+# Step 9: pca of grm by plink using eigen in R instead of gcta pca
+
+rule white24k_pca_for_grm_by_plink:
+    input:
+        grm=chrdir + "grm_by_plink.grm.bin"
+    output:
+        pca_results=chrdir + "pca_for_plink.rds"
+    params:
+        INPUTDIR=chrdir,
+	      IPREFIX=chrdir + "grm_by_plink",
+        SCRIPT=nscript + "pca_for_grm_by_plink_using_eigen_in_R.R"
+    resources: tasks=10, mem_mb_per_cpu=25000, time_min=3000
+    shell:
+        """
+        source /opt/intel/oneapi/mkl/2023.2.0/env/vars.sh intel64
+        module load R/4.2.3
+        export MKL_NUM_THREADS={resources.tasks}
+        Rscript {params.SCRIPT} -d {params.INPUTDIR} -i {params.IPREFIX} -o {output.pca_results}
+        """
+
+# Step 10: pca of pcrelate grm
+
+# rule white24k_pca_for_grm_by_pcrelate:
+#     input:
+#         grm=chrdir + "grm_matrix_pcrelate_5pcs.rds"
+#     output:
+#         pca_results=chrdir + "pca_for_pcrelate.rds"
+#     params:
+#         INPUTDIR=chrdir,
+#         SCRIPT=nscript + "pca_for_grm_by_pcrelate.R"
+#     resources: tasks=10, mem_mb_per_cpu=25000, time_min=3000
+#     shell:
+#         """
+#         source /opt/intel/oneapi/mkl/2023.2.0/env/vars.sh intel64
+#         module load R/4.2.3
+#         export MKL_NUM_THREADS=10
+#         Rscript {params.SCRIPT} -d {params.INPUTDIR} -i {input.grm} -o {output.pca_results}
+#         """
+
+#11.6
+
+
+#
+# rule mult_24kwhite_grm:
+#     input:
+#         bfile=mam+"data/filtered_chr/merged_geno_common_snps.bed",
+#         sample_ids=mam+"data/nklimko/new_white_ids_24k.txt"
+#     output:
+#         GRM_pruned=mam+"output/nklimko/grm/white_24k.rel.id"
+#     params:
+#         plink_executable = "/data2/morgante_lab/kgoda/software/plink1.9/plink",
+#         infix=mam+"data/filtered_chr/merged_geno_common_snps",
+#         outfix=mam+"output/nklimko/grm/white_24k",
+#     resources:
+#       tasks=10,
+#       mem_mb_per_cpu_per_cpu = 20000,
+#       time_min=3000
+#     shell:
+#         """
+#         {params.plink_executable} \
+#         --bfile {params.infix} \
+#         --keep {input.sample_ids} \
+#         --keep-allele-order \
+#         --threads {resources.tasks} \
+#         --rel-cutoff 0.05 \
+#         --out {params.outfix}
+#         """
+
+
+
+
+
+rule mam_gpcxe_covar_pheno:
+    input:
+        script = ancient(mam+"code/scripts/white_24k/covar_pheno_creation.R"),
+        dataset = mam+'data/data3_20250514.rds',
+        pcs = mam+'data/scaled_pcs_plink.rds',
+        emat = mam+'data/Emat_20250514.RData'
+    output:
+        covar_pheno = mam+"data/gpcxe/covar_pheno.txt",
+    resources:
+        tasks=1, mem_mb_per_cpu=10000, time_min=3000,partition='fm-bigmem-1',nodelist='bigmem003'
+    shell:
+        """
+        source /opt/intel/oneapi/mkl/2023.2.0/env/vars.sh intel64
+        module load R/4.2.3
+        export MKL_NUM_THREADS=1
+
+        Rscript {input.script} \
+            --data {input.dataset} \
+            --pcs {input.pcs} \
+            --emat {input.emat} \
+            --output {output.covar_pheno}
+        """
+
+
+rule mam_gxegwas:
+    input:
+        bfile=mam+"data/filtered_chr/merged_geno_common_snps_selected_indiv.bed",
+        covar=mam+"data/gpcxe/covar_pheno.txt",
+    output:
+        mam+'output/gpcxe/gxegwas/{traitor}/{env}.{traitor}0s.glm.linear'
+        # done=config["gwas_dir"] + "/" + "gxe_gwas_{env}_full_dataset.done"
+    params:
+        plink_executable_gwas = config["plink2_gwas"],
+        IPREFIX=mam+'data/filtered_chr/merged_geno_common_snps_selected_indiv',
+        OPREFIX=mam+'output/gpcxe/gxegwas/{traitor}/{env}',
+        pheno ='{traitor}0s'
+    resources:
+        tasks=1, mem_mb_per_cpu=5000, time_min=1440
+    shell:
+        """
+        {params.plink_executable_gwas} \
+        --threads {resources.tasks} \
+        --seed 1123 \
+        --bfile {params.IPREFIX} \
+        --no-input-missing-phenotype \
+        --pheno {input.covar} --pheno-name {params.pheno} \
+        --covar {input.covar} --covar-name age,age2,sex,X1-X10,{wildcards.env},{wildcards.env}__X1-{wildcards.env}__X10 \
+        --glm interaction \
+        --parameters 1-25,39 \
+        --out {params.OPREFIX}
+
+        """
