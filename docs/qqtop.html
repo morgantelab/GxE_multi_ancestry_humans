@@ -633,15 +633,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcommorgantelabGxEmultiancestryhumanstreedec8d9c0a07ca4b53251acc411cb5b9165b34062targetblankdec8d9ca">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcommorgantelabGxEmultiancestryhumanstreebbfab73ac3cb21f09da5472a4c8a71e0ab52429btargetblankbbfab73a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/morgantelab/GxE_multi_ancestry_humans/tree/dec8d9c0a07ca4b53251acc411cb5b9165b34062" target="_blank">dec8d9c</a>
+<a href="https://github.com/morgantelab/GxE_multi_ancestry_humans/tree/bbfab73ac3cb21f09da5472a4c8a71e0ab52429b" target="_blank">bbfab73</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcommorgantelabGxEmultiancestryhumanstreedec8d9c0a07ca4b53251acc411cb5b9165b34062targetblankdec8d9ca"
+id="strongRepositoryversionstrongahrefhttpsgithubcommorgantelabGxEmultiancestryhumanstreebbfab73ac3cb21f09da5472a4c8a71e0ab52429btargetblankbbfab73a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -651,7 +651,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/morgantelab/GxE_multi_ancestry_humans/tree/dec8d9c0a07ca4b53251acc411cb5b9165b34062" target="_blank">dec8d9c</a>.
+<a href="https://github.com/morgantelab/GxE_multi_ancestry_humans/tree/bbfab73ac3cb21f09da5472a4c8a71e0ab52429b" target="_blank">bbfab73</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -714,10 +714,56 @@ have uncommitted changes.
 <hr>
 </div>
 <div id="versions" class="tab-pane fade">
+
 <p>
-There are no past versions. Publish this analysis with
-<code>wflow_publish()</code> to start tracking its development.
+These are the previous versions of the repository in which changes were
+made to the R Markdown (<code>analysis/qqtop.Rmd</code>) and HTML
+(<code>docs/qqtop.html</code>) files. If you’ve configured a remote Git
+repository (see <code>?wflow_git_remote</code>), click on the hyperlinks
+in the table below to view the files as they were in that past version.
 </p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/morgantelab/GxE_multi_ancestry_humans/6671fa2b67890a0f1230ec12dc4040cf4da15f80/docs/qqtop.html" target="_blank">6671fa2</a>
+</td>
+<td>
+nklimko
+</td>
+<td>
+2025-11-20
+</td>
+<td>
+Build site.
+</td>
+</tr>
+</tbody>
+</table>
+</div>
 <hr>
 </div>
 </div>
@@ -730,8 +776,8 @@ options(scipen=999)</code></pre>
 <div id="overview" class="section level2">
 <h2>Overview</h2>
 <p>QQ plot top environments from the GxE-GWAS approach using genetic
-principal component-by-environment interactions as covariates in X2. All
-plots are in <a href="qqcomp.html">this report.</a></p>
+principal component-by-environment interactions as covariates. All plots
+are in <a href="qqcomp.html">this report.</a></p>
 <pre class="r"><code>picasso &lt;- function(trait, env, hline){
   
   trait &lt;- toupper(trait)
@@ -821,7 +867,7 @@ qqlim &lt;- function(rawvector, outpath, file, size_point=0.75, saving=0, fullti
   limax &lt;- max(eodata)
   
   
-  eodata &lt;- eodata[expect &gt; 2,]
+  # eodata &lt;- eodata[expect &gt; 2,]
   nsnps &lt;- nrow(eodata[observe &gt; hline,])
   
   fulltitle &lt;- paste0(fulltitle, &#39; :: &#39;, nsnps, &#39; snps&#39;)
@@ -872,14 +918,199 @@ envlist &lt;- c(&#39;smoking_now&#39;,  &#39;poultry&#39;,  &#39;cheese&#39;, &#
 
 picasso(&#39;DP&#39;, &#39;smoking_now&#39;, 5.5)</code></pre>
 <p><img src="figure/qqtop.Rmd/dp-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-dp-1">
+Past versions of dp-1.png
+</button>
+</p>
+<div id="fig-dp-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/morgantelab/GxE_multi_ancestry_humans/blob/6671fa2b67890a0f1230ec12dc4040cf4da15f80/docs/figure/qqtop.Rmd/dp-1.png" target="_blank">6671fa2</a>
+</td>
+<td>
+nklimko
+</td>
+<td>
+2025-11-20
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>picasso(&#39;DP&#39;, &#39;poultry&#39;, 5.2)</code></pre>
 <p><img src="figure/qqtop.Rmd/dp-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-dp-2">
+Past versions of dp-2.png
+</button>
+</p>
+<div id="fig-dp-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/morgantelab/GxE_multi_ancestry_humans/blob/6671fa2b67890a0f1230ec12dc4040cf4da15f80/docs/figure/qqtop.Rmd/dp-2.png" target="_blank">6671fa2</a>
+</td>
+<td>
+nklimko
+</td>
+<td>
+2025-11-20
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>picasso(&#39;DP&#39;, &#39;cheese&#39;, 4.14)</code></pre>
 <p><img src="figure/qqtop.Rmd/dp-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-dp-3">
+Past versions of dp-3.png
+</button>
+</p>
+<div id="fig-dp-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/morgantelab/GxE_multi_ancestry_humans/blob/6671fa2b67890a0f1230ec12dc4040cf4da15f80/docs/figure/qqtop.Rmd/dp-3.png" target="_blank">6671fa2</a>
+</td>
+<td>
+nklimko
+</td>
+<td>
+2025-11-20
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>picasso(&#39;DP&#39;, &#39;tea&#39;, 4.9)</code></pre>
 <p><img src="figure/qqtop.Rmd/dp-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-dp-4">
+Past versions of dp-4.png
+</button>
+</p>
+<div id="fig-dp-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/morgantelab/GxE_multi_ancestry_humans/blob/6671fa2b67890a0f1230ec12dc4040cf4da15f80/docs/figure/qqtop.Rmd/dp-4.png" target="_blank">6671fa2</a>
+</td>
+<td>
+nklimko
+</td>
+<td>
+2025-11-20
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>picasso(&#39;DP&#39;, &#39;BFP&#39;, 4.7)</code></pre>
 <p><img src="figure/qqtop.Rmd/dp-5.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-dp-5">
+Past versions of dp-5.png
+</button>
+</p>
+<div id="fig-dp-5" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/morgantelab/GxE_multi_ancestry_humans/blob/6671fa2b67890a0f1230ec12dc4040cf4da15f80/docs/figure/qqtop.Rmd/dp-5.png" target="_blank">6671fa2</a>
+</td>
+<td>
+nklimko
+</td>
+<td>
+2025-11-20
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code># for(e in envlist){
 #   print(paste0(&#39;Environment: &#39;,e,&#39; -------------------------------------&#39;))
 #   print(picasso(trait=t, env=e))
@@ -893,18 +1124,277 @@ envlist &lt;- c(&#39;TVtime&#39;, &#39;sleep_d&#39;, &#39;veg_cook&#39;,  &#39;p
 
 picasso(&#39;SP&#39;, &#39;TVtime&#39;, 5.5)</code></pre>
 <p><img src="figure/qqtop.Rmd/sp-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-sp-1">
+Past versions of sp-1.png
+</button>
+</p>
+<div id="fig-sp-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/morgantelab/GxE_multi_ancestry_humans/blob/6671fa2b67890a0f1230ec12dc4040cf4da15f80/docs/figure/qqtop.Rmd/sp-1.png" target="_blank">6671fa2</a>
+</td>
+<td>
+nklimko
+</td>
+<td>
+2025-11-20
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>picasso(&#39;SP&#39;, &#39;sleep_d&#39;, 3.94)</code></pre>
 <p><img src="figure/qqtop.Rmd/sp-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-sp-2">
+Past versions of sp-2.png
+</button>
+</p>
+<div id="fig-sp-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/morgantelab/GxE_multi_ancestry_humans/blob/6671fa2b67890a0f1230ec12dc4040cf4da15f80/docs/figure/qqtop.Rmd/sp-2.png" target="_blank">6671fa2</a>
+</td>
+<td>
+nklimko
+</td>
+<td>
+2025-11-20
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>picasso(&#39;SP&#39;, &#39;veg_cook&#39;, 4.7)</code></pre>
 <p><img src="figure/qqtop.Rmd/sp-3.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>picasso(&#39;SP&#39;, &#39;pork&#39;, 4.63)</code></pre>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-sp-3">
+Past versions of sp-3.png
+</button>
+</p>
+<div id="fig-sp-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/morgantelab/GxE_multi_ancestry_humans/blob/6671fa2b67890a0f1230ec12dc4040cf4da15f80/docs/figure/qqtop.Rmd/sp-3.png" target="_blank">6671fa2</a>
+</td>
+<td>
+nklimko
+</td>
+<td>
+2025-11-20
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>picasso(&#39;SP&#39;, &#39;pork&#39;, 4.23)</code></pre>
 <p><img src="figure/qqtop.Rmd/sp-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-sp-4">
+Past versions of sp-4.png
+</button>
+</p>
+<div id="fig-sp-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/morgantelab/GxE_multi_ancestry_humans/blob/6671fa2b67890a0f1230ec12dc4040cf4da15f80/docs/figure/qqtop.Rmd/sp-4.png" target="_blank">6671fa2</a>
+</td>
+<td>
+nklimko
+</td>
+<td>
+2025-11-20
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>picasso(&#39;SP&#39;, &#39;tea&#39;, 4.155)</code></pre>
 <p><img src="figure/qqtop.Rmd/sp-5.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-sp-5">
+Past versions of sp-5.png
+</button>
+</p>
+<div id="fig-sp-5" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/morgantelab/GxE_multi_ancestry_humans/blob/6671fa2b67890a0f1230ec12dc4040cf4da15f80/docs/figure/qqtop.Rmd/sp-5.png" target="_blank">6671fa2</a>
+</td>
+<td>
+nklimko
+</td>
+<td>
+2025-11-20
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>picasso(&#39;SP&#39;, &#39;coffee&#39;, 4.7)</code></pre>
 <p><img src="figure/qqtop.Rmd/sp-6.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-sp-6">
+Past versions of sp-6.png
+</button>
+</p>
+<div id="fig-sp-6" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/morgantelab/GxE_multi_ancestry_humans/blob/6671fa2b67890a0f1230ec12dc4040cf4da15f80/docs/figure/qqtop.Rmd/sp-6.png" target="_blank">6671fa2</a>
+</td>
+<td>
+nklimko
+</td>
+<td>
+2025-11-20
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>picasso(&#39;SP&#39;, &#39;sleep_dev&#39;, 4.9)</code></pre>
 <p><img src="figure/qqtop.Rmd/sp-7.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-sp-7">
+Past versions of sp-7.png
+</button>
+</p>
+<div id="fig-sp-7" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/morgantelab/GxE_multi_ancestry_humans/blob/6671fa2b67890a0f1230ec12dc4040cf4da15f80/docs/figure/qqtop.Rmd/sp-7.png" target="_blank">6671fa2</a>
+</td>
+<td>
+nklimko
+</td>
+<td>
+2025-11-20
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code># for(e in envlist){
 #   print(paste0(&#39;Environment: &#39;,e,&#39; -------------------------------------&#39;))
 #   print(picasso(trait=t, env=e))
@@ -916,14 +1406,162 @@ picasso(&#39;SP&#39;, &#39;TVtime&#39;, 5.5)</code></pre>
 envlist &lt;- c( &#39;TVtime&#39;, &#39;sleep_dev&#39;, &#39;salt&#39;, &#39;tea&#39;)
 
 
-picasso(&#39;PP&#39;, &#39;TVtime&#39;, 4.77)</code></pre>
+picasso(&#39;PP&#39;, &#39;TVtime&#39;, 4.33)</code></pre>
 <p><img src="figure/qqtop.Rmd/pp-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>picasso(&#39;PP&#39;, &#39;sleep_dev&#39;, 4.187)</code></pre>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-pp-1">
+Past versions of pp-1.png
+</button>
+</p>
+<div id="fig-pp-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/morgantelab/GxE_multi_ancestry_humans/blob/6671fa2b67890a0f1230ec12dc4040cf4da15f80/docs/figure/qqtop.Rmd/pp-1.png" target="_blank">6671fa2</a>
+</td>
+<td>
+nklimko
+</td>
+<td>
+2025-11-20
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>picasso(&#39;PP&#39;, &#39;sleep_dev&#39;, 3.5)</code></pre>
 <p><img src="figure/qqtop.Rmd/pp-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-pp-2">
+Past versions of pp-2.png
+</button>
+</p>
+<div id="fig-pp-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/morgantelab/GxE_multi_ancestry_humans/blob/6671fa2b67890a0f1230ec12dc4040cf4da15f80/docs/figure/qqtop.Rmd/pp-2.png" target="_blank">6671fa2</a>
+</td>
+<td>
+nklimko
+</td>
+<td>
+2025-11-20
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>picasso(&#39;PP&#39;, &#39;salt&#39;, 4.5)</code></pre>
 <p><img src="figure/qqtop.Rmd/pp-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-pp-3">
+Past versions of pp-3.png
+</button>
+</p>
+<div id="fig-pp-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/morgantelab/GxE_multi_ancestry_humans/blob/6671fa2b67890a0f1230ec12dc4040cf4da15f80/docs/figure/qqtop.Rmd/pp-3.png" target="_blank">6671fa2</a>
+</td>
+<td>
+nklimko
+</td>
+<td>
+2025-11-20
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>picasso(&#39;PP&#39;, &#39;tea&#39;, 5.5)</code></pre>
 <p><img src="figure/qqtop.Rmd/pp-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-pp-4">
+Past versions of pp-4.png
+</button>
+</p>
+<div id="fig-pp-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/morgantelab/GxE_multi_ancestry_humans/blob/6671fa2b67890a0f1230ec12dc4040cf4da15f80/docs/figure/qqtop.Rmd/pp-4.png" target="_blank">6671fa2</a>
+</td>
+<td>
+nklimko
+</td>
+<td>
+2025-11-20
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code># for(e in envlist){
 #   print(paste0(&#39;Environment: &#39;,e,&#39; -------------------------------------&#39;))
 #   print(picasso(trait=t, env=e))
