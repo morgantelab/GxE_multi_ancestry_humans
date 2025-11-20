@@ -11,12 +11,12 @@
 
 
 
-<title>Home</title>
+<title>GxE Multi-Ancestry Mapping</title>
 
-<script src="site_libs/header-attrs-2.27/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<link href="site_libs/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
@@ -30,8 +30,11 @@
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.5.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet" />
 
 <link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
 <!-- Add a small amount of space between sections. -->
@@ -226,6 +229,9 @@ $(document).ready(function () {
 </style>
 
 <!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
 
 
 
@@ -248,12 +254,12 @@ $(document).ready(function () {
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="index.html">GxE_multi_ancestry</a>
+      <a class="navbar-brand" href="index.html">GxE Multi-Ancestry</a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="index.html">Home</a>
+  <a href="index.html">Index</a>
 </li>
 <li>
   <a href="about.html">About</a>
@@ -263,7 +269,13 @@ $(document).ready(function () {
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/morgantelab/GxE_multi_ancestry_humans">
+    <span class="fab fa-github"></span>
+     
+    Source code
+  </a>
+</li>
       </ul>
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
@@ -271,9 +283,17 @@ $(document).ready(function () {
 
 <div id="header">
 
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
 
 
-<h1 class="title toc-ignore">Home</h1>
+
+<h1 class="title toc-ignore">GxE Multi-Ancestry Mapping</h1>
 
 </div>
 
@@ -302,7 +322,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2025-02-18
+<strong>Last updated:</strong> 2025-11-20
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -349,15 +369,15 @@ results.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcommorgantelabGxEmultiancestryhumanstreed56df6eeead7b995a700c36d59169c9eb4ae2551targetblankd56df6ea">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcommorgantelabGxEmultiancestryhumanstree6671fa2b67890a0f1230ec12dc4040cf4da15f80targetblank6671fa2a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/morgantelab/GxE_multi_ancestry_humans/tree/d56df6eeead7b995a700c36d59169c9eb4ae2551" target="_blank">d56df6e</a>
+<a href="https://github.com/morgantelab/GxE_multi_ancestry_humans/tree/6671fa2b67890a0f1230ec12dc4040cf4da15f80" target="_blank">6671fa2</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcommorgantelabGxEmultiancestryhumanstreed56df6eeead7b995a700c36d59169c9eb4ae2551targetblankd56df6ea"
+id="strongRepositoryversionstrongahrefhttpsgithubcommorgantelabGxEmultiancestryhumanstree6671fa2b67890a0f1230ec12dc4040cf4da15f80targetblank6671fa2a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -367,7 +387,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/morgantelab/GxE_multi_ancestry_humans/tree/d56df6eeead7b995a700c36d59169c9eb4ae2551" target="_blank">d56df6e</a>.
+<a href="https://github.com/morgantelab/GxE_multi_ancestry_humans/tree/6671fa2b67890a0f1230ec12dc4040cf4da15f80" target="_blank">6671fa2</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -383,61 +403,39 @@ were generated:
 <pre><code>
 Ignored files:
     Ignored:    .Rhistory
+    Ignored:    .Rprofile
     Ignored:    .Rproj.user/
     Ignored:    analysis/
     Ignored:    code/.DS_Store
-    Ignored:    code/.snakemake/auxiliary/
-    Ignored:    code/.snakemake/conda-archive/
-    Ignored:    code/.snakemake/conda/
-    Ignored:    code/.snakemake/incomplete/
-    Ignored:    code/.snakemake/locks/
-    Ignored:    code/.snakemake/shadow/
-    Ignored:    code/.snakemake/singularity/
-    Ignored:    code/.snakemake/tmp.5rwc88nd/
-    Ignored:    code/.snakemake/tmp.8el6ttc_/
-    Ignored:    code/.snakemake/tmp.9ihpazyu/
-    Ignored:    code/.snakemake/tmp.alh7g_ig/
-    Ignored:    code/.snakemake/tmp.av50ysj_/
-    Ignored:    code/.snakemake/tmp.dewr99d_/
-    Ignored:    code/.snakemake/tmp.hvf29wjt/
-    Ignored:    code/.snakemake/tmp.jw24qlow/
-    Ignored:    code/.snakemake/tmp.lbfwm2nm/
-    Ignored:    code/.snakemake/tmp.ljj4e0qx/
-    Ignored:    code/.snakemake/tmp.n4swbqdl/
-    Ignored:    code/.snakemake/tmp.t5m9l7r5/
-    Ignored:    code/.snakemake/tmp.teru8gil/
-    Ignored:    code/.snakemake/tmp.tqr16_6h/
-    Ignored:    code/.snakemake/tmp.tx96w_cw/
-    Ignored:    code/.snakemake/tmp.u7stw8sr/
+    Ignored:    code/dump/
+    Ignored:    code/extra/
     Ignored:    code/scripts/.DS_Store
-    Ignored:    code/vs_test/.DS_Store
-    Ignored:    code/vs_test/.snakemake/auxiliary/
-    Ignored:    code/vs_test/.snakemake/conda-archive/
-    Ignored:    code/vs_test/.snakemake/conda/
-    Ignored:    code/vs_test/.snakemake/incomplete/
-    Ignored:    code/vs_test/.snakemake/locks/
-    Ignored:    code/vs_test/.snakemake/metadata/
-    Ignored:    code/vs_test/.snakemake/shadow/
-    Ignored:    code/vs_test/.snakemake/singularity/
-    Ignored:    data/figures/
-    Ignored:    data/filtered_chr/
-    Ignored:    data/gwas_snp_env/
-    Ignored:    data/model/
-    Ignored:    data/old_ids_without_detailed_filtering/
-    Ignored:    data/run_1/
-    Ignored:    data/snp_lists/
-    Ignored:    output/log/
-    Ignored:    output/logs_slurm/
-    Ignored:    output/old_run_filtering/
-    Ignored:    output/old_run_snp_lists/
-    Ignored:    output/snakehead/
-    Ignored:    output/snp_lists/
-    Ignored:    output/test/
-    Ignored:    output/tmp/
+    Ignored:    code/scripts/processing_scripts/
+    Ignored:    data/
+    Ignored:    output/
     Ignored:    plots/
+
+Untracked files:
+    Untracked:  .gitattributes
+    Untracked:  .snakemake/
+    Untracked:  GxE_multi_ancestry.Rproj
+    Untracked:  _workflowr.yml
+    Untracked:  code/amon/
+    Untracked:  code/brit_24k.yaml
+    Untracked:  code/mult.yaml
+    Untracked:  code/nklimko/
+    Untracked:  code/scripts/mult/
+    Untracked:  code/scripts/plots_scripts/manuscript_plots/Figure_4_new.R
+    Untracked:  code/scripts/white_24k/
+    Untracked:  code/snake7/
 
 Unstaged changes:
     Modified:   .gitignore
+    Modified:   README.md
+    Modified:   code/config.yaml
+    Modified:   code/slurm/config.yaml
+    Deleted:    code/snakefile
+    Modified:   code/submit_snakemake.sh
 
 </code></pre>
 <p>
@@ -484,6 +482,57 @@ Message
 <tbody>
 <tr>
 <td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/morgantelab/GxE_multi_ancestry_humans/dec8d9c0a07ca4b53251acc411cb5b9165b34062/docs/index.html" target="_blank">dec8d9c</a>
+</td>
+<td>
+nklimko
+</td>
+<td>
+2025-11-18
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/morgantelab/GxE_multi_ancestry_humans/a936388f33723035217d037737d4eb5802139055/docs/index.html" target="_blank">a936388</a>
+</td>
+<td>
+“khushigoda”
+</td>
+<td>
+2025-07-22
+</td>
+<td>
+update
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/morgantelab/GxE_multi_ancestry_humans/c4c3f19c7252c49b785c2948d1a22e479773a8b9/docs/index.html" target="_blank">c4c3f19</a>
+</td>
+<td>
+“khushigoda”
+</td>
+<td>
+2025-02-18
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
 Rmd
 </td>
 <td>
@@ -523,7 +572,11 @@ Start workflowr project.
 </div>
 </div>
 </div>
-<p>Welcome to my research website.</p>
+<div id="gxe-gwas" class="section level2">
+<h2>GxE-GWAS</h2>
+<p><a href="qqcomp.html">All QQ plots</a></p>
+<p><a href="qqtop.html">QQ Plot - SNP Selection</a></p>
+</div>
 
 
 <!-- Adjust MathJax settings so that all math formulae are shown using
@@ -572,6 +625,11 @@ $(document).ready(function () {
 </script>
 
 <!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
 
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
