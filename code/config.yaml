@@ -12,18 +12,53 @@ FOLDNUM: ['1','2','3','4','5']
 ENV: ['Townsend', 'act0_d', 'TVtime', 'sleep_d','smoking_now', 'veg_cook', 'fish_oily', 'fish_lean', 'meat_proc', 'poultry', 'beef', 'lamb', 'pork', 'cheese', 'salt', 'tea', 'alc1', 'waist', 'getup', 'coffee', 'smoked_past', 'BFP', 'sleep_dev']
 #ENV: ['age']
 PVAL: [1e-05, 1e-06, 0.001]
+
+# plink_executable_gwas: "/data2/morgante_lab/kgoda/software/plink2" # changed to plink2_gwas for formatting
+geno_dir:         "/data2/morgante_lab/data/ukbiobank/genotypes/array/"
+plink2_gwas:      "/data2/morgante_lab/kgoda/software/plink2"
 plink_executable: "/data2/morgante_lab/kgoda/software/plink1.9/plink"
-gcta_executable: "/data2/morgante_lab/kgoda/software/gcta64/gcta-1.94.1-linux-kernel-3-x86_64/gcta-1.94.1"
-out_dir: "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output"
-geno_dir: "/data2/morgante_lab/data/ukbiobank/genotypes/array"
-sample_ids_dir: "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data"
-data_dir: "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data"
-snp_list_dir: "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/snp_lists"
-common_snps_dir: "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data"
-filtered_chr_dir: "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/filtered_chr"
-model_dir: "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/model"
-scratch_dir: "/scratch3/kgoda/ukbiobank_files/tmp/snakemake_runs"
+gcta_executable:  "/data2/morgante_lab/kgoda/software/gcta64/gcta-1.94.1-linux-kernel-3-x86_64/gcta-1.94.1/"
+sample_ids_dir:   "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/"
+data_dir:         "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/"
+data4_dir:         "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/nklimko/data4/"
+common_snps_dir:  "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/"
+model_dir:        "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/model/"
+snp_list_dir:     "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/snp_lists/"
+filtered_chr_dir: "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/filtered_chr/"
+gwas_dir:         "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/gwas_snp_env/"
+SCRIPT:           "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/code/scripts/"
+out_dir:          "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/"
+scratch_dir:      "/scratch3/kgoda/ukbiobank_files/tmp/snakemake_runs/"
 EXT: ".bed"
-SCRIPT: "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/code/scripts"
-gwas_dir: "/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/data/gwas_snp_env"
-plink_executable_gwas: "/data2/morgante_lab/kgoda/software/plink2"
+
+
+### Folders
+# Universal
+scratch:      "/scratch3/nklimko/ukbiobank_files/"
+demo:         "/scratch3/nklimko/ukbiobank_files/demo/"
+ukbgen:       "/data2/morgante_lab/data/ukbiobank/genotypes/imputed/"
+gem:          "/data2/morgante_lab/ukbiobank_projects/GxE_mapping/"
+gemini:       "/data2/morgante_lab/ukbiobank_projects/GxE_mapping/gemini/"
+bench:        "/data2/morgante_lab/ukbiobank_projects/GxE_mapping/output/bench/"
+
+### Program executables
+software:     "/data2/morgante_lab/ukbiobank_projects/GxE_mapping/software/ukbb/"
+plink2:       "/data2/morgante_lab/ukbiobank_projects/GxE_mapping/software/ukbb/plink2"
+lemma:        "/data2/morgante_lab/ukbiobank_projects/GxE_mapping/software/ukbb/lemma"
+genie:        "/data2/morgante_lab/ukbiobank_projects/GxE_mapping/software/ukbb/GENIE"
+bgen_utils:   "/data2/morgante_lab/ukbiobank_projects/GxE_mapping/software/ukbb/custom_bgen_utils"
+bgenix:       "/data2/morgante_lab/ukbiobank_projects/GxE_mapping/software/ukbb/bgenix"
+cat_bgen:     "/data2/morgante_lab/ukbiobank_projects/GxE_mapping/software/ukbb/cat-bgen"
+osca:         "/data2/morgante_lab/ukbiobank_projects/GxE_mapping/software/ukbb/osca"
+fastgxe:      "/data2/morgante_lab/ukbiobank_projects/GxE_mapping/software/ukbb/fastgxe"
+xcan:         "/data2/morgante_lab/ukbiobank_projects/GxE_mapping/software/xcan/MetaXcan/software/Predict.py"
+#
+# bgenix:       "/data2/morgante_lab/ukbiobank_projects/GxE_mapping/software/bgenix/build/apps/bgenix"
+# cat_bgen:     "/data2/morgante_lab/ukbiobank_projects/GxE_mapping/software/bgenix/build/apps/cat-bgen"
+
+### (Deprecated) Subfolders, working on removal
+data: "/data2/morgante_lab/ukbiobank_projects/GxE_mapping/data/"
+code: "/data2/morgante_lab/ukbiobank_projects/GxE_mapping/code/"
+out:  "/data2/morgante_lab/ukbiobank_projects/GxE_mapping/output/"
+geno: "/data2/morgante_lab/ukbiobank_projects/GxE_mapping/data/geno/"
+

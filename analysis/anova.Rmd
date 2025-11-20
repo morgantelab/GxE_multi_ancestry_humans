@@ -1,0 +1,9 @@
+---
+title: "Filtering UKB Data - Pheno and Env"
+output: workflowr::wflow_html
+---
+
+```{r 0-setup, message=FALSE, warning=FALSE}
+source('analysis/default/setup.R', local = knitr::knit_global())
+options(scipen=999)
+```

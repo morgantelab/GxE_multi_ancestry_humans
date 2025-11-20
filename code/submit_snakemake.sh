@@ -34,11 +34,12 @@ conda activate snakemake
 
 # Execute Snakemake
 snakemake \
--s snakefile \
+-s white_24k.yaml \
 --configfile config.yaml \
---latency-wait 120 \
+--latency-wait 30 \
 --use-conda \
 --keep-going \
+--dryrun \
 --rerun-incomplete \
 --profile slurm
 

@@ -1,0 +1,27 @@
+name: "GxE Multi-Ancestry Mapping"
+output_dir: ../docs
+navbar:
+  title: "GxE Multi-Ancestry"
+  left:
+  - text: Index
+    href: index.html
+  - text: About
+    href: about.html
+  - text: License
+    href: license.html
+
+  right:
+  - icon: fab fa-github
+    text: Source code
+    href: https://github.com/morgantelab/GxE_multi_ancestry_humans
+
+output:
+  workflowr::wflow_html:
+    toc: true
+    toc_float: true
+    theme: readable
+    highlight: textmate
+    latex_engine: "xelatex"
+    code_folding: "hide"
+editor_options:
+  chunk_output_type: console

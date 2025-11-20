@@ -3,13 +3,11 @@
 .RData
 .Ruserdata
 .Rapp.history
+.Rprofile
 .DS_Store
-analysis
-analysis/figure
 analysis/*png
 analysis/*html
 analysis/*_cache
-analysis/site_libs
 data/
 data/*RData
 output/
@@ -25,7 +23,6 @@ code/workflowr/*
 code/scripts/plots_scripts/plots_extra
 code/scripts/plots_scripts/plots_extra/*
 code/scripts/processing_scripts/*
-docs
 code/._submit_snakemake.sh
 code/._slurm-1229984.out
 code/._config.yaml
@@ -38,3 +35,4 @@ code/dump
 data_copy
 output_copy
 K_ReadMe.R
+backup_rproj_user/
