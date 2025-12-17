@@ -1,0 +1,346 @@
+---
+title: "QQ Plot Comparison - without vs with BMi as covariate"
+output: workflowr::wflow_html
+---
+
+```{r 0-setup, message=FALSE, warning=FALSE}
+# source('analysis/default/setup.R', local = knitr::knit_global())
+library(data.table)
+library(ggplot2)
+library(cowplot)
+options(scipen=999)
+```
+
+
+
+# Phase 1
+
+## Overview
+
+QQ plot results from the GxE-GWAS approach comparing BMI as a covariate (right) to without (left)
+
+
+```{r main}
+
+
+
+# envlist <- c('TVtime', 'sleep_d', 'veg_cook',  'pork',  'tea', 'coffee',  'sleep_dev')
+
+
+picasso <- function(trait, env){
+
+  trait <- toupper(trait)
+
+  # oldp <- fread(paste0('data/gwas_snp_env/gxe_gwas_', env, '_full_dataset.', trait, '0s_interaction_terms.csv'))
+  oldp <- readRDS(paste0('output/gpcxe/tables_gxegwas/', trait,'/',env,'.rds'))
+  newp <- readRDS(paste0('output/gpcxe/tables_gxegwas_bmi/', trait,'/',env,'.rds'))
+
+  oldp$P <- as.numeric(oldp$P)
+  newp$P <- as.numeric(newp$P)
+
+  outpath <- paste0('output/gpcxe/plots_gxegwas_bmi/', trait,'/',env,'/')
+
+  # oldpath <- paste0(outroot, 'old.png')
+  # newpath <- paste0(outroot, 'new.png')
+
+  oldtitle <- paste0(trait, ' ' ,env, ' old')
+  newtitle <- paste0(trait, ' ' ,env, ' new')
+
+  savior <- 0
+  oldhead <- qqlim(unlist(oldp$P), outpath=outpath, file='without.png', fulltitle=oldtitle, saving=savior, size_point=0.75)
+  newhead <- qqlim(unlist(newp$P), outpath=outpath, file='withbmi.png', fulltitle=newtitle, saving=savior, size_point=0.75)
+
+  plot_grid(oldhead, newhead, ncol=2)
+  # print(newtitle)
+
+}
+
+
+# hold <- data.table(trait='BP', env='none', cor=0, logcor=0, spear=0, logspear=0)
+
+
+
+
+# final <- hold[-1, ]
+
+# saveRDS(final, file='output/gpcxe/all.rds')
+
+
+
+qqlim <- function(rawvector, outpath, file, size_point=0.75, saving=0, fulltitle=NULL){
+
+  # data filtering
+  pvector <- na.omit(rawvector)
+
+  # Calculate lambda
+  chisq <- qchisq(1-pvector, 1)
+  GIF <- median(chisq)/qchisq(0.5,1)
+
+  # expected and observed
+  expected <- -log10(ppoints(length(pvector)))
+  obspoint <- -log10(sort(pvector, decreasing=FALSE))
+
+  eodata <- data.table(expect=expected, observe=obspoint)
+  limax <- max(eodata)
+
+  # Full plot
+  plothole <- ggplot(eodata, aes(x = expect, y=observe))+
+    xlab(expression(Expected~~-log[10](italic(p))))+
+    ylab(expression(Observed~~-log[10](italic(p))))+
+    annotate('segment', x = 0, y = 0, xend = limax, yend = limax)+
+    geom_point(size=size_point) +
+    ggtitle(fulltitle, subtitle=bquote(lambda ~ " = " ~ .(GIF)))+
+    theme_minimal()
+
+  if(saving){
+    # print(outpath)
+    dir.create(outpath, recursive = 1, showWarnings = 0)
+
+    ggsave(plot = plothole,
+           path = outpath,
+           filename=file,
+           unit='cm',
+           height = 10,
+           width=10,
+           device='png')
+  }
+
+  return(plothole)
+
+}
+
+# traitlist <- c('dp', 'sp')
+envlist <- c('BFP', 'tea')
+# traitlist <- toupper(traitlist)
+
+
+envlist <- c('Townsend', 'act0_d', 'TVtime', 'sleep_d','smoking_now', 'veg_cook', 'fish_oily', 'fish_lean', 'meat_proc', 'poultry', 'beef', 'lamb', 'pork', 'cheese', 'salt', 'tea', 'alc1', 'waist', 'getup', 'coffee', 'smoked_past', 'BFP', 'sleep_dev')
+#
+# traitlist <- c('dp', 'sp', 'pp')
+# traitlist <- toupper(traitlist)
+
+
+```
+
+
+
+## Diastolic Pressure
+
+```{r dp}
+
+t <- 'DP'
+for(e in envlist){
+  print(paste0('Environment: ',e,' -------------------------------------'))
+  print(picasso(trait=t, env=e))
+}
+
+```
+
+## Systolic Pressure
+
+```{r sp}
+
+t <- 'SP'
+for(e in envlist){
+  print(paste0('Environment: ',e,' -------------------------------------'))
+  print(picasso(trait=t, env=e))
+}
+
+```
+
+## Pulse Pressure
+
+```{r pp}
+
+t <- 'PP'
+for(e in envlist){
+  print(paste0('Environment: ',e,' -------------------------------------'))
+  print(picasso(trait=t, env=e))
+}
+
+```
+
+
+
+
+
+
+
+
+
+# Phase 2
+
+
+```{r main2}
+
+
+
+
+picasso2 <- function(trait, env, hline){
+  
+  trait <- toupper(trait)
+  
+  oldp <- readRDS(paste0('output/gpcxe/tables_gxegwas/', trait,'/',env,'.rds'))
+  newp <- readRDS(paste0('output/gpcxe/tables_gxegwas_bmi/', trait,'/',env,'.rds'))
+  
+  oldp$P <- as.numeric(oldp$P)
+  newp$P <- as.numeric(newp$P)
+  
+  oldpath <- paste0('output/gpcxe/plots_top_gxegwas/', trait,'/',env,'/')
+  newpath <- paste0('output/gpcxe/plots_top_gxegwas_bmi/', trait,'/',env,'/')
+
+  
+  oldtitle <- paste0('NON: ', trait, ' ' ,env)
+  newtitle <- paste0('BMI: ', trait, ' ' ,env)
+  
+  
+  savior <- 0
+  oldhead <- qqlim(unlist(oldp$P), outpath=oldpath, file='non.png', fulltitle=oldtitle, saving=savior, size_point=0.75, hline=hline)
+  newhead <- qqlim(unlist(newp$P), outpath=newpath, file='bmi.png', fulltitle=newtitle, saving=savior, size_point=0.75, hline=hline)
+  
+  
+  
+  plot_grid(oldhead, newhead, ncol=2)
+  # print(newtitle)
+  
+}
+
+
+
+
+
+monet <- function(trait, env){
+
+  trait <- toupper(trait)
+
+  # oldp <- fread(paste0('data/gwas_snp_env/gxe_gwas_', env, '_full_dataset.', trait, '0s_interaction_terms.csv'))
+  newp <- readRDS(paste0('output/gpcxe/tables_gxegwas/', trait,'/',env,'.rds'))
+
+  # oldp$P <- as.numeric(oldp$P)
+  newp$P <- as.numeric(newp$P)
+
+  outpath <- paste0('output/gpcxe/plots_qqtop/', trait,'/',env,'/')
+
+  # oldpath <- paste0(outroot, 'old.png')
+  # newpath <- paste0(outroot, 'new.png')
+
+  # oldtitle <- paste0(trait, ' ' ,env, ' old')
+  newtitle <- paste0(trait, ' ' ,env, ' new')
+
+
+  savior <- 0
+  # oldhead <- qqlim(unlist(oldp$P), outpath=outpath, file='old.png', fulltitle=oldtitle, saving=savior, size_point=0.75)
+  newhead <- qqlim(unlist(newp$P), outpath=outpath, file='new.png', fulltitle=newtitle, saving=savior, size_point=0.75)
+
+  plot_grid(newhead, ncol=2)
+  # print(newtitle)
+
+}
+
+
+
+qqlim <- function(rawvector, outpath, file, size_point=0.75, saving=0, fulltitle=NULL, hline=4){
+
+  # data filtering
+  pvector <- na.omit(rawvector)
+
+  # Calculate lambda
+  chisq <- qchisq(1-pvector, 1)
+  GIF <- median(chisq)/qchisq(0.5,1)
+
+  # expected and observed
+  expected <- -log10(ppoints(length(pvector)))
+  obspoint <- -log10(sort(pvector, decreasing=FALSE))
+
+  eodata <- data.table(expect=expected, observe=obspoint)
+  limax <- max(eodata)
+  
+  
+  # eodata <- eodata[expect > 2,]
+  nsnps <- nrow(eodata[observe > hline,])
+  
+  fulltitle <- paste0(fulltitle, ' :: ', nsnps, ' snps')
+  
+  # Full plot
+  plothole <- ggplot(eodata, aes(x = expect, y=observe))+
+    xlab(expression(Expected~~-log[10](italic(p))))+
+    ylab(expression(Observed~~-log[10](italic(p))))+
+    annotate('segment', x = 0, y = 0, xend = limax, yend = limax)+
+    geom_point(size=size_point) +
+    geom_hline(yintercept = hline, color='red')+
+    ggtitle(fulltitle, subtitle=bquote(lambda ~ " = " ~ .(GIF)))+
+    theme_minimal()
+
+  if(saving){
+    # print(outpath)
+    dir.create(outpath, recursive = 1, showWarnings = 0)
+
+    ggsave(plot = plothole,
+           path = outpath,
+           filename=file,
+           unit='cm',
+           height = 10,
+           width=10,
+           device='png')
+  }
+
+  return(plothole)
+
+}
+
+
+```
+
+
+
+## Diastolic Pressure
+
+```{r dp2}
+
+t <- 'DP'
+envlist <- 'smoking_now'
+envlist <- c('smoking_now',  'poultry',  'cheese', 'tea',  'BFP')
+
+
+picasso2('DP', 'smoking_now', 5.5)
+picasso2('DP', 'poultry', 5.2)
+picasso2('DP', 'cheese', 4.14)
+picasso2('DP', 'tea', 4.9)
+picasso2('DP', 'BFP', 4.7)
+
+```
+
+## Systolic Pressure
+
+```{r sp2}
+
+t <- 'SP'
+
+envlist <- c('TVtime', 'sleep_d', 'veg_cook',  'pork',  'tea', 'coffee',  'sleep_dev')
+
+picasso2('SP', 'TVtime', 5.5)
+picasso2('SP', 'sleep_d', 3.94)
+picasso2('SP', 'veg_cook', 4.7)
+picasso2('SP', 'pork', 4.23)
+picasso2('SP', 'tea', 4.155)
+picasso2('SP', 'coffee', 4.7)
+picasso2('SP', 'sleep_dev', 4.9)
+
+```
+
+## Pulse Pressure
+
+```{r pp2}
+
+t <- 'PP'
+envlist <- c( 'TVtime', 'sleep_dev', 'salt', 'tea')
+
+
+picasso2('PP', 'TVtime', 4.33)
+picasso2('PP', 'sleep_dev', 3.5)
+picasso2('PP', 'salt', 4.5)
+picasso2('PP', 'tea', 5.5)
+
+```
+
+
