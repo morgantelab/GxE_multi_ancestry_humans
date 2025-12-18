@@ -1,0 +1,381 @@
+---
+title: "Full breakdown of additional results"
+output: workflowr::wflow_html
+---
+
+```{r 0-setup, message=FALSE, warning=FALSE}
+# source('analysis/default/setup.R', local = knitr::knit_global())
+options(scipen=999)
+```
+
+```{r bulk_code}
+
+snipper <- function(tabble){
+  # select columns of interest
+  micols <- c('comp', 'model', 'mean')
+  # subset table
+  subtab <- tabble[,micols, with=0]
+  # order by component then model)
+  subtab <- subtab[order(comp, model),]
+  # clean column names
+  names(subtab) <- c('Component', 'Model', 'PoVE')
+  #print table
+  kable(subtab, 'simple')
+}
+
+
+
+# plotting function
+matter <- function(datanow, fulltitle, montag=NULL, mod7=TRUE){
+  plothole <- ggplot(data=datanow, aes(x=fax, y=mean))+
+    # scale_color_manual(discrete=T, values = c('A_X1', 'B_X2', 'C_E', 'D_G', 'E_M7', 'F_GxE'), labels = c('X1', 'X2', 'E', 'G', 'M7', 'GxE'))+
+    {if(mod7)  scale_color_discrete(labels = c('X1', 'X2', 'E', 'G', 'M7', 'GxE'))}+
+    {if(!mod7) scale_color_discrete(labels = c('X1', 'X2', 'E', 'G', 'GxE'))}+
+    geom_point(aes(color=comp2))+
+    # geom_text(aes(label=modnum))+
+    geom_errorbar(aes(ymin = lower, ymax = upper, color=comp2),
+                  width = 0.8, linewidth = 0.4, alpha = 1) +
+    # labs(title='Model 8 Variance Components')+
+    labs(title=fulltitle, color='Component', tag=montag)+
+    xlab('Model')+
+    # xlab(NULL)+
+    ylab('PoVE')+
+    theme_minimal()+
+    theme(axis.text.x = element_blank(),
+          panel.grid.major.x = element_blank(),
+          panel.grid.minor.x = element_blank())+
+    geom_vline(xintercept = verty, linetype=2, color='lightgray')+
+    geom_text(data=modcode, aes(label=mn, x = x, y = y), inherit.aes=FALSE)
+  
+  return(plothole)
+}
+
+if(1){
+  
+  
+  matte <- fread('output/vault/fullport/varcomps.txt')
+  
+  mat_dp <- matte[trait=='DP',]
+  mat_sp <- matte[trait=='SP',]
+  mat_pp <- matte[trait=='PP',]
+  
+  mod1 <- c('6', '6a')
+  mat_dp_pcs <- mat_dp[modnum %in% mod1,]
+  mat_sp_pcs <- mat_sp[modnum %in% mod1,]
+  mat_pp_pcs <- mat_pp[modnum %in% mod1,]
+  
+  mod2 <- c('6', '6b', '6w')
+  mat_dp_alt <- mat_dp[modnum %in% mod2,]
+  mat_sp_alt <- mat_sp[modnum %in% mod2,]
+  mat_pp_alt <- mat_pp[modnum %in% mod2,]
+  
+  mod3 <- as.character(6:9)
+  mat_dp_num <- mat_dp[modnum %in% mod3,]
+  mat_sp_num <- mat_sp[modnum %in% mod3,]
+  mat_pp_num <- mat_pp[modnum %in% mod3,]
+  
+  
+  sub1 <- 1
+  if(sub1){
+    # indexes of line breaks
+    # verty <- c(1.5, 3.5, 6.5, 9.5, 13.5, 17.5, 22.5, 27.5, 33.5)
+    verty <- 0.5 + cumsum(unlist(table(mat_dp_pcs$model)))
+    verty <- verty[-length(verty)]
+    
+    # add on hardpoint ends
+    verty2 <- c(0, verty, nrow(mat_dp_pcs)+1)
+    
+    # calculates midpoint of each section to place Model Number below x axis
+    verty3 <- (verty2[2:length(verty2)] - verty2[1:(length(verty2) - 1)]) / 2 + verty2[1:(length(verty2) - 1)]
+    
+    altnumber <- c('6 - Original', '6a - Alt PCs')
+    
+    #matter function plots model number at specified breakpoint at y = -1 for each label.
+    modcode <- data.table(mn=altnumber, x=verty3, y=-1)
+    
+    dpc <- matter(mat_dp_pcs, fulltitle=NULL, montag='DP', mod7=FALSE)
+    spc <- matter(mat_sp_pcs, fulltitle=NULL, montag='SP', mod7=FALSE)
+    ppc <- matter(mat_pp_pcs, fulltitle=NULL, montag='PP', mod7=FALSE)
+    
+    # print(plot_grid(dpc, spc, ppc, ncol=1))
+    
+  }
+  
+  sub2 <- 1
+  if(sub2){
+    # indexes of line breaks
+    # verty <- c(1.5, 3.5, 6.5, 9.5, 13.5, 17.5, 22.5, 27.5, 33.5)
+    verty <- 0.5 + cumsum(unlist(table(mat_dp_alt$model)))
+    verty <- verty[-length(verty)]
+    
+    # add on hardpoint ends
+    verty2 <- c(0, verty, nrow(mat_dp_alt)+1)
+    
+    # calculates midpoint of each section to place Model Number below x axis
+    verty3 <- (verty2[2:length(verty2)] - verty2[1:(length(verty2) - 1)]) / 2 + verty2[1:(length(verty2) - 1)]
+    
+    altnumber <- c('6 - Original', '6b - Brits', '6w - Whites')
+    
+    #matter function plots model number at specified breakpoint at y = -1 for each label.
+    modcode <- data.table(mn=altnumber, x=verty3, y=-1)
+    
+    dalt <- matter(mat_dp_alt, fulltitle=NULL, montag='DP', mod7=FALSE)
+    salt <- matter(mat_sp_alt, fulltitle=NULL, montag='SP', mod7=FALSE)
+    palt <- matter(mat_pp_alt, fulltitle=NULL, montag='PP', mod7=FALSE)
+    
+    # print(plot_grid(dalt, salt, palt, ncol=1))
+    
+    
+  }
+  
+  sub3 <- 1
+  if(sub3){
+    # indexes of line breaks
+    # verty <- c(1.5, 3.5, 6.5, 9.5, 13.5, 17.5, 22.5, 27.5, 33.5)
+    verty <- 0.5 + cumsum(unlist(table(mat_dp_num$model)))
+    verty <- verty[-length(verty)]
+    
+    # add on hardpoint ends
+    verty2 <- c(0, verty, nrow(mat_dp_num)+1)
+    
+    # calculates midpoint of each section to place Model Number below x axis
+    verty3 <- (verty2[2:length(verty2)] - verty2[1:(length(verty2) - 1)]) / 2 + verty2[1:(length(verty2) - 1)]
+    
+    # altnumber <- c('6 - Original', '7 - ','8', '9')
+    altnumber <- as.character(6:9)
+    
+    #matter function plots model number at specified breakpoint at y = -1 for each label.
+    modcode <- data.table(mn=altnumber, x=verty3, y=-1)
+    
+    dnum <- matter(mat_dp_num, fulltitle=NULL, montag='DP', mod7=TRUE)
+    snum <- matter(mat_sp_num, fulltitle=NULL, montag='SP', mod7=TRUE)
+    pnum <- matter(mat_pp_num, fulltitle=NULL, montag='PP', mod7=TRUE)
+    
+    # print(plot_grid(dnum, snum, pnum, ncol=1))
+  }
+}
+
+```
+
+# Overview
+
+Five subsections:
+
+- New models (7-9)
+- Alternate model 6 tests
+- GXE-GWAS Variant Selection (summary)
+- Variant Selection
+- ANOVA
+
+Of these, data for the first three is included. Discussion needed for Alt model 6 tests, have not started variant selection or anova report below.
+
+## New models
+
+Models 7, 8, and 9 are new. Model 6 is included for reference to existing terms.
+
+### Formulas
+
+- $\text{Model 6: } \mathbf{y} = \mathbf{X}_{1}\boldsymbol{\beta}_{1} + \mathbf{X}_{2}\boldsymbol{\beta}_{2} + \mathbf{g} + \mathbf{e} + \mathbf{g \times e} + \boldsymbol{\varepsilon}$
+- $\text{Model 7: } \mathbf{y} = \mathbf{X}_{1}\boldsymbol{\beta}_{1} + \mathbf{X}_{2}\boldsymbol{\beta}_{2} + \mathbf{g} + \mathbf{e} + \mathbf{i} + \mathbf{g \times e} + \boldsymbol{\varepsilon}$
+- $\text{Model 8: } \mathbf{y} = \mathbf{X}_{1}\boldsymbol{\beta}_{1} + \mathbf{X}_{3}\boldsymbol{\beta}_{3} + \mathbf{g} + \mathbf{e} + \mathbf{g \times e} + \boldsymbol{\varepsilon}$
+- $\text{Model 9: } \mathbf{y} = \mathbf{X}_{1}\boldsymbol{\beta}_{1} + \mathbf{X}_{4}\boldsymbol{\beta}_{4} + \mathbf{g} + \mathbf{e} + \mathbf{g \times e} + \boldsymbol{\varepsilon}$
+
+### Shared Terms
+
+- $\mathbf{y}$ is a $n$-vector of phenotypic values,
+- $\mathbf{X}_{1}$ is a $n \times a$ design matrix of $a=3$ demographic variables (sex, age, age$^2$),
+- $\boldsymbol{\beta}_{1}$ is an $a$-vector of their fixed effects,
+- Model 7: $\mathbf{X}_{2}$ is a $n \times b$ design matrix with $b = 10$ columns including the top 10 genetic principal components,
+- Model 7: $\boldsymbol{\beta}_{2}$ is a $b$-vector of their fixed effects,
+- $\mathbf{g}$ is a $n$-vector of random additive genetic values, $\mathbf{g} \sim \mathcal{N}(\mathbf{0}, \mathbf{K}_g \sigma^2_g)$,
+- $\mathbf{e}$ is a $n$-vector of random lifestyle values, $\mathbf{e} \sim \mathcal{N}(\mathbf{0}, \mathbf{K}_e \sigma^2_e)$,
+- $\mathbf{g \times e}$ is a $n$-vector of random interaction values, $\mathbf{g \times e} \sim \mathcal{N}(\mathbf{0}, \mathbf{K}_{g \times e} \sigma^2_{g \times e})$,
+- $\boldsymbol{\varepsilon}$ is a $n$-vector of random residual values, $\boldsymbol{\varepsilon} \sim \mathcal{N}(\mathbf{0}, \mathbf{I}_n \sigma^2_\varepsilon)$.
+
+### Unique Terms
+
+- Model 7: $\mathbf{i}$ is a $n$-vector of random interaction values, $\mathbf{i} \sim \mathcal{N}(\mathbf{0}, \mathbf{K}_{top \times e} \sigma^2_{top \times e})$,
+- Model 8: $\mathbf{X}_{3}$ is a $n \times c$ design matrix with $c = 20$ columns including the top 10 genetic principal components, the top 10 eigenvectors of the interaction relationship matrix (IRM),
+- Model 8: $\boldsymbol{\beta}_{3}$ is a $c$-vector of their fixed effects,
+- Model 9: $\mathbf{X}_{4}$ is a $n \times d$ design matrix with $d = 23$ columns including the top 10 genetic principal components, the top 10 eigenvectors of the IRM, and the top 3 eigenvectors of the Environmental Relationship Matrix (ERM),
+- Model 9: $\boldsymbol{\beta}_{4}$ is a $d$-vector of their fixed effects,
+
+### Descriptions
+
+Model 7 includes an additional variance component $i$ that implements a modified interaction relationship matrix. The modified IRM is given by $\mathbf{K}_{top \times e} = \mathbf{K}_{top} \odot \mathbf{K}_e$ where $\mathbf{K}_{top}$ is the GRM derived from the top 10 eigenvectors of the full plink GRM.
+
+Model 8 includes the top 10 eigenvectors of the full IRM as additional covariates (along with top 10 genetic PCs) for a total of 20 covariates in $X_3$. The full IRM is the Hadamard product of the plink GRM and the full ERM, given by $\mathbf{K}_{g \times e} = \mathbf{K}_g \odot \mathbf{K}_e$.
+
+Model 9 expands upon Model 8 by including the top 3 eigenvectors of the full ERM as additional covariates for a total of 23 covariates in $X_4$.
+
+
+### Estimates of effect sizes
+
+#### Combined
+
+```{r mult_all}
+
+plot_grid(dnum, snum, pnum, ncol=1)
+
+```
+
+#### Diastolic Pressure
+
+```{r mult_dp}
+
+plot_grid(dnum, ncol=1)
+snipper(mat_dp_num)
+
+```
+
+#### Systolic Pressure
+
+```{r mult_sp}
+
+plot_grid(snum, ncol=1)
+snipper(mat_sp_num)
+
+```
+
+#### Pulse Pressure
+
+```{r mult_pp}
+
+plot_grid(pnum, ncol=1)
+snipper(mat_pp_num)
+
+```
+
+
+## Alternate Model 6 Formulas
+
+The model 6 framework is used for the following analyses:
+
+$$\text{Model 6: } \mathbf{y} = \mathbf{X}_{1}\boldsymbol{\beta}_{1} + \mathbf{X}_{2}\boldsymbol{\beta}_{2} + \mathbf{g} + \mathbf{e} + \mathbf{g \times e} + \boldsymbol{\varepsilon}$$
+
+### Genetic Principal Components
+
+In the original model, $\mathbf{X}_2$ is comprised of the top 10 genetic principal components computed by us. In the alternate model, we instead used the top 10 genetic principal components provided by the UK Biobank. The estimation of variance components is shown here:
+
+#### Combined
+
+```{r pcs_all}
+
+plot_grid(dpc, spc, ppc, ncol=1)
+
+```
+
+#### Diastolic Pressure
+
+```{r pcs_dp}
+
+plot_grid(dpc, ncol=1)
+snipper(mat_dp_pcs)
+
+```
+
+#### Systolic Pressure
+
+```{r pcs_sp}
+
+plot_grid(spc, ncol=1)
+snipper(mat_sp_pcs)
+
+```
+
+#### Pulse Pressure
+
+```{r pcs_pp}
+
+plot_grid(ppc, ncol=1)
+snipper(mat_pp_pcs)
+
+```
+
+Estimates of effect sizes are consistent between models, suggesting our calculation of genetic PCs is appropriate.
+
+### Ancestry Composition
+
+We assessed the estimate of GxE effect sizes by comparing the multi-ancestry estimates to models using different populations.
+
+In these models, the $\mathbf{g}$ and $\mathbf{g \times e}$ components depend on the following populations:
+
+- Original: 25k individuals multi-ancestry, including 15k whites (British and others)
+- Brits: 25k individuals of British ancestry exclusively
+- Whites: 25k individuals of white ancestry, including British and others
+
+These results are shown here:
+
+#### Combined
+```{r alt_all}
+
+plot_grid(dalt, salt, palt, ncol=1)
+
+```
+
+#### Diastolic Pressure
+
+```{r alt_dp}
+
+plot_grid(dalt, ncol=1)
+snipper(mat_dp_alt)
+
+```
+
+#### Systolic Pressure
+
+```{r alt_sp}
+
+plot_grid(salt, ncol=1)
+snipper(mat_sp_alt)
+
+```
+
+#### Pulse Pressure
+
+```{r alt_pp}
+
+plot_grid(palt, ncol=1)
+snipper(mat_pp_alt)
+
+```
+
+
+We note that the estimates of the interaction component $\mathbf{g \times e}$ decrease from the original model to both white models. Additionally, the estimate of the genetic component $\mathbf{g}$ increases from the original model to both white models
+
+
+## Variant Selection
+
+The full breakdown of selected SNPs is available in the [QQ Plot Selection report](qqtop.html). These results are summarized here:
+
+```{r qqsnps}
+
+qqsnps <- fread('output/vault/fullport/qqsnps.txt')
+
+kable(qqsnps,'simple')
+
+
+```
+
+
+## Variant Analysis
+
+
+### Variant Effect Predictor
+
+```{r var_vep}
+
+
+
+```
+
+### g:Profiler Terms
+
+```{r var_gprof}
+
+
+
+```
+
+
+## ANOVA subunit
