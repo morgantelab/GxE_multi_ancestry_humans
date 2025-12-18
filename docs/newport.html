@@ -1,0 +1,2227 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Full breakdown of additional results</title>
+
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.5.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">GxE Multi-Ancestry</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Index</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/morgantelab/GxE_multi_ancestry_humans">
+    <span class="fab fa-github"></span>
+     
+    Source code
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Full breakdown of additional results</h1>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span
+class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> </a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2025-12-18
+</p>
+<p>
+<strong>Checks:</strong> <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> 1
+</p>
+<p>
+<strong>Knit directory:</strong> <code>GxE_multi_ancestry/</code> <span
+class="glyphicon glyphicon-question-sign" aria-hidden="true"
+title="This is the local directory in which the code in this file was executed.">
+</span>
+</p>
+<p>
+This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a>
+analysis was created with <a
+  href="https://github.com/workflowr/workflowr">workflowr</a> (version
+1.7.1). The <em>Checks</em> tab describes the reproducibility checks
+that were applied when the results were created. The <em>Past
+versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongobjectspresent">
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> <strong>Environment:</strong> objects present
+</a>
+</p>
+</div>
+<div id="strongEnvironmentstrongobjectspresent"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+The global environment had objects present when the code in the R
+Markdown file was run. These objects can affect the analysis in your R
+Markdown file in unknown ways. For reproduciblity it’s best to always
+run the code in an empty environment. Use <code>wflow_publish</code> or
+<code>wflow_build</code> to ensure that the code is always run in an
+empty environment.
+</p>
+<p>
+The following objects were defined in the global environment when these
+results were created:
+</p>
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th style="text-align:left;">
+Name
+</th>
+<th style="text-align:left;">
+Class
+</th>
+<th style="text-align:left;">
+Size
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+gg
+</td>
+<td style="text-align:left;">
+list
+</td>
+<td style="text-align:left;">
+176 bytes
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+hr
+</td>
+<td style="text-align:left;">
+function
+</td>
+<td style="text-align:left;">
+10.3 Kb
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+humanise
+</td>
+<td style="text-align:left;">
+function
+</td>
+<td style="text-align:left;">
+8.4 Kb
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+humanize
+</td>
+<td style="text-align:left;">
+function
+</td>
+<td style="text-align:left;">
+8.4 Kb
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+set_gxe
+</td>
+<td style="text-align:left;">
+function
+</td>
+<td style="text-align:left;">
+560 bytes
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+set_mult
+</td>
+<td style="text-align:left;">
+function
+</td>
+<td style="text-align:left;">
+560 bytes
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+wb
+</td>
+<td style="text-align:left;">
+function
+</td>
+<td style="text-align:left;">
+1.5 Kb
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+wp
+</td>
+<td style="text-align:left;">
+function
+</td>
+<td style="text-align:left;">
+1.5 Kb
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+wv
+</td>
+<td style="text-align:left;">
+function
+</td>
+<td style="text-align:left;">
+1.5 Kb
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20240808code">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Seed:</strong>
+<code>set.seed(20240808)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20240808code"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20240808)</code> was run prior to running
+the code in the R Markdown file. Setting a seed ensures that any results
+that rely on randomness, e.g. subsampling or permutations, are
+reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Session information:</strong>
+recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package
+versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be
+confident that you successfully produced the results during this
+run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr
+project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcommorgantelabGxEmultiancestryhumanstree64181bebae6fc74d1acaa6176be76095a682e96dtargetblank64181bea">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Repository version:</strong>
+<a href="https://github.com/morgantelab/GxE_multi_ancestry_humans/tree/64181bebae6fc74d1acaa6176be76095a682e96d" target="_blank">64181be</a>
+</a>
+</p>
+</div>
+<div
+id="strongRepositoryversionstrongahrefhttpsgithubcommorgantelabGxEmultiancestryhumanstree64181bebae6fc74d1acaa6176be76095a682e96dtargetblank64181bea"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development
+and connecting the code version to the results is critical for
+reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version
+<a href="https://github.com/morgantelab/GxE_multi_ancestry_humans/tree/64181bebae6fc74d1acaa6176be76095a682e96d" target="_blank">64181be</a>.
+See the <em>Past versions</em> tab to see a history of the changes made
+to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for
+the analysis have been committed to Git prior to generating the results
+(you can use <code>wflow_publish</code> or
+<code>wflow_git_commit</code>). workflowr only checks the R Markdown
+file, but you know if there are other scripts or data files that it
+depends on. Below is the status of the Git repository when the results
+were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .Rhistory
+    Ignored:    .Rprofile
+    Ignored:    .Rproj.user/
+    Ignored:    analysis/.DS_Store
+    Ignored:    analysis/._BFP_ethnicity_cohort_violin_box_plot_improved_20241015.png
+    Ignored:    analysis/._act0_d_ethnicity_cohort_violin_box_plot_improved_20241015.png
+    Ignored:    analysis/._alc1_ethnicity_cohort_violin_box_plot_improved_20241015.png
+    Ignored:    analysis/._boxplot_ofDP0a_across_ethnicities.png
+    Ignored:    analysis/._boxplot_ofDP0avsethn1_mixed.png
+    Ignored:    analysis/._histogram_ofDP0avsethn1_asian.png
+    Ignored:    analysis/._histogram_ofDP0avsethn1_black.png
+    Ignored:    analysis/._histogram_ofSP0avsethn1_mixed.png
+    Ignored:    analysis/._sleep_d_ethnicity_cohort_violin_box_plot_improved_20241015.png
+    Ignored:    code/.DS_Store
+    Ignored:    code/dump/
+    Ignored:    code/extra/
+    Ignored:    code/scripts/.DS_Store
+    Ignored:    code/scripts/processing_scripts/
+    Ignored:    data/
+    Ignored:    output/
+    Ignored:    plots/
+
+Untracked files:
+    Untracked:  .gitattributes
+    Untracked:  .snakemake/
+    Untracked:  GxE_multi_ancestry.Rproj
+    Untracked:  _workflowr.yml
+    Untracked:  analysis/._.DS_Store
+    Untracked:  code/amon/
+    Untracked:  code/brit_24k.yaml
+    Untracked:  code/mult.yaml
+    Untracked:  code/nklimko/
+    Untracked:  code/scripts/mult/
+    Untracked:  code/scripts/plots_scripts/manuscript_plots/Figure_4_new.R
+    Untracked:  code/scripts/white_24k/
+    Untracked:  code/snake7/
+
+Unstaged changes:
+    Modified:   analysis/index.Rmd
+    Modified:   analysis/qqtop.Rmd
+    Modified:   code/white_24k.yaml
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not
+included in this status report because it is ok for generated content to
+have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+
+<p>
+These are the previous versions of the repository in which changes were
+made to the R Markdown (<code>analysis/newport.Rmd</code>) and HTML
+(<code>docs/newport.html</code>) files. If you’ve configured a remote
+Git repository (see <code>?wflow_git_remote</code>), click on the
+hyperlinks in the table below to view the files as they were in that
+past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/morgantelab/GxE_multi_ancestry_humans/blob/64181bebae6fc74d1acaa6176be76095a682e96d/analysis/newport.Rmd" target="_blank">64181be</a>
+</td>
+<td>
+nklimko
+</td>
+<td>
+2025-12-18
+</td>
+<td>
+wflow_publish(fullpath)
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<pre class="r"><code># source(&#39;analysis/default/setup.R&#39;, local = knitr::knit_global())
+options(scipen=999)</code></pre>
+<pre class="r"><code>snipper &lt;- function(tabble){
+  # select columns of interest
+  micols &lt;- c(&#39;comp&#39;, &#39;model&#39;, &#39;mean&#39;)
+  # subset table
+  subtab &lt;- tabble[,micols, with=0]
+  # order by component then model)
+  subtab &lt;- subtab[order(comp, model),]
+  # clean column names
+  names(subtab) &lt;- c(&#39;Component&#39;, &#39;Model&#39;, &#39;PoVE&#39;)
+  #print table
+  kable(subtab, &#39;simple&#39;)
+}
+
+
+
+# plotting function
+matter &lt;- function(datanow, fulltitle, montag=NULL, mod7=TRUE){
+  plothole &lt;- ggplot(data=datanow, aes(x=fax, y=mean))+
+    # scale_color_manual(discrete=T, values = c(&#39;A_X1&#39;, &#39;B_X2&#39;, &#39;C_E&#39;, &#39;D_G&#39;, &#39;E_M7&#39;, &#39;F_GxE&#39;), labels = c(&#39;X1&#39;, &#39;X2&#39;, &#39;E&#39;, &#39;G&#39;, &#39;M7&#39;, &#39;GxE&#39;))+
+    {if(mod7)  scale_color_discrete(labels = c(&#39;X1&#39;, &#39;X2&#39;, &#39;E&#39;, &#39;G&#39;, &#39;M7&#39;, &#39;GxE&#39;))}+
+    {if(!mod7) scale_color_discrete(labels = c(&#39;X1&#39;, &#39;X2&#39;, &#39;E&#39;, &#39;G&#39;, &#39;GxE&#39;))}+
+    geom_point(aes(color=comp2))+
+    # geom_text(aes(label=modnum))+
+    geom_errorbar(aes(ymin = lower, ymax = upper, color=comp2),
+                  width = 0.8, linewidth = 0.4, alpha = 1) +
+    # labs(title=&#39;Model 8 Variance Components&#39;)+
+    labs(title=fulltitle, color=&#39;Component&#39;, tag=montag)+
+    xlab(&#39;Model&#39;)+
+    # xlab(NULL)+
+    ylab(&#39;PoVE&#39;)+
+    theme_minimal()+
+    theme(axis.text.x = element_blank(),
+          panel.grid.major.x = element_blank(),
+          panel.grid.minor.x = element_blank())+
+    geom_vline(xintercept = verty, linetype=2, color=&#39;lightgray&#39;)+
+    geom_text(data=modcode, aes(label=mn, x = x, y = y), inherit.aes=FALSE)
+  
+  return(plothole)
+}
+
+if(1){
+  
+  
+  matte &lt;- fread(&#39;output/vault/fullport/varcomps.txt&#39;)
+  
+  mat_dp &lt;- matte[trait==&#39;DP&#39;,]
+  mat_sp &lt;- matte[trait==&#39;SP&#39;,]
+  mat_pp &lt;- matte[trait==&#39;PP&#39;,]
+  
+  mod1 &lt;- c(&#39;6&#39;, &#39;6a&#39;)
+  mat_dp_pcs &lt;- mat_dp[modnum %in% mod1,]
+  mat_sp_pcs &lt;- mat_sp[modnum %in% mod1,]
+  mat_pp_pcs &lt;- mat_pp[modnum %in% mod1,]
+  
+  mod2 &lt;- c(&#39;6&#39;, &#39;6b&#39;, &#39;6w&#39;)
+  mat_dp_alt &lt;- mat_dp[modnum %in% mod2,]
+  mat_sp_alt &lt;- mat_sp[modnum %in% mod2,]
+  mat_pp_alt &lt;- mat_pp[modnum %in% mod2,]
+  
+  mod3 &lt;- as.character(6:9)
+  mat_dp_num &lt;- mat_dp[modnum %in% mod3,]
+  mat_sp_num &lt;- mat_sp[modnum %in% mod3,]
+  mat_pp_num &lt;- mat_pp[modnum %in% mod3,]
+  
+  
+  sub1 &lt;- 1
+  if(sub1){
+    # indexes of line breaks
+    # verty &lt;- c(1.5, 3.5, 6.5, 9.5, 13.5, 17.5, 22.5, 27.5, 33.5)
+    verty &lt;- 0.5 + cumsum(unlist(table(mat_dp_pcs$model)))
+    verty &lt;- verty[-length(verty)]
+    
+    # add on hardpoint ends
+    verty2 &lt;- c(0, verty, nrow(mat_dp_pcs)+1)
+    
+    # calculates midpoint of each section to place Model Number below x axis
+    verty3 &lt;- (verty2[2:length(verty2)] - verty2[1:(length(verty2) - 1)]) / 2 + verty2[1:(length(verty2) - 1)]
+    
+    altnumber &lt;- c(&#39;6 - Original&#39;, &#39;6a - Alt PCs&#39;)
+    
+    #matter function plots model number at specified breakpoint at y = -1 for each label.
+    modcode &lt;- data.table(mn=altnumber, x=verty3, y=-1)
+    
+    dpc &lt;- matter(mat_dp_pcs, fulltitle=NULL, montag=&#39;DP&#39;, mod7=FALSE)
+    spc &lt;- matter(mat_sp_pcs, fulltitle=NULL, montag=&#39;SP&#39;, mod7=FALSE)
+    ppc &lt;- matter(mat_pp_pcs, fulltitle=NULL, montag=&#39;PP&#39;, mod7=FALSE)
+    
+    # print(plot_grid(dpc, spc, ppc, ncol=1))
+    
+  }
+  
+  sub2 &lt;- 1
+  if(sub2){
+    # indexes of line breaks
+    # verty &lt;- c(1.5, 3.5, 6.5, 9.5, 13.5, 17.5, 22.5, 27.5, 33.5)
+    verty &lt;- 0.5 + cumsum(unlist(table(mat_dp_alt$model)))
+    verty &lt;- verty[-length(verty)]
+    
+    # add on hardpoint ends
+    verty2 &lt;- c(0, verty, nrow(mat_dp_alt)+1)
+    
+    # calculates midpoint of each section to place Model Number below x axis
+    verty3 &lt;- (verty2[2:length(verty2)] - verty2[1:(length(verty2) - 1)]) / 2 + verty2[1:(length(verty2) - 1)]
+    
+    altnumber &lt;- c(&#39;6 - Original&#39;, &#39;6b - Brits&#39;, &#39;6w - Whites&#39;)
+    
+    #matter function plots model number at specified breakpoint at y = -1 for each label.
+    modcode &lt;- data.table(mn=altnumber, x=verty3, y=-1)
+    
+    dalt &lt;- matter(mat_dp_alt, fulltitle=NULL, montag=&#39;DP&#39;, mod7=FALSE)
+    salt &lt;- matter(mat_sp_alt, fulltitle=NULL, montag=&#39;SP&#39;, mod7=FALSE)
+    palt &lt;- matter(mat_pp_alt, fulltitle=NULL, montag=&#39;PP&#39;, mod7=FALSE)
+    
+    # print(plot_grid(dalt, salt, palt, ncol=1))
+    
+    
+  }
+  
+  sub3 &lt;- 1
+  if(sub3){
+    # indexes of line breaks
+    # verty &lt;- c(1.5, 3.5, 6.5, 9.5, 13.5, 17.5, 22.5, 27.5, 33.5)
+    verty &lt;- 0.5 + cumsum(unlist(table(mat_dp_num$model)))
+    verty &lt;- verty[-length(verty)]
+    
+    # add on hardpoint ends
+    verty2 &lt;- c(0, verty, nrow(mat_dp_num)+1)
+    
+    # calculates midpoint of each section to place Model Number below x axis
+    verty3 &lt;- (verty2[2:length(verty2)] - verty2[1:(length(verty2) - 1)]) / 2 + verty2[1:(length(verty2) - 1)]
+    
+    # altnumber &lt;- c(&#39;6 - Original&#39;, &#39;7 - &#39;,&#39;8&#39;, &#39;9&#39;)
+    altnumber &lt;- as.character(6:9)
+    
+    #matter function plots model number at specified breakpoint at y = -1 for each label.
+    modcode &lt;- data.table(mn=altnumber, x=verty3, y=-1)
+    
+    dnum &lt;- matter(mat_dp_num, fulltitle=NULL, montag=&#39;DP&#39;, mod7=TRUE)
+    snum &lt;- matter(mat_sp_num, fulltitle=NULL, montag=&#39;SP&#39;, mod7=TRUE)
+    pnum &lt;- matter(mat_pp_num, fulltitle=NULL, montag=&#39;PP&#39;, mod7=TRUE)
+    
+    # print(plot_grid(dnum, snum, pnum, ncol=1))
+  }
+}</code></pre>
+<div id="overview" class="section level1">
+<h1>Overview</h1>
+<p>Five subsections:</p>
+<ul>
+<li>New models (7-9)</li>
+<li>Alternate model 6 tests</li>
+<li>GXE-GWAS Variant Selection (summary)</li>
+<li>Variant Selection</li>
+<li>ANOVA</li>
+</ul>
+<p>Of these, data for the first three is included. Discussion needed for
+Alt model 6 tests, have not started variant selection or anova report
+below.</p>
+<div id="new-models" class="section level2">
+<h2>New models</h2>
+<p>Models 7, 8, and 9 are new. Model 6 is included for reference to
+existing terms.</p>
+<div id="formulas" class="section level3">
+<h3>Formulas</h3>
+<ul>
+<li><span class="math inline">\(\text{Model 6: } \mathbf{y} =
+\mathbf{X}_{1}\boldsymbol{\beta}_{1} +
+\mathbf{X}_{2}\boldsymbol{\beta}_{2} + \mathbf{g} + \mathbf{e} +
+\mathbf{g \times e} + \boldsymbol{\varepsilon}\)</span></li>
+<li><span class="math inline">\(\text{Model 7: } \mathbf{y} =
+\mathbf{X}_{1}\boldsymbol{\beta}_{1} +
+\mathbf{X}_{2}\boldsymbol{\beta}_{2} + \mathbf{g} + \mathbf{e} +
+\mathbf{i} + \mathbf{g \times e} +
+\boldsymbol{\varepsilon}\)</span></li>
+<li><span class="math inline">\(\text{Model 8: } \mathbf{y} =
+\mathbf{X}_{1}\boldsymbol{\beta}_{1} +
+\mathbf{X}_{3}\boldsymbol{\beta}_{3} + \mathbf{g} + \mathbf{e} +
+\mathbf{g \times e} + \boldsymbol{\varepsilon}\)</span></li>
+<li><span class="math inline">\(\text{Model 9: } \mathbf{y} =
+\mathbf{X}_{1}\boldsymbol{\beta}_{1} +
+\mathbf{X}_{4}\boldsymbol{\beta}_{4} + \mathbf{g} + \mathbf{e} +
+\mathbf{g \times e} + \boldsymbol{\varepsilon}\)</span></li>
+</ul>
+</div>
+<div id="shared-terms" class="section level3">
+<h3>Shared Terms</h3>
+<ul>
+<li><span class="math inline">\(\mathbf{y}\)</span> is a <span
+class="math inline">\(n\)</span>-vector of phenotypic values,</li>
+<li><span class="math inline">\(\mathbf{X}_{1}\)</span> is a <span
+class="math inline">\(n \times a\)</span> design matrix of <span
+class="math inline">\(a=3\)</span> demographic variables (sex, age,
+age<span class="math inline">\(^2\)</span>),</li>
+<li><span class="math inline">\(\boldsymbol{\beta}_{1}\)</span> is an
+<span class="math inline">\(a\)</span>-vector of their fixed
+effects,</li>
+<li>Model 7: <span class="math inline">\(\mathbf{X}_{2}\)</span> is a
+<span class="math inline">\(n \times b\)</span> design matrix with <span
+class="math inline">\(b = 10\)</span> columns including the top 10
+genetic principal components,</li>
+<li>Model 7: <span class="math inline">\(\boldsymbol{\beta}_{2}\)</span>
+is a <span class="math inline">\(b\)</span>-vector of their fixed
+effects,</li>
+<li><span class="math inline">\(\mathbf{g}\)</span> is a <span
+class="math inline">\(n\)</span>-vector of random additive genetic
+values, <span class="math inline">\(\mathbf{g} \sim
+\mathcal{N}(\mathbf{0}, \mathbf{K}_g \sigma^2_g)\)</span>,</li>
+<li><span class="math inline">\(\mathbf{e}\)</span> is a <span
+class="math inline">\(n\)</span>-vector of random lifestyle values,
+<span class="math inline">\(\mathbf{e} \sim \mathcal{N}(\mathbf{0},
+\mathbf{K}_e \sigma^2_e)\)</span>,</li>
+<li><span class="math inline">\(\mathbf{g \times e}\)</span> is a <span
+class="math inline">\(n\)</span>-vector of random interaction values,
+<span class="math inline">\(\mathbf{g \times e} \sim
+\mathcal{N}(\mathbf{0}, \mathbf{K}_{g \times e} \sigma^2_{g \times
+e})\)</span>,</li>
+<li><span class="math inline">\(\boldsymbol{\varepsilon}\)</span> is a
+<span class="math inline">\(n\)</span>-vector of random residual values,
+<span class="math inline">\(\boldsymbol{\varepsilon} \sim
+\mathcal{N}(\mathbf{0}, \mathbf{I}_n
+\sigma^2_\varepsilon)\)</span>.</li>
+</ul>
+</div>
+<div id="unique-terms" class="section level3">
+<h3>Unique Terms</h3>
+<ul>
+<li>Model 7: <span class="math inline">\(\mathbf{i}\)</span> is a <span
+class="math inline">\(n\)</span>-vector of random interaction values,
+<span class="math inline">\(\mathbf{i} \sim \mathcal{N}(\mathbf{0},
+\mathbf{K}_{top \times e} \sigma^2_{top \times e})\)</span>,</li>
+<li>Model 8: <span class="math inline">\(\mathbf{X}_{3}\)</span> is a
+<span class="math inline">\(n \times c\)</span> design matrix with <span
+class="math inline">\(c = 20\)</span> columns including the top 10
+genetic principal components, the top 10 eigenvectors of the interaction
+relationship matrix (IRM),</li>
+<li>Model 8: <span class="math inline">\(\boldsymbol{\beta}_{3}\)</span>
+is a <span class="math inline">\(c\)</span>-vector of their fixed
+effects,</li>
+<li>Model 9: <span class="math inline">\(\mathbf{X}_{4}\)</span> is a
+<span class="math inline">\(n \times d\)</span> design matrix with <span
+class="math inline">\(d = 23\)</span> columns including the top 10
+genetic principal components, the top 10 eigenvectors of the IRM, and
+the top 3 eigenvectors of the Environmental Relationship Matrix
+(ERM),</li>
+<li>Model 9: <span class="math inline">\(\boldsymbol{\beta}_{4}\)</span>
+is a <span class="math inline">\(d\)</span>-vector of their fixed
+effects,</li>
+</ul>
+</div>
+<div id="descriptions" class="section level3">
+<h3>Descriptions</h3>
+<p>Model 7 includes an additional variance component <span
+class="math inline">\(i\)</span> that implements a modified interaction
+relationship matrix. The modified IRM is given by <span
+class="math inline">\(\mathbf{K}_{top \times e} = \mathbf{K}_{top} \odot
+\mathbf{K}_e\)</span> where <span
+class="math inline">\(\mathbf{K}_{top}\)</span> is the GRM derived from
+the top 10 eigenvectors of the full plink GRM.</p>
+<p>Model 8 includes the top 10 eigenvectors of the full IRM as
+additional covariates (along with top 10 genetic PCs) for a total of 20
+covariates in <span class="math inline">\(X_3\)</span>. The full IRM is
+the Hadamard product of the plink GRM and the full ERM, given by <span
+class="math inline">\(\mathbf{K}_{g \times e} = \mathbf{K}_g \odot
+\mathbf{K}_e\)</span>.</p>
+<p>Model 9 expands upon Model 8 by including the top 3 eigenvectors of
+the full ERM as additional covariates for a total of 23 covariates in
+<span class="math inline">\(X_4\)</span>.</p>
+</div>
+<div id="estimates-of-effect-sizes" class="section level3">
+<h3>Estimates of effect sizes</h3>
+<div id="combined" class="section level4">
+<h4>Combined</h4>
+<pre class="r"><code>plot_grid(dnum, snum, pnum, ncol=1)</code></pre>
+<p><img src="figure/newport.Rmd/mult_all-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="diastolic-pressure" class="section level4">
+<h4>Diastolic Pressure</h4>
+<pre class="r"><code>plot_grid(dnum, ncol=1)</code></pre>
+<p><img src="figure/newport.Rmd/mult_dp-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>snipper(mat_dp_num)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Component</th>
+<th align="left">Model</th>
+<th align="right">PoVE</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">E</td>
+<td align="left">Model 6</td>
+<td align="right">10.5668474</td>
+</tr>
+<tr class="even">
+<td align="left">E</td>
+<td align="left">Model 7</td>
+<td align="right">10.5607557</td>
+</tr>
+<tr class="odd">
+<td align="left">E</td>
+<td align="left">Model 8</td>
+<td align="right">10.5381487</td>
+</tr>
+<tr class="even">
+<td align="left">E</td>
+<td align="left">Model 9</td>
+<td align="right">10.5343724</td>
+</tr>
+<tr class="odd">
+<td align="left">G</td>
+<td align="left">Model 6</td>
+<td align="right">15.6668108</td>
+</tr>
+<tr class="even">
+<td align="left">G</td>
+<td align="left">Model 7</td>
+<td align="right">15.7349840</td>
+</tr>
+<tr class="odd">
+<td align="left">G</td>
+<td align="left">Model 8</td>
+<td align="right">15.5244669</td>
+</tr>
+<tr class="even">
+<td align="left">G</td>
+<td align="left">Model 9</td>
+<td align="right">15.7375170</td>
+</tr>
+<tr class="odd">
+<td align="left">GxE</td>
+<td align="left">Model 6</td>
+<td align="right">7.3734547</td>
+</tr>
+<tr class="even">
+<td align="left">GxE</td>
+<td align="left">Model 7</td>
+<td align="right">6.3709404</td>
+</tr>
+<tr class="odd">
+<td align="left">GxE</td>
+<td align="left">Model 8</td>
+<td align="right">7.5608078</td>
+</tr>
+<tr class="even">
+<td align="left">GxE</td>
+<td align="left">Model 9</td>
+<td align="right">7.5272430</td>
+</tr>
+<tr class="odd">
+<td align="left">X1</td>
+<td align="left">Model 6</td>
+<td align="right">4.3968360</td>
+</tr>
+<tr class="even">
+<td align="left">X1</td>
+<td align="left">Model 7</td>
+<td align="right">4.3528599</td>
+</tr>
+<tr class="odd">
+<td align="left">X1</td>
+<td align="left">Model 8</td>
+<td align="right">4.3851741</td>
+</tr>
+<tr class="even">
+<td align="left">X1</td>
+<td align="left">Model 9</td>
+<td align="right">4.3456315</td>
+</tr>
+<tr class="odd">
+<td align="left">X2</td>
+<td align="left">Model 6</td>
+<td align="right">1.4452401</td>
+</tr>
+<tr class="even">
+<td align="left">X2</td>
+<td align="left">Model 7</td>
+<td align="right">1.6687026</td>
+</tr>
+<tr class="odd">
+<td align="left">X2</td>
+<td align="left">Model 8</td>
+<td align="right">1.5357184</td>
+</tr>
+<tr class="even">
+<td align="left">X2</td>
+<td align="left">Model 9</td>
+<td align="right">8.7038219</td>
+</tr>
+<tr class="odd">
+<td align="left">m7</td>
+<td align="left">Model 7</td>
+<td align="right">0.3419408</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="systolic-pressure" class="section level4">
+<h4>Systolic Pressure</h4>
+<pre class="r"><code>plot_grid(snum, ncol=1)</code></pre>
+<p><img src="figure/newport.Rmd/mult_sp-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>snipper(mat_sp_num)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Component</th>
+<th align="left">Model</th>
+<th align="right">PoVE</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">E</td>
+<td align="left">Model 6</td>
+<td align="right">5.2372076</td>
+</tr>
+<tr class="even">
+<td align="left">E</td>
+<td align="left">Model 7</td>
+<td align="right">5.3294119</td>
+</tr>
+<tr class="odd">
+<td align="left">E</td>
+<td align="left">Model 8</td>
+<td align="right">5.2685384</td>
+</tr>
+<tr class="even">
+<td align="left">E</td>
+<td align="left">Model 9</td>
+<td align="right">5.9132542</td>
+</tr>
+<tr class="odd">
+<td align="left">G</td>
+<td align="left">Model 6</td>
+<td align="right">13.0727166</td>
+</tr>
+<tr class="even">
+<td align="left">G</td>
+<td align="left">Model 7</td>
+<td align="right">13.0311038</td>
+</tr>
+<tr class="odd">
+<td align="left">G</td>
+<td align="left">Model 8</td>
+<td align="right">12.8453187</td>
+</tr>
+<tr class="even">
+<td align="left">G</td>
+<td align="left">Model 9</td>
+<td align="right">13.0642049</td>
+</tr>
+<tr class="odd">
+<td align="left">GxE</td>
+<td align="left">Model 6</td>
+<td align="right">4.2039709</td>
+</tr>
+<tr class="even">
+<td align="left">GxE</td>
+<td align="left">Model 7</td>
+<td align="right">3.4690480</td>
+</tr>
+<tr class="odd">
+<td align="left">GxE</td>
+<td align="left">Model 8</td>
+<td align="right">4.3062755</td>
+</tr>
+<tr class="even">
+<td align="left">GxE</td>
+<td align="left">Model 9</td>
+<td align="right">4.3225374</td>
+</tr>
+<tr class="odd">
+<td align="left">X1</td>
+<td align="left">Model 6</td>
+<td align="right">13.5583099</td>
+</tr>
+<tr class="even">
+<td align="left">X1</td>
+<td align="left">Model 7</td>
+<td align="right">13.3239853</td>
+</tr>
+<tr class="odd">
+<td align="left">X1</td>
+<td align="left">Model 8</td>
+<td align="right">13.3500240</td>
+</tr>
+<tr class="even">
+<td align="left">X1</td>
+<td align="left">Model 9</td>
+<td align="right">13.3484394</td>
+</tr>
+<tr class="odd">
+<td align="left">X2</td>
+<td align="left">Model 6</td>
+<td align="right">0.7553020</td>
+</tr>
+<tr class="even">
+<td align="left">X2</td>
+<td align="left">Model 7</td>
+<td align="right">0.8851859</td>
+</tr>
+<tr class="odd">
+<td align="left">X2</td>
+<td align="left">Model 8</td>
+<td align="right">0.8803298</td>
+</tr>
+<tr class="even">
+<td align="left">X2</td>
+<td align="left">Model 9</td>
+<td align="right">4.8574039</td>
+</tr>
+<tr class="odd">
+<td align="left">m7</td>
+<td align="left">Model 7</td>
+<td align="right">0.4301240</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="pulse-pressure" class="section level4">
+<h4>Pulse Pressure</h4>
+<pre class="r"><code>plot_grid(pnum, ncol=1)</code></pre>
+<p><img src="figure/newport.Rmd/mult_pp-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>snipper(mat_pp_num)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Component</th>
+<th align="left">Model</th>
+<th align="right">PoVE</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">E</td>
+<td align="left">Model 6</td>
+<td align="right">1.1366859</td>
+</tr>
+<tr class="even">
+<td align="left">E</td>
+<td align="left">Model 7</td>
+<td align="right">1.1996977</td>
+</tr>
+<tr class="odd">
+<td align="left">E</td>
+<td align="left">Model 8</td>
+<td align="right">1.1788592</td>
+</tr>
+<tr class="even">
+<td align="left">E</td>
+<td align="left">Model 9</td>
+<td align="right">2.1750980</td>
+</tr>
+<tr class="odd">
+<td align="left">G</td>
+<td align="left">Model 6</td>
+<td align="right">9.9625746</td>
+</tr>
+<tr class="even">
+<td align="left">G</td>
+<td align="left">Model 7</td>
+<td align="right">9.9405176</td>
+</tr>
+<tr class="odd">
+<td align="left">G</td>
+<td align="left">Model 8</td>
+<td align="right">9.7402599</td>
+</tr>
+<tr class="even">
+<td align="left">G</td>
+<td align="left">Model 9</td>
+<td align="right">10.0015241</td>
+</tr>
+<tr class="odd">
+<td align="left">GxE</td>
+<td align="left">Model 6</td>
+<td align="right">3.0542151</td>
+</tr>
+<tr class="even">
+<td align="left">GxE</td>
+<td align="left">Model 7</td>
+<td align="right">2.5316092</td>
+</tr>
+<tr class="odd">
+<td align="left">GxE</td>
+<td align="left">Model 8</td>
+<td align="right">3.1003256</td>
+</tr>
+<tr class="even">
+<td align="left">GxE</td>
+<td align="left">Model 9</td>
+<td align="right">3.1154543</td>
+</tr>
+<tr class="odd">
+<td align="left">X1</td>
+<td align="left">Model 6</td>
+<td align="right">19.0239473</td>
+</tr>
+<tr class="even">
+<td align="left">X1</td>
+<td align="left">Model 7</td>
+<td align="right">18.8265016</td>
+</tr>
+<tr class="odd">
+<td align="left">X1</td>
+<td align="left">Model 8</td>
+<td align="right">18.8356716</td>
+</tr>
+<tr class="even">
+<td align="left">X1</td>
+<td align="left">Model 9</td>
+<td align="right">18.8638740</td>
+</tr>
+<tr class="odd">
+<td align="left">X2</td>
+<td align="left">Model 6</td>
+<td align="right">0.3123106</td>
+</tr>
+<tr class="even">
+<td align="left">X2</td>
+<td align="left">Model 7</td>
+<td align="right">0.3595714</td>
+</tr>
+<tr class="odd">
+<td align="left">X2</td>
+<td align="left">Model 8</td>
+<td align="right">0.4418228</td>
+</tr>
+<tr class="even">
+<td align="left">X2</td>
+<td align="left">Model 9</td>
+<td align="right">1.9352654</td>
+</tr>
+<tr class="odd">
+<td align="left">m7</td>
+<td align="left">Model 7</td>
+<td align="right">0.4040884</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="alternate-model-6-formulas" class="section level2">
+<h2>Alternate Model 6 Formulas</h2>
+<p>The model 6 framework is used for the following analyses:</p>
+<p><span class="math display">\[\text{Model 6: } \mathbf{y} =
+\mathbf{X}_{1}\boldsymbol{\beta}_{1} +
+\mathbf{X}_{2}\boldsymbol{\beta}_{2} + \mathbf{g} + \mathbf{e} +
+\mathbf{g \times e} + \boldsymbol{\varepsilon}\]</span></p>
+<div id="genetic-principal-components" class="section level3">
+<h3>Genetic Principal Components</h3>
+<p>In the original model, <span
+class="math inline">\(\mathbf{X}_2\)</span> is comprised of the top 10
+genetic principal components computed by us. In the alternate model, we
+instead used the top 10 genetic principal components provided by the UK
+Biobank. The estimation of variance components is shown here:</p>
+<div id="combined-1" class="section level4">
+<h4>Combined</h4>
+<pre class="r"><code>plot_grid(dpc, spc, ppc, ncol=1)</code></pre>
+<p><img src="figure/newport.Rmd/pcs_all-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="diastolic-pressure-1" class="section level4">
+<h4>Diastolic Pressure</h4>
+<pre class="r"><code>plot_grid(dpc, ncol=1)</code></pre>
+<p><img src="figure/newport.Rmd/pcs_dp-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>snipper(mat_dp_pcs)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Component</th>
+<th align="left">Model</th>
+<th align="right">PoVE</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">E</td>
+<td align="left">Model 6</td>
+<td align="right">10.566847</td>
+</tr>
+<tr class="even">
+<td align="left">E</td>
+<td align="left">Model 6a</td>
+<td align="right">10.614517</td>
+</tr>
+<tr class="odd">
+<td align="left">G</td>
+<td align="left">Model 6</td>
+<td align="right">15.666811</td>
+</tr>
+<tr class="even">
+<td align="left">G</td>
+<td align="left">Model 6a</td>
+<td align="right">15.435262</td>
+</tr>
+<tr class="odd">
+<td align="left">GxE</td>
+<td align="left">Model 6</td>
+<td align="right">7.373455</td>
+</tr>
+<tr class="even">
+<td align="left">GxE</td>
+<td align="left">Model 6a</td>
+<td align="right">7.362677</td>
+</tr>
+<tr class="odd">
+<td align="left">X1</td>
+<td align="left">Model 6</td>
+<td align="right">4.396836</td>
+</tr>
+<tr class="even">
+<td align="left">X1</td>
+<td align="left">Model 6a</td>
+<td align="right">4.461699</td>
+</tr>
+<tr class="odd">
+<td align="left">X2</td>
+<td align="left">Model 6</td>
+<td align="right">1.445240</td>
+</tr>
+<tr class="even">
+<td align="left">X2</td>
+<td align="left">Model 6a</td>
+<td align="right">1.427508</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="systolic-pressure-1" class="section level4">
+<h4>Systolic Pressure</h4>
+<pre class="r"><code>plot_grid(spc, ncol=1)</code></pre>
+<p><img src="figure/newport.Rmd/pcs_sp-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>snipper(mat_sp_pcs)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Component</th>
+<th align="left">Model</th>
+<th align="right">PoVE</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">E</td>
+<td align="left">Model 6</td>
+<td align="right">5.2372076</td>
+</tr>
+<tr class="even">
+<td align="left">E</td>
+<td align="left">Model 6a</td>
+<td align="right">5.2307381</td>
+</tr>
+<tr class="odd">
+<td align="left">G</td>
+<td align="left">Model 6</td>
+<td align="right">13.0727166</td>
+</tr>
+<tr class="even">
+<td align="left">G</td>
+<td align="left">Model 6a</td>
+<td align="right">12.8582372</td>
+</tr>
+<tr class="odd">
+<td align="left">GxE</td>
+<td align="left">Model 6</td>
+<td align="right">4.2039709</td>
+</tr>
+<tr class="even">
+<td align="left">GxE</td>
+<td align="left">Model 6a</td>
+<td align="right">4.2113118</td>
+</tr>
+<tr class="odd">
+<td align="left">X1</td>
+<td align="left">Model 6</td>
+<td align="right">13.5583099</td>
+</tr>
+<tr class="even">
+<td align="left">X1</td>
+<td align="left">Model 6a</td>
+<td align="right">13.5452878</td>
+</tr>
+<tr class="odd">
+<td align="left">X2</td>
+<td align="left">Model 6</td>
+<td align="right">0.7553020</td>
+</tr>
+<tr class="even">
+<td align="left">X2</td>
+<td align="left">Model 6a</td>
+<td align="right">0.7306742</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="pulse-pressure-1" class="section level4">
+<h4>Pulse Pressure</h4>
+<pre class="r"><code>plot_grid(ppc, ncol=1)</code></pre>
+<p><img src="figure/newport.Rmd/pcs_pp-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>snipper(mat_pp_pcs)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Component</th>
+<th align="left">Model</th>
+<th align="right">PoVE</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">E</td>
+<td align="left">Model 6</td>
+<td align="right">1.1366859</td>
+</tr>
+<tr class="even">
+<td align="left">E</td>
+<td align="left">Model 6a</td>
+<td align="right">1.1278320</td>
+</tr>
+<tr class="odd">
+<td align="left">G</td>
+<td align="left">Model 6</td>
+<td align="right">9.9625746</td>
+</tr>
+<tr class="even">
+<td align="left">G</td>
+<td align="left">Model 6a</td>
+<td align="right">9.7059989</td>
+</tr>
+<tr class="odd">
+<td align="left">GxE</td>
+<td align="left">Model 6</td>
+<td align="right">3.0542151</td>
+</tr>
+<tr class="even">
+<td align="left">GxE</td>
+<td align="left">Model 6a</td>
+<td align="right">3.0628217</td>
+</tr>
+<tr class="odd">
+<td align="left">X1</td>
+<td align="left">Model 6</td>
+<td align="right">19.0239473</td>
+</tr>
+<tr class="even">
+<td align="left">X1</td>
+<td align="left">Model 6a</td>
+<td align="right">18.9902033</td>
+</tr>
+<tr class="odd">
+<td align="left">X2</td>
+<td align="left">Model 6</td>
+<td align="right">0.3123106</td>
+</tr>
+<tr class="even">
+<td align="left">X2</td>
+<td align="left">Model 6a</td>
+<td align="right">0.3169845</td>
+</tr>
+</tbody>
+</table>
+<p>Estimates of effect sizes are consistent between models, suggesting
+our calculation of genetic PCs is appropriate.</p>
+</div>
+</div>
+<div id="ancestry-composition" class="section level3">
+<h3>Ancestry Composition</h3>
+<p>We assessed the estimate of GxE effect sizes by comparing the
+multi-ancestry estimates to models using different populations.</p>
+<p>In these models, the <span class="math inline">\(\mathbf{g}\)</span>
+and <span class="math inline">\(\mathbf{g \times e}\)</span> components
+depend on the following populations:</p>
+<ul>
+<li>Original: 25k individuals multi-ancestry, including 15k whites
+(British and others)</li>
+<li>Brits: 25k individuals of British ancestry exclusively</li>
+<li>Whites: 25k individuals of white ancestry, including British and
+others</li>
+</ul>
+<p>These results are shown here:</p>
+<div id="combined-2" class="section level4">
+<h4>Combined</h4>
+<pre class="r"><code>plot_grid(dalt, salt, palt, ncol=1)</code></pre>
+<p><img src="figure/newport.Rmd/alt_all-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="diastolic-pressure-2" class="section level4">
+<h4>Diastolic Pressure</h4>
+<pre class="r"><code>plot_grid(dalt, ncol=1)</code></pre>
+<p><img src="figure/newport.Rmd/alt_dp-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>snipper(mat_dp_alt)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Component</th>
+<th align="left">Model</th>
+<th align="right">PoVE</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">E</td>
+<td align="left">Model 6</td>
+<td align="right">10.5668474</td>
+</tr>
+<tr class="even">
+<td align="left">E</td>
+<td align="left">Model 6b</td>
+<td align="right">10.8360644</td>
+</tr>
+<tr class="odd">
+<td align="left">E</td>
+<td align="left">Model 6w</td>
+<td align="right">11.2320284</td>
+</tr>
+<tr class="even">
+<td align="left">G</td>
+<td align="left">Model 6</td>
+<td align="right">15.6668108</td>
+</tr>
+<tr class="odd">
+<td align="left">G</td>
+<td align="left">Model 6b</td>
+<td align="right">18.0023057</td>
+</tr>
+<tr class="even">
+<td align="left">G</td>
+<td align="left">Model 6w</td>
+<td align="right">18.8969239</td>
+</tr>
+<tr class="odd">
+<td align="left">GxE</td>
+<td align="left">Model 6</td>
+<td align="right">7.3734547</td>
+</tr>
+<tr class="even">
+<td align="left">GxE</td>
+<td align="left">Model 6b</td>
+<td align="right">4.2124167</td>
+</tr>
+<tr class="odd">
+<td align="left">GxE</td>
+<td align="left">Model 6w</td>
+<td align="right">5.6955529</td>
+</tr>
+<tr class="even">
+<td align="left">X1</td>
+<td align="left">Model 6</td>
+<td align="right">4.3968360</td>
+</tr>
+<tr class="odd">
+<td align="left">X1</td>
+<td align="left">Model 6b</td>
+<td align="right">6.0199752</td>
+</tr>
+<tr class="even">
+<td align="left">X1</td>
+<td align="left">Model 6w</td>
+<td align="right">5.7508768</td>
+</tr>
+<tr class="odd">
+<td align="left">X2</td>
+<td align="left">Model 6</td>
+<td align="right">1.4452401</td>
+</tr>
+<tr class="even">
+<td align="left">X2</td>
+<td align="left">Model 6b</td>
+<td align="right">0.2890741</td>
+</tr>
+<tr class="odd">
+<td align="left">X2</td>
+<td align="left">Model 6w</td>
+<td align="right">0.2278947</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="systolic-pressure-2" class="section level4">
+<h4>Systolic Pressure</h4>
+<pre class="r"><code>plot_grid(salt, ncol=1)</code></pre>
+<p><img src="figure/newport.Rmd/alt_sp-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>snipper(mat_sp_alt)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Component</th>
+<th align="left">Model</th>
+<th align="right">PoVE</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">E</td>
+<td align="left">Model 6</td>
+<td align="right">5.2372076</td>
+</tr>
+<tr class="even">
+<td align="left">E</td>
+<td align="left">Model 6b</td>
+<td align="right">4.8240381</td>
+</tr>
+<tr class="odd">
+<td align="left">E</td>
+<td align="left">Model 6w</td>
+<td align="right">5.4713535</td>
+</tr>
+<tr class="even">
+<td align="left">G</td>
+<td align="left">Model 6</td>
+<td align="right">13.0727166</td>
+</tr>
+<tr class="odd">
+<td align="left">G</td>
+<td align="left">Model 6b</td>
+<td align="right">17.3102068</td>
+</tr>
+<tr class="even">
+<td align="left">G</td>
+<td align="left">Model 6w</td>
+<td align="right">17.2207406</td>
+</tr>
+<tr class="odd">
+<td align="left">GxE</td>
+<td align="left">Model 6</td>
+<td align="right">4.2039709</td>
+</tr>
+<tr class="even">
+<td align="left">GxE</td>
+<td align="left">Model 6b</td>
+<td align="right">3.1223657</td>
+</tr>
+<tr class="odd">
+<td align="left">GxE</td>
+<td align="left">Model 6w</td>
+<td align="right">3.5824106</td>
+</tr>
+<tr class="even">
+<td align="left">X1</td>
+<td align="left">Model 6</td>
+<td align="right">13.5583099</td>
+</tr>
+<tr class="odd">
+<td align="left">X1</td>
+<td align="left">Model 6b</td>
+<td align="right">13.0890268</td>
+</tr>
+<tr class="even">
+<td align="left">X1</td>
+<td align="left">Model 6w</td>
+<td align="right">12.5307665</td>
+</tr>
+<tr class="odd">
+<td align="left">X2</td>
+<td align="left">Model 6</td>
+<td align="right">0.7553020</td>
+</tr>
+<tr class="even">
+<td align="left">X2</td>
+<td align="left">Model 6b</td>
+<td align="right">0.2242889</td>
+</tr>
+<tr class="odd">
+<td align="left">X2</td>
+<td align="left">Model 6w</td>
+<td align="right">0.1850798</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="pulse-pressure-2" class="section level4">
+<h4>Pulse Pressure</h4>
+<pre class="r"><code>plot_grid(palt, ncol=1)</code></pre>
+<p><img src="figure/newport.Rmd/alt_pp-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>snipper(mat_pp_alt)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Component</th>
+<th align="left">Model</th>
+<th align="right">PoVE</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">E</td>
+<td align="left">Model 6</td>
+<td align="right">1.1366859</td>
+</tr>
+<tr class="even">
+<td align="left">E</td>
+<td align="left">Model 6b</td>
+<td align="right">1.0548611</td>
+</tr>
+<tr class="odd">
+<td align="left">E</td>
+<td align="left">Model 6w</td>
+<td align="right">1.0805988</td>
+</tr>
+<tr class="even">
+<td align="left">G</td>
+<td align="left">Model 6</td>
+<td align="right">9.9625746</td>
+</tr>
+<tr class="odd">
+<td align="left">G</td>
+<td align="left">Model 6b</td>
+<td align="right">15.7905682</td>
+</tr>
+<tr class="even">
+<td align="left">G</td>
+<td align="left">Model 6w</td>
+<td align="right">14.7708499</td>
+</tr>
+<tr class="odd">
+<td align="left">GxE</td>
+<td align="left">Model 6</td>
+<td align="right">3.0542151</td>
+</tr>
+<tr class="even">
+<td align="left">GxE</td>
+<td align="left">Model 6b</td>
+<td align="right">3.8874777</td>
+</tr>
+<tr class="odd">
+<td align="left">GxE</td>
+<td align="left">Model 6w</td>
+<td align="right">3.6354779</td>
+</tr>
+<tr class="even">
+<td align="left">X1</td>
+<td align="left">Model 6</td>
+<td align="right">19.0239473</td>
+</tr>
+<tr class="odd">
+<td align="left">X1</td>
+<td align="left">Model 6b</td>
+<td align="right">16.6641829</td>
+</tr>
+<tr class="even">
+<td align="left">X1</td>
+<td align="left">Model 6w</td>
+<td align="right">16.7096550</td>
+</tr>
+<tr class="odd">
+<td align="left">X2</td>
+<td align="left">Model 6</td>
+<td align="right">0.3123106</td>
+</tr>
+<tr class="even">
+<td align="left">X2</td>
+<td align="left">Model 6b</td>
+<td align="right">0.2121134</td>
+</tr>
+<tr class="odd">
+<td align="left">X2</td>
+<td align="left">Model 6w</td>
+<td align="right">0.1694843</td>
+</tr>
+</tbody>
+</table>
+<p>We note that the estimates of the interaction component <span
+class="math inline">\(\mathbf{g \times e}\)</span> decrease from the
+original model to both white models. Additionally, the estimate of the
+genetic component <span class="math inline">\(\mathbf{g}\)</span>
+increases from the original model to both white models</p>
+</div>
+</div>
+</div>
+<div id="variant-selection" class="section level2">
+<h2>Variant Selection</h2>
+<p>The full breakdown of selected SNPs is available in the <a
+href="qqtop.html">QQ Plot Selection report</a>. These results are
+summarized here:</p>
+<pre class="r"><code>qqsnps &lt;- fread(&#39;output/vault/fullport/qqsnps.txt&#39;)
+
+kable(qqsnps,&#39;simple&#39;)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Trait</th>
+<th align="left">Lifestyle Variable</th>
+<th align="right">Variants</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Diastolic pressure</td>
+<td align="left">cheese</td>
+<td align="right">31</td>
+</tr>
+<tr class="even">
+<td align="left">Diastolic pressure</td>
+<td align="left">BFP</td>
+<td align="right">8</td>
+</tr>
+<tr class="odd">
+<td align="left">Diastolic pressure</td>
+<td align="left">tea</td>
+<td align="right">5</td>
+</tr>
+<tr class="even">
+<td align="left">Diastolic pressure</td>
+<td align="left">poultry</td>
+<td align="right">3</td>
+</tr>
+<tr class="odd">
+<td align="left">Diastolic pressure</td>
+<td align="left">smoking_now</td>
+<td align="right">2</td>
+</tr>
+<tr class="even">
+<td align="left">Systolic pressure</td>
+<td align="left">sleep_d</td>
+<td align="right">43</td>
+</tr>
+<tr class="odd">
+<td align="left">Systolic pressure</td>
+<td align="left">tea</td>
+<td align="right">25</td>
+</tr>
+<tr class="even">
+<td align="left">Systolic pressure</td>
+<td align="left">pork</td>
+<td align="right">21</td>
+</tr>
+<tr class="odd">
+<td align="left">Systolic pressure</td>
+<td align="left">coffee</td>
+<td align="right">10</td>
+</tr>
+<tr class="even">
+<td align="left">Systolic pressure</td>
+<td align="left">veg_cook</td>
+<td align="right">6</td>
+</tr>
+<tr class="odd">
+<td align="left">Systolic pressure</td>
+<td align="left">sleep_dev</td>
+<td align="right">5</td>
+</tr>
+<tr class="even">
+<td align="left">Systolic pressure</td>
+<td align="left">TV_time</td>
+<td align="right">2</td>
+</tr>
+<tr class="odd">
+<td align="left">Pulse pressure</td>
+<td align="left">TV_time</td>
+<td align="right">14</td>
+</tr>
+<tr class="even">
+<td align="left">Pulse pressure</td>
+<td align="left">salt</td>
+<td align="right">11</td>
+</tr>
+<tr class="odd">
+<td align="left">Pulse pressure</td>
+<td align="left">tea</td>
+<td align="right">1</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="variant-analysis" class="section level2">
+<h2>Variant Analysis</h2>
+<div id="variant-effect-predictor" class="section level3">
+<h3>Variant Effect Predictor</h3>
+</div>
+<div id="gprofiler-terms" class="section level3">
+<h3>g:Profiler Terms</h3>
+</div>
+</div>
+<div id="anova-subunit" class="section level2">
+<h2>ANOVA subunit</h2>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.1.2 (2021-11-01)
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: Rocky Linux 8.5 (Green Obsidian)
+
+Matrix products: default
+BLAS/LAPACK: /opt/ohpc/pub/libs/gnu9/openblas/0.3.7/lib/libopenblasp-r0.3.7.so
+
+locale:
+ [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+ [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
+ [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
+ [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
+ [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+[11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+ [1] scales_1.4.0      cowplot_1.1.1     viridis_0.6.4     viridisLite_0.4.2
+ [5] kableExtra_1.3.4  lubridate_1.9.3   forcats_1.0.0     stringr_1.5.1    
+ [9] purrr_1.0.4       readr_2.1.4       tidyr_1.3.1       tibble_3.3.0     
+[13] ggplot2_3.5.0     tidyverse_2.0.0   data.table_1.17.0 dplyr_1.1.3      
+[17] workflowr_1.7.1  
+
+loaded via a namespace (and not attached):
+ [1] Rcpp_1.1.0         svglite_2.1.2      getPass_0.2-2      ps_1.9.0          
+ [5] rprojroot_2.0.4    digest_0.6.37      R6_2.6.1           evaluate_1.0.3    
+ [9] httr_1.4.7         pillar_1.11.1      rlang_1.1.4        rstudioapi_0.17.1 
+[13] whisker_0.4.1      callr_3.7.6        jquerylib_0.1.4    rmarkdown_2.29    
+[17] labeling_0.4.3     webshot_0.5.5      compiler_4.1.2     httpuv_1.6.12     
+[21] xfun_0.51          pkgconfig_2.0.3    systemfonts_1.0.5  htmltools_0.5.8.1 
+[25] tidyselect_1.2.1   gridExtra_2.3      tzdb_0.4.0         withr_3.0.2       
+[29] later_1.4.1        grid_4.1.2         jsonlite_2.0.0     gtable_0.3.6      
+[33] lifecycle_1.0.4    git2r_0.32.0       magrittr_2.0.4     cli_3.6.3         
+[37] stringi_1.8.7      cachem_1.1.0       farver_2.1.2       fs_1.6.5          
+[41] promises_1.3.2     xml2_1.3.3         bslib_0.9.0        generics_0.1.4    
+[45] vctrs_0.6.5        RColorBrewer_1.1-3 tools_4.1.2        dichromat_2.0-0.1 
+[49] glue_1.8.0         hms_1.1.3          processx_3.8.6     fastmap_1.2.0     
+[53] yaml_2.3.10        timechange_0.2.0   rvest_1.0.3        knitr_1.50        
+[57] sass_0.4.9        </code></pre>
+</div>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+https://docs.mathjax.org/en/latest/web/configuration.html. This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
