@@ -373,7 +373,9 @@ kable(qqsnps,'simple')
 
 ```{r var_gprof}
 
+profdat <- fread('output/vault/fullport/final_gprof.txt')
 
+kable(profdat, 'simple')
 
 ```
 
