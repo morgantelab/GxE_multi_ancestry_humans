@@ -8,11 +8,14 @@ editor_options:
   chunk_output_type: console
 ---
 
+## Full Report
 
-
+[Ongoing](newport.html)
 
 ## GxE-GWAS
 
 [All QQ plots](qqcomp.html)
 
 [QQ Plot - SNP Selection](qqtop.html)
+
+[BMI Covariate](bmi_comp.html)
