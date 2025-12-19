@@ -1,15 +1,19 @@
 ---
-title: "Full breakdown of additional results"
+title: "GxE Multi-Ancestry Supplementary Analysis"
 output: workflowr::wflow_html
 ---
 
-```{r 0-setup, message=FALSE, warning=FALSE}
+```{r 0-setup, message=FALSE, warning=FALSE, echo=FALSE}
 # source('analysis/default/setup.R', local = knitr::knit_global())
-options(scipen=999)
 ```
 
-```{r bulk_code}
+```{r functions}
+library(ggcorrplot)
+library(data.table)
 
+options(scipen=999)
+
+# kable function for model comparisons
 snipper <- function(tabble){
   # select columns of interest
   micols <- c('comp', 'model', 'mean')
@@ -19,11 +23,11 @@ snipper <- function(tabble){
   subtab <- subtab[order(comp, model),]
   # clean column names
   names(subtab) <- c('Component', 'Model', 'PoVE')
+  # simplify PoVE for legibility
+  subtab$PoVE <- round(subtab$PoVE, 2)
   #print table
   kable(subtab, 'simple')
 }
-
-
 
 # plotting function
 matter <- function(datanow, fulltitle, montag=NULL, mod7=TRUE){
@@ -50,126 +54,129 @@ matter <- function(datanow, fulltitle, montag=NULL, mod7=TRUE){
   return(plothole)
 }
 
-if(1){
-  
-  
-  matte <- fread('output/vault/fullport/varcomps.txt')
-  
-  mat_dp <- matte[trait=='DP',]
-  mat_sp <- matte[trait=='SP',]
-  mat_pp <- matte[trait=='PP',]
-  
-  mod1 <- c('6', '6a')
-  mat_dp_pcs <- mat_dp[modnum %in% mod1,]
-  mat_sp_pcs <- mat_sp[modnum %in% mod1,]
-  mat_pp_pcs <- mat_pp[modnum %in% mod1,]
-  
-  mod2 <- c('6', '6b', '6w')
-  mat_dp_alt <- mat_dp[modnum %in% mod2,]
-  mat_sp_alt <- mat_sp[modnum %in% mod2,]
-  mat_pp_alt <- mat_pp[modnum %in% mod2,]
-  
-  mod3 <- as.character(6:9)
-  mat_dp_num <- mat_dp[modnum %in% mod3,]
-  mat_sp_num <- mat_sp[modnum %in% mod3,]
-  mat_pp_num <- mat_pp[modnum %in% mod3,]
-  
-  
-  sub1 <- 1
-  if(sub1){
-    # indexes of line breaks
-    # verty <- c(1.5, 3.5, 6.5, 9.5, 13.5, 17.5, 22.5, 27.5, 33.5)
-    verty <- 0.5 + cumsum(unlist(table(mat_dp_pcs$model)))
-    verty <- verty[-length(verty)]
-    
-    # add on hardpoint ends
-    verty2 <- c(0, verty, nrow(mat_dp_pcs)+1)
-    
-    # calculates midpoint of each section to place Model Number below x axis
-    verty3 <- (verty2[2:length(verty2)] - verty2[1:(length(verty2) - 1)]) / 2 + verty2[1:(length(verty2) - 1)]
-    
-    altnumber <- c('6 - Original', '6a - Alt PCs')
-    
-    #matter function plots model number at specified breakpoint at y = -1 for each label.
-    modcode <- data.table(mn=altnumber, x=verty3, y=-1)
-    
-    dpc <- matter(mat_dp_pcs, fulltitle=NULL, montag='DP', mod7=FALSE)
-    spc <- matter(mat_sp_pcs, fulltitle=NULL, montag='SP', mod7=FALSE)
-    ppc <- matter(mat_pp_pcs, fulltitle=NULL, montag='PP', mod7=FALSE)
-    
-    # print(plot_grid(dpc, spc, ppc, ncol=1))
-    
-  }
-  
-  sub2 <- 1
-  if(sub2){
-    # indexes of line breaks
-    # verty <- c(1.5, 3.5, 6.5, 9.5, 13.5, 17.5, 22.5, 27.5, 33.5)
-    verty <- 0.5 + cumsum(unlist(table(mat_dp_alt$model)))
-    verty <- verty[-length(verty)]
-    
-    # add on hardpoint ends
-    verty2 <- c(0, verty, nrow(mat_dp_alt)+1)
-    
-    # calculates midpoint of each section to place Model Number below x axis
-    verty3 <- (verty2[2:length(verty2)] - verty2[1:(length(verty2) - 1)]) / 2 + verty2[1:(length(verty2) - 1)]
-    
-    altnumber <- c('6 - Original', '6b - Brits', '6w - Whites')
-    
-    #matter function plots model number at specified breakpoint at y = -1 for each label.
-    modcode <- data.table(mn=altnumber, x=verty3, y=-1)
-    
-    dalt <- matter(mat_dp_alt, fulltitle=NULL, montag='DP', mod7=FALSE)
-    salt <- matter(mat_sp_alt, fulltitle=NULL, montag='SP', mod7=FALSE)
-    palt <- matter(mat_pp_alt, fulltitle=NULL, montag='PP', mod7=FALSE)
-    
-    # print(plot_grid(dalt, salt, palt, ncol=1))
-    
-    
-  }
-  
-  sub3 <- 1
-  if(sub3){
-    # indexes of line breaks
-    # verty <- c(1.5, 3.5, 6.5, 9.5, 13.5, 17.5, 22.5, 27.5, 33.5)
-    verty <- 0.5 + cumsum(unlist(table(mat_dp_num$model)))
-    verty <- verty[-length(verty)]
-    
-    # add on hardpoint ends
-    verty2 <- c(0, verty, nrow(mat_dp_num)+1)
-    
-    # calculates midpoint of each section to place Model Number below x axis
-    verty3 <- (verty2[2:length(verty2)] - verty2[1:(length(verty2) - 1)]) / 2 + verty2[1:(length(verty2) - 1)]
-    
-    # altnumber <- c('6 - Original', '7 - ','8', '9')
-    altnumber <- as.character(6:9)
-    
-    #matter function plots model number at specified breakpoint at y = -1 for each label.
-    modcode <- data.table(mn=altnumber, x=verty3, y=-1)
-    
-    dnum <- matter(mat_dp_num, fulltitle=NULL, montag='DP', mod7=TRUE)
-    snum <- matter(mat_sp_num, fulltitle=NULL, montag='SP', mod7=TRUE)
-    pnum <- matter(mat_pp_num, fulltitle=NULL, montag='PP', mod7=TRUE)
-    
-    # print(plot_grid(dnum, snum, pnum, ncol=1))
-  }
-}
+# full table of variance component effect sizes
+matte <- fread('output/vault/fullport/varcomps.txt')
+
+```
+
+```{r bulk_code}
+
+# Variance component readin ----
+
+# split by trait
+mat_dp <- matte[trait=='DP',]
+mat_sp <- matte[trait=='SP',]
+mat_pp <- matte[trait=='PP',]
+
+# alt model 6 gen pcs
+mod1 <- c('6', '6a')
+mat_dp_pcs <- mat_dp[modnum %in% mod1,]
+mat_sp_pcs <- mat_sp[modnum %in% mod1,]
+mat_pp_pcs <- mat_pp[modnum %in% mod1,]
+
+# alt model 6 ancestry grouping
+mod2 <- c('6', '6b', '6w')
+mat_dp_alt <- mat_dp[modnum %in% mod2,]
+mat_sp_alt <- mat_sp[modnum %in% mod2,]
+mat_pp_alt <- mat_pp[modnum %in% mod2,]
+
+# base model 6 vs new models 7-9
+mod3 <- as.character(6:9)
+mat_dp_num <- mat_dp[modnum %in% mod3,]
+mat_sp_num <- mat_sp[modnum %in% mod3,]
+mat_pp_num <- mat_pp[modnum %in% mod3,]
+
+# Variance component plot formatting ----
+# indexes of line breaks - model 6 pcs
+# verty <- c(1.5, 3.5, 6.5, 9.5, 13.5, 17.5, 22.5, 27.5, 33.5)
+verty <- 0.5 + cumsum(unlist(table(mat_dp_pcs$model)))
+verty <- verty[-length(verty)]
+
+# add on hardpoint ends
+verty2 <- c(0, verty, nrow(mat_dp_pcs)+1)
+
+# calculates midpoint of each section to place Model Number below x axis
+verty3 <- (verty2[2:length(verty2)] - verty2[1:(length(verty2) - 1)]) / 2 + verty2[1:(length(verty2) - 1)]
+
+altnumber <- c('6 - Original', '6a - Alt PCs')
+
+#matter function plots model number at specified breakpoint at y = -1 for each label.
+modcode <- data.table(mn=altnumber, x=verty3, y=-1)
+
+dpc <- matter(mat_dp_pcs, fulltitle=NULL, montag='DP', mod7=FALSE)
+spc <- matter(mat_sp_pcs, fulltitle=NULL, montag='SP', mod7=FALSE)
+ppc <- matter(mat_pp_pcs, fulltitle=NULL, montag='PP', mod7=FALSE)
+
+# print(plot_grid(dpc, spc, ppc, ncol=1))
+
+# indexes of line breaks - model 6 white groups
+# verty <- c(1.5, 3.5, 6.5, 9.5, 13.5, 17.5, 22.5, 27.5, 33.5)
+verty <- 0.5 + cumsum(unlist(table(mat_dp_alt$model)))
+verty <- verty[-length(verty)]
+
+# add on hardpoint ends
+verty2 <- c(0, verty, nrow(mat_dp_alt)+1)
+
+# calculates midpoint of each section to place Model Number below x axis
+verty3 <- (verty2[2:length(verty2)] - verty2[1:(length(verty2) - 1)]) / 2 + verty2[1:(length(verty2) - 1)]
+
+altnumber <- c('6 - Original', '6b - Brits', '6w - Whites')
+
+#matter function plots model number at specified breakpoint at y = -1 for each label.
+modcode <- data.table(mn=altnumber, x=verty3, y=-1)
+
+dalt <- matter(mat_dp_alt, fulltitle=NULL, montag='DP', mod7=FALSE)
+salt <- matter(mat_sp_alt, fulltitle=NULL, montag='SP', mod7=FALSE)
+palt <- matter(mat_pp_alt, fulltitle=NULL, montag='PP', mod7=FALSE)
+
+# print(plot_grid(dalt, salt, palt, ncol=1))
+
+
+# indexes of line breaks - models 7-9
+# verty <- c(1.5, 3.5, 6.5, 9.5, 13.5, 17.5, 22.5, 27.5, 33.5)
+verty <- 0.5 + cumsum(unlist(table(mat_dp_num$model)))
+verty <- verty[-length(verty)]
+
+# add on hardpoint ends
+verty2 <- c(0, verty, nrow(mat_dp_num)+1)
+
+# calculates midpoint of each section to place Model Number below x axis
+verty3 <- (verty2[2:length(verty2)] - verty2[1:(length(verty2) - 1)]) / 2 + verty2[1:(length(verty2) - 1)]
+
+# altnumber <- c('6 - Original', '7 - ','8', '9')
+altnumber <- as.character(6:9)
+
+#matter function plots model number at specified breakpoint at y = -1 for each label.
+modcode <- data.table(mn=altnumber, x=verty3, y=-1)
+
+dnum <- matter(mat_dp_num, fulltitle=NULL, montag='DP', mod7=TRUE)
+snum <- matter(mat_sp_num, fulltitle=NULL, montag='SP', mod7=TRUE)
+pnum <- matter(mat_pp_num, fulltitle=NULL, montag='PP', mod7=TRUE)
+
+# print(plot_grid(dnum, snum, pnum, ncol=1))
+
+# ANOVA readin ----
+
+library(ggcorrplot)
+
+# read in data, transpose
+temp_alt <- readRDS('output/vault/fullport/anova.rds')
+tempt <- t(temp_alt)
 
 ```
 
 # Overview
 
-Five subsections:
+Six subsections:
 
-- New models (7-9)
-- Alternate model 6 tests
-- GXE-GWAS Variant Selection (summary)
-- Variant Selection
-- ANOVA
+- New Models
+- Alternate Model 6 Populations
+- ANOVA: Environment ~ Ancestry
+- GXE-GWAS Variant Selection
+- GxE-GWAS Variant Analysis
+- GxE-GWAS BMI Covariate
 
-Of these, data for the first three is included. Discussion needed for Alt model 6 tests, have not started variant selection or anova report below.
-
-## New models
+## New Models
 
 Models 7, 8, and 9 are new. Model 6 is included for reference to existing terms.
 
@@ -185,8 +192,8 @@ Models 7, 8, and 9 are new. Model 6 is included for reference to existing terms.
 - $\mathbf{y}$ is a $n$-vector of phenotypic values,
 - $\mathbf{X}_{1}$ is a $n \times a$ design matrix of $a=3$ demographic variables (sex, age, age$^2$),
 - $\boldsymbol{\beta}_{1}$ is an $a$-vector of their fixed effects,
-- Model 7: $\mathbf{X}_{2}$ is a $n \times b$ design matrix with $b = 10$ columns including the top 10 genetic principal components,
-- Model 7: $\boldsymbol{\beta}_{2}$ is a $b$-vector of their fixed effects,
+- $\mathbf{X}_{2}$ is a $n \times b$ design matrix with $b = 10$ columns including the top 10 genetic principal components,
+- $\boldsymbol{\beta}_{2}$ is a $b$-vector of their fixed effects,
 - $\mathbf{g}$ is a $n$-vector of random additive genetic values, $\mathbf{g} \sim \mathcal{N}(\mathbf{0}, \mathbf{K}_g \sigma^2_g)$,
 - $\mathbf{e}$ is a $n$-vector of random lifestyle values, $\mathbf{e} \sim \mathcal{N}(\mathbf{0}, \mathbf{K}_e \sigma^2_e)$,
 - $\mathbf{g \times e}$ is a $n$-vector of random interaction values, $\mathbf{g \times e} \sim \mathcal{N}(\mathbf{0}, \mathbf{K}_{g \times e} \sigma^2_{g \times e})$,
@@ -202,18 +209,18 @@ Models 7, 8, and 9 are new. Model 6 is included for reference to existing terms.
 
 ### Descriptions
 
-Model 7 includes an additional variance component $i$ that implements a modified interaction relationship matrix. The modified IRM is given by $\mathbf{K}_{top \times e} = \mathbf{K}_{top} \odot \mathbf{K}_e$ where $\mathbf{K}_{top}$ is the GRM derived from the top 10 eigenvectors of the full plink GRM.
+Model 7 includes an additional variance component $\mathbf{i}$ that implements a modified interaction relationship matrix. The modified IRM is given by $\mathbf{K}_{top \times e} = \mathbf{K}_{top} \odot \mathbf{K}_e$ where $\mathbf{K}_{top}$ is the GRM derived from the top 10 eigenvectors of the full plink GRM.
 
-Model 8 includes the top 10 eigenvectors of the full IRM as additional covariates (along with top 10 genetic PCs) for a total of 20 covariates in $X_3$. The full IRM is the Hadamard product of the plink GRM and the full ERM, given by $\mathbf{K}_{g \times e} = \mathbf{K}_g \odot \mathbf{K}_e$.
+Model 8 includes the top 10 eigenvectors of the full IRM as additional covariates (along with top 10 genetic PCs) for a total of 20 covariates in $\mathbf{X}_3$. The full IRM is the Hadamard product of the plink GRM and the full ERM, given by $\mathbf{K}_{g \times e} = \mathbf{K}_g \odot \mathbf{K}_e$.
 
-Model 9 expands upon Model 8 by including the top 3 eigenvectors of the full ERM as additional covariates for a total of 23 covariates in $X_4$.
+Model 9 expands upon Model 8 by including the top 3 eigenvectors of the full ERM as additional covariates for a total of 23 covariates in $\mathbf{X}_4$.
 
 
 ### Estimates of effect sizes
 
 #### Combined
 
-```{r mult_all}
+```{r mult_all, echo=FALSE}
 
 plot_grid(dnum, snum, pnum, ncol=1)
 
@@ -221,7 +228,7 @@ plot_grid(dnum, snum, pnum, ncol=1)
 
 #### Diastolic Pressure
 
-```{r mult_dp}
+```{r mult_dp, echo=FALSE}
 
 plot_grid(dnum, ncol=1)
 snipper(mat_dp_num)
@@ -230,7 +237,7 @@ snipper(mat_dp_num)
 
 #### Systolic Pressure
 
-```{r mult_sp}
+```{r mult_sp, echo=FALSE}
 
 plot_grid(snum, ncol=1)
 snipper(mat_sp_num)
@@ -239,7 +246,7 @@ snipper(mat_sp_num)
 
 #### Pulse Pressure
 
-```{r mult_pp}
+```{r mult_pp, echo=FALSE}
 
 plot_grid(pnum, ncol=1)
 snipper(mat_pp_num)
@@ -247,7 +254,7 @@ snipper(mat_pp_num)
 ```
 
 
-## Alternate Model 6 Formulas
+## Alternate Model 6 Populations
 
 The model 6 framework is used for the following analyses:
 
@@ -259,7 +266,7 @@ In the original model, $\mathbf{X}_2$ is comprised of the top 10 genetic princip
 
 #### Combined
 
-```{r pcs_all}
+```{r pcs_all, echo=FALSE}
 
 plot_grid(dpc, spc, ppc, ncol=1)
 
@@ -267,7 +274,7 @@ plot_grid(dpc, spc, ppc, ncol=1)
 
 #### Diastolic Pressure
 
-```{r pcs_dp}
+```{r pcs_dp, echo=FALSE}
 
 plot_grid(dpc, ncol=1)
 snipper(mat_dp_pcs)
@@ -276,7 +283,7 @@ snipper(mat_dp_pcs)
 
 #### Systolic Pressure
 
-```{r pcs_sp}
+```{r pcs_sp, echo=FALSE}
 
 plot_grid(spc, ncol=1)
 snipper(mat_sp_pcs)
@@ -285,7 +292,7 @@ snipper(mat_sp_pcs)
 
 #### Pulse Pressure
 
-```{r pcs_pp}
+```{r pcs_pp, echo=FALSE}
 
 plot_grid(ppc, ncol=1)
 snipper(mat_pp_pcs)
@@ -293,6 +300,7 @@ snipper(mat_pp_pcs)
 ```
 
 Estimates of effect sizes are consistent between models, suggesting our calculation of genetic PCs is appropriate.
+
 
 ### Ancestry Composition
 
@@ -307,7 +315,7 @@ In these models, the $\mathbf{g}$ and $\mathbf{g \times e}$ components depend on
 These results are shown here:
 
 #### Combined
-```{r alt_all}
+```{r alt_all, echo=FALSE}
 
 plot_grid(dalt, salt, palt, ncol=1)
 
@@ -315,7 +323,7 @@ plot_grid(dalt, salt, palt, ncol=1)
 
 #### Diastolic Pressure
 
-```{r alt_dp}
+```{r alt_dp, echo=FALSE}
 
 plot_grid(dalt, ncol=1)
 snipper(mat_dp_alt)
@@ -324,7 +332,7 @@ snipper(mat_dp_alt)
 
 #### Systolic Pressure
 
-```{r alt_sp}
+```{r alt_sp, echo=FALSE}
 
 plot_grid(salt, ncol=1)
 snipper(mat_sp_alt)
@@ -333,45 +341,103 @@ snipper(mat_sp_alt)
 
 #### Pulse Pressure
 
-```{r alt_pp}
+```{r alt_pp, echo=FALSE}
 
 plot_grid(palt, ncol=1)
 snipper(mat_pp_alt)
 
 ```
 
+For all traits, the PoVE of the genetic component $\mathbf{g}$ increases from the original population to both subsets of white individuals for all three blood pressure traits.
 
-We note that the estimates of the interaction component $\mathbf{g \times e}$ decrease from the original model to both white models. Additionally, the estimate of the genetic component $\mathbf{g}$ increases from the original model to both white models
+The PoVE for the interaction term $\mathbf{g \times e}$ is not consistent across traits:
+
+- Diastolic pressure : Relative **decrease** of 23-43% (7.37 -> 4.21-5.70)
+- Systolic pressure : Relative **decrease** of 15-26% (4.20 - 3.12-3.58)
+- Pulse pressure : Relative **increase** of 18-27% (3.05 -> 3.60-3.89)
+
+## ANOVA: Environment ~ Ancestry {.tabset}
+
+Assess environmental effects by ancestry. Analaysis of variance models where each environment was regressed across ancestry groups given by $env \sim anc$ where $env$ is a single environment and $anc$ is a factor coding for ancestry, containing the five classes:
+
+- Asian
+- Black
+- Chinese
+- Mixed
+- White
 
 
-## Variant Selection
+### Clean
+
+```{r anova, echo=FALSE}
+
+ggcorrplot(tempt, lab=0)
+
+```
+
+### Labeled
+
+```{r anova_lab, echo=FALSE}
+
+ggcorrplot(tempt, lab=1)
+
+```
+
+### Labeled + 90
+
+```{r anova_lab90, echo=FALSE}
+
+ggcorrplot(temp_alt, lab=1)
+
+```
+
+## {-}
+
+The only enviornment that did not vary significantly across ancestry groups was daily activity levels (act0_d p = 0.141). All other environments had a significant difference in variance for at least one ancestry group.
+
+## GxE-GWAS Variant Selection
 
 The full breakdown of selected SNPs is available in the [QQ Plot Selection report](qqtop.html). These results are summarized here:
 
-```{r qqsnps}
+```{r qqsnps, echo=FALSE}
 
 qqsnps <- fread('output/vault/fullport/qqsnps.txt')
 
 kable(qqsnps,'simple')
 
-
 ```
 
-
-## Variant Analysis
-
+## GxE-GWAS Variant Analysis
 
 ### Variant Effect Predictor
 
-```{r var_vep}
+```{r var_vepall, echo=FALSE}
 
+vepall <- fread('output/vault/fullport/vep.txt')
 
+kable(vepall, 'simple')
+
+```
+
+Ensembl's variant effect predictor (VEP) tool identified 30, 89, and 104 genes for diastolic, systolic, and pulse pressure respectively.
+
+Some of these genes were identified in more than one trait and have been included below:
+
+```{r var_vepjoin, echo=FALSE}
+
+vepjoin <- fread('output/vault/fullport/vep_join.txt')
+
+kable(vepjoin, 'simple')
 
 ```
 
 ### g:Profiler Terms
 
-```{r var_gprof}
+[g:Profiler](https://biit.cs.ut.ee/gprofiler/gost): a functional analysis tool provided by the University of Tartu.
+
+Piping the identified genes into g:Profiler yields significant GO terms associated with the provided pool of genes. Results are shown here:
+
+```{r var_gprof, echo=FALSE}
 
 profdat <- fread('output/vault/fullport/final_gprof.txt')
 
@@ -379,5 +445,49 @@ kable(profdat, 'simple')
 
 ```
 
+Functional analysis did not identify any significant GO terms, KEGG terms, or CORUM terms for diastolic pressure.
 
-## ANOVA subunit
+An in depth breakdown of significant variants can be found in the rewrite of the results discussion under GxE-variance-ukb-multi-manuscript/WIP/gxegwas.tex through Overleaf (not linked for permissions and safety reasons).
+
+## GxE-GWAS BMI Covariate {.tabset}
+
+We also tested the inclusion of BMI as an additional covariate. The full comparison of QQ plots is available in the [BMI Covariate QQ Comparison report](bmi_comp.html). 
+
+### Summary
+
+Average Pearson and Spearman correlation coefficients across all environments for each trait.
+
+```{r bmicov}
+
+bmidata <-  fread('output/vault/fullport/bmicov.txt')
+
+pcol <- bmidata[,mean(pearson), by=trait]
+scol <- bmidata[,mean(spearman), by=trait]
+
+bmicol <- cbind(pcol, scol)
+
+names(bmicol) <- c('Trait', 'Pearson', 'remove', 'Spearman')
+
+bmicol$remove <- NULL
+
+kable(bmicol, 'simple', digits = 5)
+
+```
+
+
+### Full Table
+
+Pearson and Spearman correlation coefficients for all trait and environment combinations.
+
+```{r bmifull}
+
+names(bmidata) <- c('Trait', 'Environment', 'Pearson', 'Spearman')
+
+kable(bmidata, 'simple', digits = 5)
+
+```
+
+
+## {-}
+
+Results are highly correlated, suggesting the inclusion of BMI as a covariate does not have a dramatic effect on results. Lowest correlation is for diastolic pressure at 0.83
