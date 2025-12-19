@@ -11,7 +11,7 @@
 
 
 
-<title>Full breakdown of additional results</title>
+<title>GxE Multi-Ancestry Supplementary Analysis</title>
 
 <script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -369,7 +369,8 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Full breakdown of additional results</h1>
+<h1 class="title toc-ignore">GxE Multi-Ancestry Supplementary
+Analysis</h1>
 
 </div>
 
@@ -398,7 +399,7 @@ aria-hidden="true"></span> </a>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2025-12-18
+<strong>Last updated:</strong> 2025-12-19
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -655,15 +656,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcommorgantelabGxEmultiancestryhumanstree5018ef64b21a4400d091cf688b0b4874486f4db0targetblank5018ef6a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcommorgantelabGxEmultiancestryhumanstree59dd06f08fb4d1439ac685e5816547644259f65etargetblank59dd06fa">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/morgantelab/GxE_multi_ancestry_humans/tree/5018ef64b21a4400d091cf688b0b4874486f4db0" target="_blank">5018ef6</a>
+<a href="https://github.com/morgantelab/GxE_multi_ancestry_humans/tree/59dd06f08fb4d1439ac685e5816547644259f65e" target="_blank">59dd06f</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcommorgantelabGxEmultiancestryhumanstree5018ef64b21a4400d091cf688b0b4874486f4db0targetblank5018ef6a"
+id="strongRepositoryversionstrongahrefhttpsgithubcommorgantelabGxEmultiancestryhumanstree59dd06f08fb4d1439ac685e5816547644259f65etargetblank59dd06fa"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -673,7 +674,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/morgantelab/GxE_multi_ancestry_humans/tree/5018ef64b21a4400d091cf688b0b4874486f4db0" target="_blank">5018ef6</a>.
+<a href="https://github.com/morgantelab/GxE_multi_ancestry_humans/tree/59dd06f08fb4d1439ac685e5816547644259f65e" target="_blank">59dd06f</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -778,6 +779,40 @@ Message
 Rmd
 </td>
 <td>
+<a href="https://github.com/morgantelab/GxE_multi_ancestry_humans/blob/59dd06f08fb4d1439ac685e5816547644259f65e/analysis/newport.Rmd" target="_blank">59dd06f</a>
+</td>
+<td>
+nklimko
+</td>
+<td>
+2025-12-19
+</td>
+<td>
+wflow_publish(fullpath)
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/morgantelab/GxE_multi_ancestry_humans/c71ceac3f26bb1b588ceef38e35cbdf79b8917d3/docs/newport.html" target="_blank">c71ceac</a>
+</td>
+<td>
+nklimko
+</td>
+<td>
+2025-12-18
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
 <a href="https://github.com/morgantelab/GxE_multi_ancestry_humans/blob/5018ef64b21a4400d091cf688b0b4874486f4db0/analysis/newport.Rmd" target="_blank">5018ef6</a>
 </td>
 <td>
@@ -831,9 +866,13 @@ wflow_publish(fullpath)
 </div>
 </div>
 </div>
-<pre class="r"><code># source(&#39;analysis/default/setup.R&#39;, local = knitr::knit_global())
-options(scipen=999)</code></pre>
-<pre class="r"><code>snipper &lt;- function(tabble){
+<pre class="r"><code>library(ggcorrplot)
+library(data.table)
+
+options(scipen=999)
+
+# kable function for model comparisons
+snipper &lt;- function(tabble){
   # select columns of interest
   micols &lt;- c(&#39;comp&#39;, &#39;model&#39;, &#39;mean&#39;)
   # subset table
@@ -842,11 +881,11 @@ options(scipen=999)</code></pre>
   subtab &lt;- subtab[order(comp, model),]
   # clean column names
   names(subtab) &lt;- c(&#39;Component&#39;, &#39;Model&#39;, &#39;PoVE&#39;)
+  # simplify PoVE for legibility
+  subtab$PoVE &lt;- round(subtab$PoVE, 2)
   #print table
   kable(subtab, &#39;simple&#39;)
 }
-
-
 
 # plotting function
 matter &lt;- function(datanow, fulltitle, montag=NULL, mod7=TRUE){
@@ -873,125 +912,122 @@ matter &lt;- function(datanow, fulltitle, montag=NULL, mod7=TRUE){
   return(plothole)
 }
 
-if(1){
-  
-  
-  matte &lt;- fread(&#39;output/vault/fullport/varcomps.txt&#39;)
-  
-  mat_dp &lt;- matte[trait==&#39;DP&#39;,]
-  mat_sp &lt;- matte[trait==&#39;SP&#39;,]
-  mat_pp &lt;- matte[trait==&#39;PP&#39;,]
-  
-  mod1 &lt;- c(&#39;6&#39;, &#39;6a&#39;)
-  mat_dp_pcs &lt;- mat_dp[modnum %in% mod1,]
-  mat_sp_pcs &lt;- mat_sp[modnum %in% mod1,]
-  mat_pp_pcs &lt;- mat_pp[modnum %in% mod1,]
-  
-  mod2 &lt;- c(&#39;6&#39;, &#39;6b&#39;, &#39;6w&#39;)
-  mat_dp_alt &lt;- mat_dp[modnum %in% mod2,]
-  mat_sp_alt &lt;- mat_sp[modnum %in% mod2,]
-  mat_pp_alt &lt;- mat_pp[modnum %in% mod2,]
-  
-  mod3 &lt;- as.character(6:9)
-  mat_dp_num &lt;- mat_dp[modnum %in% mod3,]
-  mat_sp_num &lt;- mat_sp[modnum %in% mod3,]
-  mat_pp_num &lt;- mat_pp[modnum %in% mod3,]
-  
-  
-  sub1 &lt;- 1
-  if(sub1){
-    # indexes of line breaks
-    # verty &lt;- c(1.5, 3.5, 6.5, 9.5, 13.5, 17.5, 22.5, 27.5, 33.5)
-    verty &lt;- 0.5 + cumsum(unlist(table(mat_dp_pcs$model)))
-    verty &lt;- verty[-length(verty)]
-    
-    # add on hardpoint ends
-    verty2 &lt;- c(0, verty, nrow(mat_dp_pcs)+1)
-    
-    # calculates midpoint of each section to place Model Number below x axis
-    verty3 &lt;- (verty2[2:length(verty2)] - verty2[1:(length(verty2) - 1)]) / 2 + verty2[1:(length(verty2) - 1)]
-    
-    altnumber &lt;- c(&#39;6 - Original&#39;, &#39;6a - Alt PCs&#39;)
-    
-    #matter function plots model number at specified breakpoint at y = -1 for each label.
-    modcode &lt;- data.table(mn=altnumber, x=verty3, y=-1)
-    
-    dpc &lt;- matter(mat_dp_pcs, fulltitle=NULL, montag=&#39;DP&#39;, mod7=FALSE)
-    spc &lt;- matter(mat_sp_pcs, fulltitle=NULL, montag=&#39;SP&#39;, mod7=FALSE)
-    ppc &lt;- matter(mat_pp_pcs, fulltitle=NULL, montag=&#39;PP&#39;, mod7=FALSE)
-    
-    # print(plot_grid(dpc, spc, ppc, ncol=1))
-    
-  }
-  
-  sub2 &lt;- 1
-  if(sub2){
-    # indexes of line breaks
-    # verty &lt;- c(1.5, 3.5, 6.5, 9.5, 13.5, 17.5, 22.5, 27.5, 33.5)
-    verty &lt;- 0.5 + cumsum(unlist(table(mat_dp_alt$model)))
-    verty &lt;- verty[-length(verty)]
-    
-    # add on hardpoint ends
-    verty2 &lt;- c(0, verty, nrow(mat_dp_alt)+1)
-    
-    # calculates midpoint of each section to place Model Number below x axis
-    verty3 &lt;- (verty2[2:length(verty2)] - verty2[1:(length(verty2) - 1)]) / 2 + verty2[1:(length(verty2) - 1)]
-    
-    altnumber &lt;- c(&#39;6 - Original&#39;, &#39;6b - Brits&#39;, &#39;6w - Whites&#39;)
-    
-    #matter function plots model number at specified breakpoint at y = -1 for each label.
-    modcode &lt;- data.table(mn=altnumber, x=verty3, y=-1)
-    
-    dalt &lt;- matter(mat_dp_alt, fulltitle=NULL, montag=&#39;DP&#39;, mod7=FALSE)
-    salt &lt;- matter(mat_sp_alt, fulltitle=NULL, montag=&#39;SP&#39;, mod7=FALSE)
-    palt &lt;- matter(mat_pp_alt, fulltitle=NULL, montag=&#39;PP&#39;, mod7=FALSE)
-    
-    # print(plot_grid(dalt, salt, palt, ncol=1))
-    
-    
-  }
-  
-  sub3 &lt;- 1
-  if(sub3){
-    # indexes of line breaks
-    # verty &lt;- c(1.5, 3.5, 6.5, 9.5, 13.5, 17.5, 22.5, 27.5, 33.5)
-    verty &lt;- 0.5 + cumsum(unlist(table(mat_dp_num$model)))
-    verty &lt;- verty[-length(verty)]
-    
-    # add on hardpoint ends
-    verty2 &lt;- c(0, verty, nrow(mat_dp_num)+1)
-    
-    # calculates midpoint of each section to place Model Number below x axis
-    verty3 &lt;- (verty2[2:length(verty2)] - verty2[1:(length(verty2) - 1)]) / 2 + verty2[1:(length(verty2) - 1)]
-    
-    # altnumber &lt;- c(&#39;6 - Original&#39;, &#39;7 - &#39;,&#39;8&#39;, &#39;9&#39;)
-    altnumber &lt;- as.character(6:9)
-    
-    #matter function plots model number at specified breakpoint at y = -1 for each label.
-    modcode &lt;- data.table(mn=altnumber, x=verty3, y=-1)
-    
-    dnum &lt;- matter(mat_dp_num, fulltitle=NULL, montag=&#39;DP&#39;, mod7=TRUE)
-    snum &lt;- matter(mat_sp_num, fulltitle=NULL, montag=&#39;SP&#39;, mod7=TRUE)
-    pnum &lt;- matter(mat_pp_num, fulltitle=NULL, montag=&#39;PP&#39;, mod7=TRUE)
-    
-    # print(plot_grid(dnum, snum, pnum, ncol=1))
-  }
-}</code></pre>
+# full table of variance component effect sizes
+matte &lt;- fread(&#39;output/vault/fullport/varcomps.txt&#39;)</code></pre>
+<pre class="r"><code># Variance component readin ----
+
+# split by trait
+mat_dp &lt;- matte[trait==&#39;DP&#39;,]
+mat_sp &lt;- matte[trait==&#39;SP&#39;,]
+mat_pp &lt;- matte[trait==&#39;PP&#39;,]
+
+# alt model 6 gen pcs
+mod1 &lt;- c(&#39;6&#39;, &#39;6a&#39;)
+mat_dp_pcs &lt;- mat_dp[modnum %in% mod1,]
+mat_sp_pcs &lt;- mat_sp[modnum %in% mod1,]
+mat_pp_pcs &lt;- mat_pp[modnum %in% mod1,]
+
+# alt model 6 ancestry grouping
+mod2 &lt;- c(&#39;6&#39;, &#39;6b&#39;, &#39;6w&#39;)
+mat_dp_alt &lt;- mat_dp[modnum %in% mod2,]
+mat_sp_alt &lt;- mat_sp[modnum %in% mod2,]
+mat_pp_alt &lt;- mat_pp[modnum %in% mod2,]
+
+# base model 6 vs new models 7-9
+mod3 &lt;- as.character(6:9)
+mat_dp_num &lt;- mat_dp[modnum %in% mod3,]
+mat_sp_num &lt;- mat_sp[modnum %in% mod3,]
+mat_pp_num &lt;- mat_pp[modnum %in% mod3,]
+
+# Variance component plot formatting ----
+# indexes of line breaks - model 6 pcs
+# verty &lt;- c(1.5, 3.5, 6.5, 9.5, 13.5, 17.5, 22.5, 27.5, 33.5)
+verty &lt;- 0.5 + cumsum(unlist(table(mat_dp_pcs$model)))
+verty &lt;- verty[-length(verty)]
+
+# add on hardpoint ends
+verty2 &lt;- c(0, verty, nrow(mat_dp_pcs)+1)
+
+# calculates midpoint of each section to place Model Number below x axis
+verty3 &lt;- (verty2[2:length(verty2)] - verty2[1:(length(verty2) - 1)]) / 2 + verty2[1:(length(verty2) - 1)]
+
+altnumber &lt;- c(&#39;6 - Original&#39;, &#39;6a - Alt PCs&#39;)
+
+#matter function plots model number at specified breakpoint at y = -1 for each label.
+modcode &lt;- data.table(mn=altnumber, x=verty3, y=-1)
+
+dpc &lt;- matter(mat_dp_pcs, fulltitle=NULL, montag=&#39;DP&#39;, mod7=FALSE)
+spc &lt;- matter(mat_sp_pcs, fulltitle=NULL, montag=&#39;SP&#39;, mod7=FALSE)
+ppc &lt;- matter(mat_pp_pcs, fulltitle=NULL, montag=&#39;PP&#39;, mod7=FALSE)
+
+# print(plot_grid(dpc, spc, ppc, ncol=1))
+
+# indexes of line breaks - model 6 white groups
+# verty &lt;- c(1.5, 3.5, 6.5, 9.5, 13.5, 17.5, 22.5, 27.5, 33.5)
+verty &lt;- 0.5 + cumsum(unlist(table(mat_dp_alt$model)))
+verty &lt;- verty[-length(verty)]
+
+# add on hardpoint ends
+verty2 &lt;- c(0, verty, nrow(mat_dp_alt)+1)
+
+# calculates midpoint of each section to place Model Number below x axis
+verty3 &lt;- (verty2[2:length(verty2)] - verty2[1:(length(verty2) - 1)]) / 2 + verty2[1:(length(verty2) - 1)]
+
+altnumber &lt;- c(&#39;6 - Original&#39;, &#39;6b - Brits&#39;, &#39;6w - Whites&#39;)
+
+#matter function plots model number at specified breakpoint at y = -1 for each label.
+modcode &lt;- data.table(mn=altnumber, x=verty3, y=-1)
+
+dalt &lt;- matter(mat_dp_alt, fulltitle=NULL, montag=&#39;DP&#39;, mod7=FALSE)
+salt &lt;- matter(mat_sp_alt, fulltitle=NULL, montag=&#39;SP&#39;, mod7=FALSE)
+palt &lt;- matter(mat_pp_alt, fulltitle=NULL, montag=&#39;PP&#39;, mod7=FALSE)
+
+# print(plot_grid(dalt, salt, palt, ncol=1))
+
+
+# indexes of line breaks - models 7-9
+# verty &lt;- c(1.5, 3.5, 6.5, 9.5, 13.5, 17.5, 22.5, 27.5, 33.5)
+verty &lt;- 0.5 + cumsum(unlist(table(mat_dp_num$model)))
+verty &lt;- verty[-length(verty)]
+
+# add on hardpoint ends
+verty2 &lt;- c(0, verty, nrow(mat_dp_num)+1)
+
+# calculates midpoint of each section to place Model Number below x axis
+verty3 &lt;- (verty2[2:length(verty2)] - verty2[1:(length(verty2) - 1)]) / 2 + verty2[1:(length(verty2) - 1)]
+
+# altnumber &lt;- c(&#39;6 - Original&#39;, &#39;7 - &#39;,&#39;8&#39;, &#39;9&#39;)
+altnumber &lt;- as.character(6:9)
+
+#matter function plots model number at specified breakpoint at y = -1 for each label.
+modcode &lt;- data.table(mn=altnumber, x=verty3, y=-1)
+
+dnum &lt;- matter(mat_dp_num, fulltitle=NULL, montag=&#39;DP&#39;, mod7=TRUE)
+snum &lt;- matter(mat_sp_num, fulltitle=NULL, montag=&#39;SP&#39;, mod7=TRUE)
+pnum &lt;- matter(mat_pp_num, fulltitle=NULL, montag=&#39;PP&#39;, mod7=TRUE)
+
+# print(plot_grid(dnum, snum, pnum, ncol=1))
+
+# ANOVA readin ----
+
+library(ggcorrplot)
+
+# read in data, transpose
+temp_alt &lt;- readRDS(&#39;output/vault/fullport/anova.rds&#39;)
+tempt &lt;- t(temp_alt)</code></pre>
 <div id="overview" class="section level1">
 <h1>Overview</h1>
-<p>Five subsections:</p>
+<p>Six subsections:</p>
 <ul>
-<li>New models (7-9)</li>
-<li>Alternate model 6 tests</li>
-<li>GXE-GWAS Variant Selection (summary)</li>
-<li>Variant Selection</li>
-<li>ANOVA</li>
+<li>New Models</li>
+<li>Alternate Model 6 Populations</li>
+<li>ANOVA: Environment ~ Ancestry</li>
+<li>GXE-GWAS Variant Selection</li>
+<li>GxE-GWAS Variant Analysis</li>
+<li>GxE-GWAS BMI Covariate</li>
 </ul>
-<p>Of these, data for the first three is included. Discussion needed for
-Alt model 6 tests, have not started variant selection or anova report
-below.</p>
 <div id="new-models" class="section level2">
-<h2>New models</h2>
+<h2>New Models</h2>
 <p>Models 7, 8, and 9 are new. Model 6 is included for reference to
 existing terms.</p>
 <div id="formulas" class="section level3">
@@ -1028,12 +1064,12 @@ age<span class="math inline">\(^2\)</span>),</li>
 <li><span class="math inline">\(\boldsymbol{\beta}_{1}\)</span> is an
 <span class="math inline">\(a\)</span>-vector of their fixed
 effects,</li>
-<li>Model 7: <span class="math inline">\(\mathbf{X}_{2}\)</span> is a
-<span class="math inline">\(n \times b\)</span> design matrix with <span
+<li><span class="math inline">\(\mathbf{X}_{2}\)</span> is a <span
+class="math inline">\(n \times b\)</span> design matrix with <span
 class="math inline">\(b = 10\)</span> columns including the top 10
 genetic principal components,</li>
-<li>Model 7: <span class="math inline">\(\boldsymbol{\beta}_{2}\)</span>
-is a <span class="math inline">\(b\)</span>-vector of their fixed
+<li><span class="math inline">\(\boldsymbol{\beta}_{2}\)</span> is a
+<span class="math inline">\(b\)</span>-vector of their fixed
 effects,</li>
 <li><span class="math inline">\(\mathbf{g}\)</span> is a <span
 class="math inline">\(n\)</span>-vector of random additive genetic
@@ -1084,27 +1120,26 @@ effects,</li>
 <div id="descriptions" class="section level3">
 <h3>Descriptions</h3>
 <p>Model 7 includes an additional variance component <span
-class="math inline">\(i\)</span> that implements a modified interaction
-relationship matrix. The modified IRM is given by <span
+class="math inline">\(\mathbf{i}\)</span> that implements a modified
+interaction relationship matrix. The modified IRM is given by <span
 class="math inline">\(\mathbf{K}_{top \times e} = \mathbf{K}_{top} \odot
 \mathbf{K}_e\)</span> where <span
 class="math inline">\(\mathbf{K}_{top}\)</span> is the GRM derived from
 the top 10 eigenvectors of the full plink GRM.</p>
 <p>Model 8 includes the top 10 eigenvectors of the full IRM as
 additional covariates (along with top 10 genetic PCs) for a total of 20
-covariates in <span class="math inline">\(X_3\)</span>. The full IRM is
-the Hadamard product of the plink GRM and the full ERM, given by <span
-class="math inline">\(\mathbf{K}_{g \times e} = \mathbf{K}_g \odot
-\mathbf{K}_e\)</span>.</p>
+covariates in <span class="math inline">\(\mathbf{X}_3\)</span>. The
+full IRM is the Hadamard product of the plink GRM and the full ERM,
+given by <span class="math inline">\(\mathbf{K}_{g \times e} =
+\mathbf{K}_g \odot \mathbf{K}_e\)</span>.</p>
 <p>Model 9 expands upon Model 8 by including the top 3 eigenvectors of
 the full ERM as additional covariates for a total of 23 covariates in
-<span class="math inline">\(X_4\)</span>.</p>
+<span class="math inline">\(\mathbf{X}_4\)</span>.</p>
 </div>
 <div id="estimates-of-effect-sizes" class="section level3">
 <h3>Estimates of effect sizes</h3>
 <div id="combined" class="section level4">
 <h4>Combined</h4>
-<pre class="r"><code>plot_grid(dnum, snum, pnum, ncol=1)</code></pre>
 <p><img src="figure/newport.Rmd/mult_all-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-mult_all-1">
@@ -1146,7 +1181,6 @@ nklimko
 </div>
 <div id="diastolic-pressure" class="section level4">
 <h4>Diastolic Pressure</h4>
-<pre class="r"><code>plot_grid(dnum, ncol=1)</code></pre>
 <p><img src="figure/newport.Rmd/mult_dp-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-mult_dp-1">
@@ -1185,7 +1219,6 @@ nklimko
 </table>
 </div>
 </div>
-<pre class="r"><code>snipper(mat_dp_num)</code></pre>
 <table>
 <thead>
 <tr class="header">
@@ -1198,114 +1231,113 @@ nklimko
 <tr class="odd">
 <td align="left">E</td>
 <td align="left">Model 6</td>
-<td align="right">10.5668474</td>
+<td align="right">10.57</td>
 </tr>
 <tr class="even">
 <td align="left">E</td>
 <td align="left">Model 7</td>
-<td align="right">10.5607557</td>
+<td align="right">10.56</td>
 </tr>
 <tr class="odd">
 <td align="left">E</td>
 <td align="left">Model 8</td>
-<td align="right">10.5381487</td>
+<td align="right">10.54</td>
 </tr>
 <tr class="even">
 <td align="left">E</td>
 <td align="left">Model 9</td>
-<td align="right">10.5343724</td>
+<td align="right">10.53</td>
 </tr>
 <tr class="odd">
 <td align="left">G</td>
 <td align="left">Model 6</td>
-<td align="right">15.6668108</td>
+<td align="right">15.67</td>
 </tr>
 <tr class="even">
 <td align="left">G</td>
 <td align="left">Model 7</td>
-<td align="right">15.7349840</td>
+<td align="right">15.73</td>
 </tr>
 <tr class="odd">
 <td align="left">G</td>
 <td align="left">Model 8</td>
-<td align="right">15.5244669</td>
+<td align="right">15.52</td>
 </tr>
 <tr class="even">
 <td align="left">G</td>
 <td align="left">Model 9</td>
-<td align="right">15.7375170</td>
+<td align="right">15.74</td>
 </tr>
 <tr class="odd">
 <td align="left">GxE</td>
 <td align="left">Model 6</td>
-<td align="right">7.3734547</td>
+<td align="right">7.37</td>
 </tr>
 <tr class="even">
 <td align="left">GxE</td>
 <td align="left">Model 7</td>
-<td align="right">6.3709404</td>
+<td align="right">6.37</td>
 </tr>
 <tr class="odd">
 <td align="left">GxE</td>
 <td align="left">Model 8</td>
-<td align="right">7.5608078</td>
+<td align="right">7.56</td>
 </tr>
 <tr class="even">
 <td align="left">GxE</td>
 <td align="left">Model 9</td>
-<td align="right">7.5272430</td>
+<td align="right">7.53</td>
 </tr>
 <tr class="odd">
 <td align="left">X1</td>
 <td align="left">Model 6</td>
-<td align="right">4.3968360</td>
+<td align="right">4.40</td>
 </tr>
 <tr class="even">
 <td align="left">X1</td>
 <td align="left">Model 7</td>
-<td align="right">4.3528599</td>
+<td align="right">4.35</td>
 </tr>
 <tr class="odd">
 <td align="left">X1</td>
 <td align="left">Model 8</td>
-<td align="right">4.3851741</td>
+<td align="right">4.39</td>
 </tr>
 <tr class="even">
 <td align="left">X1</td>
 <td align="left">Model 9</td>
-<td align="right">4.3456315</td>
+<td align="right">4.35</td>
 </tr>
 <tr class="odd">
 <td align="left">X2</td>
 <td align="left">Model 6</td>
-<td align="right">1.4452401</td>
+<td align="right">1.45</td>
 </tr>
 <tr class="even">
 <td align="left">X2</td>
 <td align="left">Model 7</td>
-<td align="right">1.6687026</td>
+<td align="right">1.67</td>
 </tr>
 <tr class="odd">
 <td align="left">X2</td>
 <td align="left">Model 8</td>
-<td align="right">1.5357184</td>
+<td align="right">1.54</td>
 </tr>
 <tr class="even">
 <td align="left">X2</td>
 <td align="left">Model 9</td>
-<td align="right">8.7038219</td>
+<td align="right">8.70</td>
 </tr>
 <tr class="odd">
 <td align="left">m7</td>
 <td align="left">Model 7</td>
-<td align="right">0.3419408</td>
+<td align="right">0.34</td>
 </tr>
 </tbody>
 </table>
 </div>
 <div id="systolic-pressure" class="section level4">
 <h4>Systolic Pressure</h4>
-<pre class="r"><code>plot_grid(snum, ncol=1)</code></pre>
 <p><img src="figure/newport.Rmd/mult_sp-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-mult_sp-1">
@@ -1344,7 +1376,6 @@ nklimko
 </table>
 </div>
 </div>
-<pre class="r"><code>snipper(mat_sp_num)</code></pre>
 <table>
 <thead>
 <tr class="header">
@@ -1357,114 +1388,113 @@ nklimko
 <tr class="odd">
 <td align="left">E</td>
 <td align="left">Model 6</td>
-<td align="right">5.2372076</td>
+<td align="right">5.24</td>
 </tr>
 <tr class="even">
 <td align="left">E</td>
 <td align="left">Model 7</td>
-<td align="right">5.3294119</td>
+<td align="right">5.33</td>
 </tr>
 <tr class="odd">
 <td align="left">E</td>
 <td align="left">Model 8</td>
-<td align="right">5.2685384</td>
+<td align="right">5.27</td>
 </tr>
 <tr class="even">
 <td align="left">E</td>
 <td align="left">Model 9</td>
-<td align="right">5.9132542</td>
+<td align="right">5.91</td>
 </tr>
 <tr class="odd">
 <td align="left">G</td>
 <td align="left">Model 6</td>
-<td align="right">13.0727166</td>
+<td align="right">13.07</td>
 </tr>
 <tr class="even">
 <td align="left">G</td>
 <td align="left">Model 7</td>
-<td align="right">13.0311038</td>
+<td align="right">13.03</td>
 </tr>
 <tr class="odd">
 <td align="left">G</td>
 <td align="left">Model 8</td>
-<td align="right">12.8453187</td>
+<td align="right">12.85</td>
 </tr>
 <tr class="even">
 <td align="left">G</td>
 <td align="left">Model 9</td>
-<td align="right">13.0642049</td>
+<td align="right">13.06</td>
 </tr>
 <tr class="odd">
 <td align="left">GxE</td>
 <td align="left">Model 6</td>
-<td align="right">4.2039709</td>
+<td align="right">4.20</td>
 </tr>
 <tr class="even">
 <td align="left">GxE</td>
 <td align="left">Model 7</td>
-<td align="right">3.4690480</td>
+<td align="right">3.47</td>
 </tr>
 <tr class="odd">
 <td align="left">GxE</td>
 <td align="left">Model 8</td>
-<td align="right">4.3062755</td>
+<td align="right">4.31</td>
 </tr>
 <tr class="even">
 <td align="left">GxE</td>
 <td align="left">Model 9</td>
-<td align="right">4.3225374</td>
+<td align="right">4.32</td>
 </tr>
 <tr class="odd">
 <td align="left">X1</td>
 <td align="left">Model 6</td>
-<td align="right">13.5583099</td>
+<td align="right">13.56</td>
 </tr>
 <tr class="even">
 <td align="left">X1</td>
 <td align="left">Model 7</td>
-<td align="right">13.3239853</td>
+<td align="right">13.32</td>
 </tr>
 <tr class="odd">
 <td align="left">X1</td>
 <td align="left">Model 8</td>
-<td align="right">13.3500240</td>
+<td align="right">13.35</td>
 </tr>
 <tr class="even">
 <td align="left">X1</td>
 <td align="left">Model 9</td>
-<td align="right">13.3484394</td>
+<td align="right">13.35</td>
 </tr>
 <tr class="odd">
 <td align="left">X2</td>
 <td align="left">Model 6</td>
-<td align="right">0.7553020</td>
+<td align="right">0.76</td>
 </tr>
 <tr class="even">
 <td align="left">X2</td>
 <td align="left">Model 7</td>
-<td align="right">0.8851859</td>
+<td align="right">0.89</td>
 </tr>
 <tr class="odd">
 <td align="left">X2</td>
 <td align="left">Model 8</td>
-<td align="right">0.8803298</td>
+<td align="right">0.88</td>
 </tr>
 <tr class="even">
 <td align="left">X2</td>
 <td align="left">Model 9</td>
-<td align="right">4.8574039</td>
+<td align="right">4.86</td>
 </tr>
 <tr class="odd">
 <td align="left">m7</td>
 <td align="left">Model 7</td>
-<td align="right">0.4301240</td>
+<td align="right">0.43</td>
 </tr>
 </tbody>
 </table>
 </div>
 <div id="pulse-pressure" class="section level4">
 <h4>Pulse Pressure</h4>
-<pre class="r"><code>plot_grid(pnum, ncol=1)</code></pre>
 <p><img src="figure/newport.Rmd/mult_pp-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-mult_pp-1">
@@ -1503,7 +1533,6 @@ nklimko
 </table>
 </div>
 </div>
-<pre class="r"><code>snipper(mat_pp_num)</code></pre>
 <table>
 <thead>
 <tr class="header">
@@ -1516,115 +1545,115 @@ nklimko
 <tr class="odd">
 <td align="left">E</td>
 <td align="left">Model 6</td>
-<td align="right">1.1366859</td>
+<td align="right">1.14</td>
 </tr>
 <tr class="even">
 <td align="left">E</td>
 <td align="left">Model 7</td>
-<td align="right">1.1996977</td>
+<td align="right">1.20</td>
 </tr>
 <tr class="odd">
 <td align="left">E</td>
 <td align="left">Model 8</td>
-<td align="right">1.1788592</td>
+<td align="right">1.18</td>
 </tr>
 <tr class="even">
 <td align="left">E</td>
 <td align="left">Model 9</td>
-<td align="right">2.1750980</td>
+<td align="right">2.18</td>
 </tr>
 <tr class="odd">
 <td align="left">G</td>
 <td align="left">Model 6</td>
-<td align="right">9.9625746</td>
+<td align="right">9.96</td>
 </tr>
 <tr class="even">
 <td align="left">G</td>
 <td align="left">Model 7</td>
-<td align="right">9.9405176</td>
+<td align="right">9.94</td>
 </tr>
 <tr class="odd">
 <td align="left">G</td>
 <td align="left">Model 8</td>
-<td align="right">9.7402599</td>
+<td align="right">9.74</td>
 </tr>
 <tr class="even">
 <td align="left">G</td>
 <td align="left">Model 9</td>
-<td align="right">10.0015241</td>
+<td align="right">10.00</td>
 </tr>
 <tr class="odd">
 <td align="left">GxE</td>
 <td align="left">Model 6</td>
-<td align="right">3.0542151</td>
+<td align="right">3.05</td>
 </tr>
 <tr class="even">
 <td align="left">GxE</td>
 <td align="left">Model 7</td>
-<td align="right">2.5316092</td>
+<td align="right">2.53</td>
 </tr>
 <tr class="odd">
 <td align="left">GxE</td>
 <td align="left">Model 8</td>
-<td align="right">3.1003256</td>
+<td align="right">3.10</td>
 </tr>
 <tr class="even">
 <td align="left">GxE</td>
 <td align="left">Model 9</td>
-<td align="right">3.1154543</td>
+<td align="right">3.12</td>
 </tr>
 <tr class="odd">
 <td align="left">X1</td>
 <td align="left">Model 6</td>
-<td align="right">19.0239473</td>
+<td align="right">19.02</td>
 </tr>
 <tr class="even">
 <td align="left">X1</td>
 <td align="left">Model 7</td>
-<td align="right">18.8265016</td>
+<td align="right">18.83</td>
 </tr>
 <tr class="odd">
 <td align="left">X1</td>
 <td align="left">Model 8</td>
-<td align="right">18.8356716</td>
+<td align="right">18.84</td>
 </tr>
 <tr class="even">
 <td align="left">X1</td>
 <td align="left">Model 9</td>
-<td align="right">18.8638740</td>
+<td align="right">18.86</td>
 </tr>
 <tr class="odd">
 <td align="left">X2</td>
 <td align="left">Model 6</td>
-<td align="right">0.3123106</td>
+<td align="right">0.31</td>
 </tr>
 <tr class="even">
 <td align="left">X2</td>
 <td align="left">Model 7</td>
-<td align="right">0.3595714</td>
+<td align="right">0.36</td>
 </tr>
 <tr class="odd">
 <td align="left">X2</td>
 <td align="left">Model 8</td>
-<td align="right">0.4418228</td>
+<td align="right">0.44</td>
 </tr>
 <tr class="even">
 <td align="left">X2</td>
 <td align="left">Model 9</td>
-<td align="right">1.9352654</td>
+<td align="right">1.94</td>
 </tr>
 <tr class="odd">
 <td align="left">m7</td>
 <td align="left">Model 7</td>
-<td align="right">0.4040884</td>
+<td align="right">0.40</td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
 </div>
-<div id="alternate-model-6-formulas" class="section level2">
-<h2>Alternate Model 6 Formulas</h2>
+<div id="alternate-model-6-populations" class="section level2">
+<h2>Alternate Model 6 Populations</h2>
 <p>The model 6 framework is used for the following analyses:</p>
 <p><span class="math display">\[\text{Model 6: } \mathbf{y} =
 \mathbf{X}_{1}\boldsymbol{\beta}_{1} +
@@ -1639,7 +1668,6 @@ instead used the top 10 genetic principal components provided by the UK
 Biobank. The estimation of variance components is shown here:</p>
 <div id="combined-1" class="section level4">
 <h4>Combined</h4>
-<pre class="r"><code>plot_grid(dpc, spc, ppc, ncol=1)</code></pre>
 <p><img src="figure/newport.Rmd/pcs_all-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-pcs_all-1">
@@ -1681,7 +1709,6 @@ nklimko
 </div>
 <div id="diastolic-pressure-1" class="section level4">
 <h4>Diastolic Pressure</h4>
-<pre class="r"><code>plot_grid(dpc, ncol=1)</code></pre>
 <p><img src="figure/newport.Rmd/pcs_dp-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-pcs_dp-1">
@@ -1720,7 +1747,6 @@ nklimko
 </table>
 </div>
 </div>
-<pre class="r"><code>snipper(mat_dp_pcs)</code></pre>
 <table>
 <thead>
 <tr class="header">
@@ -1733,59 +1759,58 @@ nklimko
 <tr class="odd">
 <td align="left">E</td>
 <td align="left">Model 6</td>
-<td align="right">10.566847</td>
+<td align="right">10.57</td>
 </tr>
 <tr class="even">
 <td align="left">E</td>
 <td align="left">Model 6a</td>
-<td align="right">10.614517</td>
+<td align="right">10.61</td>
 </tr>
 <tr class="odd">
 <td align="left">G</td>
 <td align="left">Model 6</td>
-<td align="right">15.666811</td>
+<td align="right">15.67</td>
 </tr>
 <tr class="even">
 <td align="left">G</td>
 <td align="left">Model 6a</td>
-<td align="right">15.435262</td>
+<td align="right">15.44</td>
 </tr>
 <tr class="odd">
 <td align="left">GxE</td>
 <td align="left">Model 6</td>
-<td align="right">7.373455</td>
+<td align="right">7.37</td>
 </tr>
 <tr class="even">
 <td align="left">GxE</td>
 <td align="left">Model 6a</td>
-<td align="right">7.362677</td>
+<td align="right">7.36</td>
 </tr>
 <tr class="odd">
 <td align="left">X1</td>
 <td align="left">Model 6</td>
-<td align="right">4.396836</td>
+<td align="right">4.40</td>
 </tr>
 <tr class="even">
 <td align="left">X1</td>
 <td align="left">Model 6a</td>
-<td align="right">4.461699</td>
+<td align="right">4.46</td>
 </tr>
 <tr class="odd">
 <td align="left">X2</td>
 <td align="left">Model 6</td>
-<td align="right">1.445240</td>
+<td align="right">1.45</td>
 </tr>
 <tr class="even">
 <td align="left">X2</td>
 <td align="left">Model 6a</td>
-<td align="right">1.427508</td>
+<td align="right">1.43</td>
 </tr>
 </tbody>
 </table>
 </div>
 <div id="systolic-pressure-1" class="section level4">
 <h4>Systolic Pressure</h4>
-<pre class="r"><code>plot_grid(spc, ncol=1)</code></pre>
 <p><img src="figure/newport.Rmd/pcs_sp-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-pcs_sp-1">
@@ -1824,7 +1849,6 @@ nklimko
 </table>
 </div>
 </div>
-<pre class="r"><code>snipper(mat_sp_pcs)</code></pre>
 <table>
 <thead>
 <tr class="header">
@@ -1837,59 +1861,58 @@ nklimko
 <tr class="odd">
 <td align="left">E</td>
 <td align="left">Model 6</td>
-<td align="right">5.2372076</td>
+<td align="right">5.24</td>
 </tr>
 <tr class="even">
 <td align="left">E</td>
 <td align="left">Model 6a</td>
-<td align="right">5.2307381</td>
+<td align="right">5.23</td>
 </tr>
 <tr class="odd">
 <td align="left">G</td>
 <td align="left">Model 6</td>
-<td align="right">13.0727166</td>
+<td align="right">13.07</td>
 </tr>
 <tr class="even">
 <td align="left">G</td>
 <td align="left">Model 6a</td>
-<td align="right">12.8582372</td>
+<td align="right">12.86</td>
 </tr>
 <tr class="odd">
 <td align="left">GxE</td>
 <td align="left">Model 6</td>
-<td align="right">4.2039709</td>
+<td align="right">4.20</td>
 </tr>
 <tr class="even">
 <td align="left">GxE</td>
 <td align="left">Model 6a</td>
-<td align="right">4.2113118</td>
+<td align="right">4.21</td>
 </tr>
 <tr class="odd">
 <td align="left">X1</td>
 <td align="left">Model 6</td>
-<td align="right">13.5583099</td>
+<td align="right">13.56</td>
 </tr>
 <tr class="even">
 <td align="left">X1</td>
 <td align="left">Model 6a</td>
-<td align="right">13.5452878</td>
+<td align="right">13.55</td>
 </tr>
 <tr class="odd">
 <td align="left">X2</td>
 <td align="left">Model 6</td>
-<td align="right">0.7553020</td>
+<td align="right">0.76</td>
 </tr>
 <tr class="even">
 <td align="left">X2</td>
 <td align="left">Model 6a</td>
-<td align="right">0.7306742</td>
+<td align="right">0.73</td>
 </tr>
 </tbody>
 </table>
 </div>
 <div id="pulse-pressure-1" class="section level4">
 <h4>Pulse Pressure</h4>
-<pre class="r"><code>plot_grid(ppc, ncol=1)</code></pre>
 <p><img src="figure/newport.Rmd/pcs_pp-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-pcs_pp-1">
@@ -1928,7 +1951,6 @@ nklimko
 </table>
 </div>
 </div>
-<pre class="r"><code>snipper(mat_pp_pcs)</code></pre>
 <table>
 <thead>
 <tr class="header">
@@ -1941,52 +1963,52 @@ nklimko
 <tr class="odd">
 <td align="left">E</td>
 <td align="left">Model 6</td>
-<td align="right">1.1366859</td>
+<td align="right">1.14</td>
 </tr>
 <tr class="even">
 <td align="left">E</td>
 <td align="left">Model 6a</td>
-<td align="right">1.1278320</td>
+<td align="right">1.13</td>
 </tr>
 <tr class="odd">
 <td align="left">G</td>
 <td align="left">Model 6</td>
-<td align="right">9.9625746</td>
+<td align="right">9.96</td>
 </tr>
 <tr class="even">
 <td align="left">G</td>
 <td align="left">Model 6a</td>
-<td align="right">9.7059989</td>
+<td align="right">9.71</td>
 </tr>
 <tr class="odd">
 <td align="left">GxE</td>
 <td align="left">Model 6</td>
-<td align="right">3.0542151</td>
+<td align="right">3.05</td>
 </tr>
 <tr class="even">
 <td align="left">GxE</td>
 <td align="left">Model 6a</td>
-<td align="right">3.0628217</td>
+<td align="right">3.06</td>
 </tr>
 <tr class="odd">
 <td align="left">X1</td>
 <td align="left">Model 6</td>
-<td align="right">19.0239473</td>
+<td align="right">19.02</td>
 </tr>
 <tr class="even">
 <td align="left">X1</td>
 <td align="left">Model 6a</td>
-<td align="right">18.9902033</td>
+<td align="right">18.99</td>
 </tr>
 <tr class="odd">
 <td align="left">X2</td>
 <td align="left">Model 6</td>
-<td align="right">0.3123106</td>
+<td align="right">0.31</td>
 </tr>
 <tr class="even">
 <td align="left">X2</td>
 <td align="left">Model 6a</td>
-<td align="right">0.3169845</td>
+<td align="right">0.32</td>
 </tr>
 </tbody>
 </table>
@@ -2011,7 +2033,6 @@ others</li>
 <p>These results are shown here:</p>
 <div id="combined-2" class="section level4">
 <h4>Combined</h4>
-<pre class="r"><code>plot_grid(dalt, salt, palt, ncol=1)</code></pre>
 <p><img src="figure/newport.Rmd/alt_all-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-alt_all-1">
@@ -2053,7 +2074,6 @@ nklimko
 </div>
 <div id="diastolic-pressure-2" class="section level4">
 <h4>Diastolic Pressure</h4>
-<pre class="r"><code>plot_grid(dalt, ncol=1)</code></pre>
 <p><img src="figure/newport.Rmd/alt_dp-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-alt_dp-1">
@@ -2092,7 +2112,6 @@ nklimko
 </table>
 </div>
 </div>
-<pre class="r"><code>snipper(mat_dp_alt)</code></pre>
 <table>
 <thead>
 <tr class="header">
@@ -2105,84 +2124,83 @@ nklimko
 <tr class="odd">
 <td align="left">E</td>
 <td align="left">Model 6</td>
-<td align="right">10.5668474</td>
+<td align="right">10.57</td>
 </tr>
 <tr class="even">
 <td align="left">E</td>
 <td align="left">Model 6b</td>
-<td align="right">10.8360644</td>
+<td align="right">10.84</td>
 </tr>
 <tr class="odd">
 <td align="left">E</td>
 <td align="left">Model 6w</td>
-<td align="right">11.2320284</td>
+<td align="right">11.23</td>
 </tr>
 <tr class="even">
 <td align="left">G</td>
 <td align="left">Model 6</td>
-<td align="right">15.6668108</td>
+<td align="right">15.67</td>
 </tr>
 <tr class="odd">
 <td align="left">G</td>
 <td align="left">Model 6b</td>
-<td align="right">18.0023057</td>
+<td align="right">18.00</td>
 </tr>
 <tr class="even">
 <td align="left">G</td>
 <td align="left">Model 6w</td>
-<td align="right">18.8969239</td>
+<td align="right">18.90</td>
 </tr>
 <tr class="odd">
 <td align="left">GxE</td>
 <td align="left">Model 6</td>
-<td align="right">7.3734547</td>
+<td align="right">7.37</td>
 </tr>
 <tr class="even">
 <td align="left">GxE</td>
 <td align="left">Model 6b</td>
-<td align="right">4.2124167</td>
+<td align="right">4.21</td>
 </tr>
 <tr class="odd">
 <td align="left">GxE</td>
 <td align="left">Model 6w</td>
-<td align="right">5.6955529</td>
+<td align="right">5.70</td>
 </tr>
 <tr class="even">
 <td align="left">X1</td>
 <td align="left">Model 6</td>
-<td align="right">4.3968360</td>
+<td align="right">4.40</td>
 </tr>
 <tr class="odd">
 <td align="left">X1</td>
 <td align="left">Model 6b</td>
-<td align="right">6.0199752</td>
+<td align="right">6.02</td>
 </tr>
 <tr class="even">
 <td align="left">X1</td>
 <td align="left">Model 6w</td>
-<td align="right">5.7508768</td>
+<td align="right">5.75</td>
 </tr>
 <tr class="odd">
 <td align="left">X2</td>
 <td align="left">Model 6</td>
-<td align="right">1.4452401</td>
+<td align="right">1.45</td>
 </tr>
 <tr class="even">
 <td align="left">X2</td>
 <td align="left">Model 6b</td>
-<td align="right">0.2890741</td>
+<td align="right">0.29</td>
 </tr>
 <tr class="odd">
 <td align="left">X2</td>
 <td align="left">Model 6w</td>
-<td align="right">0.2278947</td>
+<td align="right">0.23</td>
 </tr>
 </tbody>
 </table>
 </div>
 <div id="systolic-pressure-2" class="section level4">
 <h4>Systolic Pressure</h4>
-<pre class="r"><code>plot_grid(salt, ncol=1)</code></pre>
 <p><img src="figure/newport.Rmd/alt_sp-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-alt_sp-1">
@@ -2221,7 +2239,6 @@ nklimko
 </table>
 </div>
 </div>
-<pre class="r"><code>snipper(mat_sp_alt)</code></pre>
 <table>
 <thead>
 <tr class="header">
@@ -2234,84 +2251,83 @@ nklimko
 <tr class="odd">
 <td align="left">E</td>
 <td align="left">Model 6</td>
-<td align="right">5.2372076</td>
+<td align="right">5.24</td>
 </tr>
 <tr class="even">
 <td align="left">E</td>
 <td align="left">Model 6b</td>
-<td align="right">4.8240381</td>
+<td align="right">4.82</td>
 </tr>
 <tr class="odd">
 <td align="left">E</td>
 <td align="left">Model 6w</td>
-<td align="right">5.4713535</td>
+<td align="right">5.47</td>
 </tr>
 <tr class="even">
 <td align="left">G</td>
 <td align="left">Model 6</td>
-<td align="right">13.0727166</td>
+<td align="right">13.07</td>
 </tr>
 <tr class="odd">
 <td align="left">G</td>
 <td align="left">Model 6b</td>
-<td align="right">17.3102068</td>
+<td align="right">17.31</td>
 </tr>
 <tr class="even">
 <td align="left">G</td>
 <td align="left">Model 6w</td>
-<td align="right">17.2207406</td>
+<td align="right">17.22</td>
 </tr>
 <tr class="odd">
 <td align="left">GxE</td>
 <td align="left">Model 6</td>
-<td align="right">4.2039709</td>
+<td align="right">4.20</td>
 </tr>
 <tr class="even">
 <td align="left">GxE</td>
 <td align="left">Model 6b</td>
-<td align="right">3.1223657</td>
+<td align="right">3.12</td>
 </tr>
 <tr class="odd">
 <td align="left">GxE</td>
 <td align="left">Model 6w</td>
-<td align="right">3.5824106</td>
+<td align="right">3.58</td>
 </tr>
 <tr class="even">
 <td align="left">X1</td>
 <td align="left">Model 6</td>
-<td align="right">13.5583099</td>
+<td align="right">13.56</td>
 </tr>
 <tr class="odd">
 <td align="left">X1</td>
 <td align="left">Model 6b</td>
-<td align="right">13.0890268</td>
+<td align="right">13.09</td>
 </tr>
 <tr class="even">
 <td align="left">X1</td>
 <td align="left">Model 6w</td>
-<td align="right">12.5307665</td>
+<td align="right">12.53</td>
 </tr>
 <tr class="odd">
 <td align="left">X2</td>
 <td align="left">Model 6</td>
-<td align="right">0.7553020</td>
+<td align="right">0.76</td>
 </tr>
 <tr class="even">
 <td align="left">X2</td>
 <td align="left">Model 6b</td>
-<td align="right">0.2242889</td>
+<td align="right">0.22</td>
 </tr>
 <tr class="odd">
 <td align="left">X2</td>
 <td align="left">Model 6w</td>
-<td align="right">0.1850798</td>
+<td align="right">0.19</td>
 </tr>
 </tbody>
 </table>
 </div>
 <div id="pulse-pressure-2" class="section level4">
 <h4>Pulse Pressure</h4>
-<pre class="r"><code>plot_grid(palt, ncol=1)</code></pre>
 <p><img src="figure/newport.Rmd/alt_pp-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-alt_pp-1">
@@ -2350,7 +2366,6 @@ nklimko
 </table>
 </div>
 </div>
-<pre class="r"><code>snipper(mat_pp_alt)</code></pre>
 <table>
 <thead>
 <tr class="header">
@@ -2363,96 +2378,138 @@ nklimko
 <tr class="odd">
 <td align="left">E</td>
 <td align="left">Model 6</td>
-<td align="right">1.1366859</td>
+<td align="right">1.14</td>
 </tr>
 <tr class="even">
 <td align="left">E</td>
 <td align="left">Model 6b</td>
-<td align="right">1.0548611</td>
+<td align="right">1.05</td>
 </tr>
 <tr class="odd">
 <td align="left">E</td>
 <td align="left">Model 6w</td>
-<td align="right">1.0805988</td>
+<td align="right">1.08</td>
 </tr>
 <tr class="even">
 <td align="left">G</td>
 <td align="left">Model 6</td>
-<td align="right">9.9625746</td>
+<td align="right">9.96</td>
 </tr>
 <tr class="odd">
 <td align="left">G</td>
 <td align="left">Model 6b</td>
-<td align="right">15.7905682</td>
+<td align="right">15.79</td>
 </tr>
 <tr class="even">
 <td align="left">G</td>
 <td align="left">Model 6w</td>
-<td align="right">14.7708499</td>
+<td align="right">14.77</td>
 </tr>
 <tr class="odd">
 <td align="left">GxE</td>
 <td align="left">Model 6</td>
-<td align="right">3.0542151</td>
+<td align="right">3.05</td>
 </tr>
 <tr class="even">
 <td align="left">GxE</td>
 <td align="left">Model 6b</td>
-<td align="right">3.8874777</td>
+<td align="right">3.89</td>
 </tr>
 <tr class="odd">
 <td align="left">GxE</td>
 <td align="left">Model 6w</td>
-<td align="right">3.6354779</td>
+<td align="right">3.64</td>
 </tr>
 <tr class="even">
 <td align="left">X1</td>
 <td align="left">Model 6</td>
-<td align="right">19.0239473</td>
+<td align="right">19.02</td>
 </tr>
 <tr class="odd">
 <td align="left">X1</td>
 <td align="left">Model 6b</td>
-<td align="right">16.6641829</td>
+<td align="right">16.66</td>
 </tr>
 <tr class="even">
 <td align="left">X1</td>
 <td align="left">Model 6w</td>
-<td align="right">16.7096550</td>
+<td align="right">16.71</td>
 </tr>
 <tr class="odd">
 <td align="left">X2</td>
 <td align="left">Model 6</td>
-<td align="right">0.3123106</td>
+<td align="right">0.31</td>
 </tr>
 <tr class="even">
 <td align="left">X2</td>
 <td align="left">Model 6b</td>
-<td align="right">0.2121134</td>
+<td align="right">0.21</td>
 </tr>
 <tr class="odd">
 <td align="left">X2</td>
 <td align="left">Model 6w</td>
-<td align="right">0.1694843</td>
+<td align="right">0.17</td>
 </tr>
 </tbody>
 </table>
-<p>We note that the estimates of the interaction component <span
-class="math inline">\(\mathbf{g \times e}\)</span> decrease from the
-original model to both white models. Additionally, the estimate of the
-genetic component <span class="math inline">\(\mathbf{g}\)</span>
-increases from the original model to both white models</p>
+<p>For all traits, the PoVE of the genetic component <span
+class="math inline">\(\mathbf{g}\)</span> increases from the original
+population to both subsets of white individuals for all three blood
+pressure traits.</p>
+<p>The PoVE for the interaction term <span
+class="math inline">\(\mathbf{g \times e}\)</span> is not consistent
+across traits:</p>
+<ul>
+<li>Diastolic pressure : Relative <strong>decrease</strong> of 23-43%
+(7.37 -&gt; 4.21-5.70)</li>
+<li>Systolic pressure : Relative <strong>decrease</strong> of 15-26%
+(4.20 - 3.12-3.58)</li>
+<li>Pulse pressure : Relative <strong>increase</strong> of 18-27% (3.05
+-&gt; 3.60-3.89)</li>
+</ul>
 </div>
 </div>
 </div>
-<div id="variant-selection" class="section level2">
-<h2>Variant Selection</h2>
+<div id="anova-environment-ancestry" class="section level2 tabset">
+<h2 class="tabset">ANOVA: Environment ~ Ancestry</h2>
+<p>Assess environmental effects by ancestry. Analaysis of variance
+models where each environment was regressed across ancestry groups given
+by <span class="math inline">\(env \sim anc\)</span> where <span
+class="math inline">\(env\)</span> is a single environment and <span
+class="math inline">\(anc\)</span> is a factor coding for ancestry,
+containing the five classes:</p>
+<ul>
+<li>Asian</li>
+<li>Black</li>
+<li>Chinese</li>
+<li>Mixed</li>
+<li>White</li>
+</ul>
+<div id="clean" class="section level3">
+<h3>Clean</h3>
+<p><img src="figure/newport.Rmd/anova-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="labeled" class="section level3">
+<h3>Labeled</h3>
+<p><img src="figure/newport.Rmd/anova_lab-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="labeled-90" class="section level3">
+<h3>Labeled + 90</h3>
+<p><img src="figure/newport.Rmd/anova_lab90-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+<div id="section" class="section level2 unnumbered">
+<h2 class="unnumbered"></h2>
+<p>The only enviornment that did not vary significantly across ancestry
+groups was daily activity levels (act0_d p = 0.141). All other
+environments had a significant difference in variance for at least one
+ancestry group.</p>
+</div>
+<div id="gxe-gwas-variant-selection" class="section level2">
+<h2>GxE-GWAS Variant Selection</h2>
 <p>The full breakdown of selected SNPs is available in the <a
 href="qqtop.html">QQ Plot Selection report</a>. These results are
 summarized here:</p>
-<pre class="r"><code>qqsnps &lt;- fread(&#39;output/vault/fullport/qqsnps.txt&#39;)
-
-kable(qqsnps,&#39;simple&#39;)</code></pre>
 <table>
 <thead>
 <tr class="header">
@@ -2540,16 +2597,609 @@ kable(qqsnps,&#39;simple&#39;)</code></pre>
 </tbody>
 </table>
 </div>
-<div id="variant-analysis" class="section level2">
-<h2>Variant Analysis</h2>
+<div id="gxe-gwas-variant-analysis" class="section level2">
+<h2>GxE-GWAS Variant Analysis</h2>
 <div id="variant-effect-predictor" class="section level3">
 <h3>Variant Effect Predictor</h3>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Diastolic</th>
+<th align="left">Systolic</th>
+<th align="left">Pulse</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">ACAN</td>
+<td align="left">ABCC1</td>
+<td align="left">AC005042.4</td>
+</tr>
+<tr class="even">
+<td align="left">AKR1D1</td>
+<td align="left">AC007556.3</td>
+<td align="left">AC005042.5</td>
+</tr>
+<tr class="odd">
+<td align="left">ARV1</td>
+<td align="left">AC010148.1</td>
+<td align="left">AC005786.3</td>
+</tr>
+<tr class="even">
+<td align="left">C16orf45</td>
+<td align="left">AC104777.1</td>
+<td align="left">AC009499.1</td>
+</tr>
+<tr class="odd">
+<td align="left">C2orf71</td>
+<td align="left">AC104777.4</td>
+<td align="left">AC024158.1</td>
+</tr>
+<tr class="even">
+<td align="left">CCSER1</td>
+<td align="left">AFTPH</td>
+<td align="left">ACY3</td>
+</tr>
+<tr class="odd">
+<td align="left">CLEC2B</td>
+<td align="left">ANKEF1</td>
+<td align="left">AGPAT2</td>
+</tr>
+<tr class="even">
+<td align="left">CNTNAP4</td>
+<td align="left">ARPC3P5</td>
+<td align="left">ALDH3B2</td>
+</tr>
+<tr class="odd">
+<td align="left">CREB3L2</td>
+<td align="left">ATP8B4</td>
+<td align="left">AP003385.2</td>
+</tr>
+<tr class="even">
+<td align="left">CSRNP3</td>
+<td align="left">C2orf71</td>
+<td align="left">BPIFC</td>
+</tr>
+<tr class="odd">
+<td align="left">CTC-429P9.2</td>
+<td align="left">C6orf201</td>
+<td align="left">C1orf123</td>
+</tr>
+<tr class="even">
+<td align="left">EPB41L3</td>
+<td align="left">CACNA2D1</td>
+<td align="left">C6orf118</td>
+</tr>
+<tr class="odd">
+<td align="left">FRMD4A</td>
+<td align="left">CDH5</td>
+<td align="left">CACNA1C</td>
+</tr>
+<tr class="even">
+<td align="left">ITGB2</td>
+<td align="left">CMC2</td>
+<td align="left">CBX4</td>
+</tr>
+<tr class="odd">
+<td align="left">LRRIQ4</td>
+<td align="left">CNTNAP2</td>
+<td align="left">CDC14A</td>
+</tr>
+<tr class="even">
+<td align="left">MAP3K5</td>
+<td align="left">CRHBP</td>
+<td align="left">CDH22</td>
+</tr>
+<tr class="odd">
+<td align="left">MAP7</td>
+<td align="left">CTD-2332E11.2</td>
+<td align="left">CELF5</td>
+</tr>
+<tr class="even">
+<td align="left">MED26</td>
+<td align="left">CTD-2396E7.10</td>
+<td align="left">CES1</td>
+</tr>
+<tr class="odd">
+<td align="left">MICAL2</td>
+<td align="left">CTD-2396E7.9</td>
+<td align="left">CNTNAP2</td>
+</tr>
+<tr class="even">
+<td align="left">PDE3A</td>
+<td align="left">DHRS9</td>
+<td align="left">CPT2</td>
+</tr>
+<tr class="odd">
+<td align="left">PGPEP1</td>
+<td align="left">EIF4H</td>
+<td align="left">CREB5</td>
+</tr>
+<tr class="even">
+<td align="left">RP11-286N3.1</td>
+<td align="left">FAM188A</td>
+<td align="left">CSMD1</td>
+</tr>
+<tr class="odd">
+<td align="left">RP11-290C10.1</td>
+<td align="left">GADL1</td>
+<td align="left">CTC-339O9.2</td>
+</tr>
+<tr class="even">
+<td align="left">RP3-325F22.5</td>
+<td align="left">GJA4</td>
+<td align="left">CTD-2005H7.1</td>
+</tr>
+<tr class="odd">
+<td align="left">SERPINA6</td>
+<td align="left">GLYATL1</td>
+<td align="left">CTD-2130O13.1</td>
+</tr>
+<tr class="even">
+<td align="left">SLC35E1</td>
+<td align="left">HMGB1</td>
+<td align="left">DDC</td>
+</tr>
+<tr class="odd">
+<td align="left">SPTLC3</td>
+<td align="left">LAT2</td>
+<td align="left">DENND2A</td>
+</tr>
+<tr class="even">
+<td align="left">TMEM51</td>
+<td align="left">LINC00896</td>
+<td align="left">DPP10</td>
+</tr>
+<tr class="odd">
+<td align="left">TMEM51-AS1</td>
+<td align="left">LMBR1</td>
+<td align="left">DSCAM</td>
+</tr>
+<tr class="even">
+<td align="left">WNT7B</td>
+<td align="left">LMX1A</td>
+<td align="left">DSCAM-IT1</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">LRP1B</td>
+<td align="left">DSCAML1</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">LSAMP</td>
+<td align="left">EMP2</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">MCHR2-AS1</td>
+<td align="left">ENSAP1</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">MIR4674</td>
+<td align="left">FAM184A</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">MUC2</td>
+<td align="left">FRMD4A</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">MYH11</td>
+<td align="left">FUT10</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">MYO5A</td>
+<td align="left">GALNTL6</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">NCAPD2</td>
+<td align="left">HCG27</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">NLRP5</td>
+<td align="left">IL36B</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">NOTCH1</td>
+<td align="left">KCNB2</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">OR10H1</td>
+<td align="left">KCNIP1</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">OR10H3</td>
+<td align="left">KCNK13</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">P2RY2</td>
+<td align="left">KLF12</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">PACRG</td>
+<td align="left">KLHL23</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">PEX12P1</td>
+<td align="left">LHFPL2</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">PFKP</td>
+<td align="left">LINC00686</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">PKN2</td>
+<td align="left">LMX1A</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">PLA2G4E</td>
+<td align="left">LRFN2</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">PPM1H</td>
+<td align="left">MACROD2</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">PRKAR1B</td>
+<td align="left">MAPK6</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">PRSS23</td>
+<td align="left">MEG3</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">PTPRG</td>
+<td align="left">MFSD12</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">RELN</td>
+<td align="left">NCKAP5</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">RFPL1</td>
+<td align="left">NUP214</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">RFPL1S</td>
+<td align="left">OPRD1</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">RIMBP2</td>
+<td align="left">PARD3B</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">RNA5SP394</td>
+<td align="left">PARK2</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">ROBO2</td>
+<td align="left">PELI2</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">RORA</td>
+<td align="left">PFKP</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">RP11-1217F2.15</td>
+<td align="left">PITRM1</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">RP11-154D3.1</td>
+<td align="left">PITRM1-AS1</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">RP11-279F6.3</td>
+<td align="left">PLXDC1</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">RP11-38C18.2</td>
+<td align="left">PPP2R5E</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">RP11-38C18.3</td>
+<td align="left">PRDX2P2</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">RP11-563P16.1</td>
+<td align="left">PRKAR1B</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">RP11-611D20.2</td>
+<td align="left">RCL1</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">RP11-662M24.2</td>
+<td align="left">RN7SL198P</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">RP11-736K20.5</td>
+<td align="left">RNF150</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">RP11-739G5.1</td>
+<td align="left">RP11-103J8.1</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">RP11-76N22.2</td>
+<td align="left">RP11-120M18.2</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">RP11-780O24.2</td>
+<td align="left">RP11-295P9.8</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">RP3-429O6.1</td>
+<td align="left">RP11-349I1.2</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">RP3-510D11.1</td>
+<td align="left">RP11-353N14.2</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">RP3-510D11.2</td>
+<td align="left">RP11-386D6.2</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">RP5-839B4.8</td>
+<td align="left">RP11-38C18.2</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">SCARB1</td>
+<td align="left">RP11-38C18.3</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">SCARNA10</td>
+<td align="left">RP11-544A12.8</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">SH3GL2</td>
+<td align="left">RP11-551L14.4</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">SHANK3</td>
+<td align="left">RP11-5P4.1</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">SLAIN2</td>
+<td align="left">RP11-98G7.1</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">SMIM12</td>
+<td align="left">RP3-510D11.1</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">SRBD1</td>
+<td align="left">RP3-510D11.2</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">TMC2</td>
+<td align="left">RP4-544H6.2</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">TUBB4A</td>
+<td align="left">RP5-1024G6.2</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">UBASH3A</td>
+<td align="left">SAMD4A</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">UPF2</td>
+<td align="left">SCAND3</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">USPL1</td>
+<td align="left">SERPINA11</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">XXbac-B444P24.8</td>
+<td align="left">SHROOM3</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">ZDHHC2</td>
+<td align="left">SLC39A11</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">SLCO4A1</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">SORBS2</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">SPATA6L</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">SYN2</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">TAAR6</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">TAF8</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">TBX4</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">TMEM45A</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">XXbac-BPG299F13.14</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">XXbac-BPG299F13.17</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">YEATS2</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">ZEB2</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">ZNF423</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">ZNF600</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">ZPBP</td>
+</tr>
+</tbody>
+</table>
+<p>Ensembl’s variant effect predictor (VEP) tool identified 30, 89, and
+104 genes for diastolic, systolic, and pulse pressure respectively.</p>
+<p>Some of these genes were identified in more than one trait and have
+been included below:</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Diastolic</th>
+<th align="left">Systolic</th>
+<th align="left">Pulse</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">C2orf71</td>
+<td align="left">C2orf71</td>
+<td align="left">CNTNAP2</td>
+</tr>
+<tr class="even">
+<td align="left">FRMD4A</td>
+<td align="left">CNTNAP2</td>
+<td align="left">FRMD4A</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">LMX1A</td>
+<td align="left">LMX1A</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">PFKP</td>
+<td align="left">PFKP</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">PRKAR1B</td>
+<td align="left">PRKAR1B</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">RP11-38C18.2</td>
+<td align="left">RP11-38C18.2</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">RP11-38C18.3</td>
+<td align="left">RP11-38C18.3</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">RP3-510D11.1</td>
+<td align="left">RP3-510D11.1</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">RP3-510D11.2</td>
+<td align="left">RP3-510D11.2</td>
+</tr>
+</tbody>
+</table>
 </div>
 <div id="gprofiler-terms" class="section level3">
 <h3>g:Profiler Terms</h3>
-<pre class="r"><code>profdat &lt;- fread(&#39;output/vault/fullport/final_gprof.txt&#39;)
-
-kable(profdat, &#39;simple&#39;)</code></pre>
+<p><a href="https://biit.cs.ut.ee/gprofiler/gost">g:Profiler</a>: a
+functional analysis tool provided by the University of Tartu.</p>
+<p>Piping the identified genes into g:Profiler yields significant GO
+terms associated with the provided pool of genes. Results are shown
+here:</p>
 <table>
 <thead>
 <tr class="header">
@@ -2637,10 +3287,502 @@ potentiation</td>
 </tr>
 </tbody>
 </table>
+<p>Functional analysis did not identify any significant GO terms, KEGG
+terms, or CORUM terms for diastolic pressure.</p>
+<p>An in depth breakdown of significant variants can be found in the
+rewrite of the results discussion under
+GxE-variance-ukb-multi-manuscript/WIP/gxegwas.tex through Overleaf (not
+linked for permissions and safety reasons).</p>
 </div>
 </div>
-<div id="anova-subunit" class="section level2">
-<h2>ANOVA subunit</h2>
+<div id="gxe-gwas-bmi-covariate" class="section level2 tabset">
+<h2 class="tabset">GxE-GWAS BMI Covariate</h2>
+<p>We also tested the inclusion of BMI as an additional covariate. The
+full comparison of QQ plots is available in the <a
+href="bmi_comp.html">BMI Covariate QQ Comparison report</a>.</p>
+<div id="summary" class="section level3">
+<h3>Summary</h3>
+<p>Average Pearson and Spearman correlation coefficients across all
+environments for each trait.</p>
+<pre class="r"><code>bmidata &lt;-  fread(&#39;output/vault/fullport/bmicov.txt&#39;)
+
+pcol &lt;- bmidata[,mean(pearson), by=trait]
+scol &lt;- bmidata[,mean(spearman), by=trait]
+
+bmicol &lt;- cbind(pcol, scol)
+
+names(bmicol) &lt;- c(&#39;Trait&#39;, &#39;Pearson&#39;, &#39;remove&#39;, &#39;Spearman&#39;)
+
+bmicol$remove &lt;- NULL
+
+kable(bmicol, &#39;simple&#39;, digits = 5)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Trait</th>
+<th align="right">Pearson</th>
+<th align="right">Spearman</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">DP</td>
+<td align="right">0.83510</td>
+<td align="right">0.83606</td>
+</tr>
+<tr class="even">
+<td align="left">SP</td>
+<td align="right">0.90345</td>
+<td align="right">0.90359</td>
+</tr>
+<tr class="odd">
+<td align="left">PP</td>
+<td align="right">0.98663</td>
+<td align="right">0.98655</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="full-table" class="section level3">
+<h3>Full Table</h3>
+<p>Pearson and Spearman correlation coefficients for all trait and
+environment combinations.</p>
+<pre class="r"><code>names(bmidata) &lt;- c(&#39;Trait&#39;, &#39;Environment&#39;, &#39;Pearson&#39;, &#39;Spearman&#39;)
+
+kable(bmidata, &#39;simple&#39;, digits = 5)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Trait</th>
+<th align="left">Environment</th>
+<th align="right">Pearson</th>
+<th align="right">Spearman</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">DP</td>
+<td align="left">Townsend</td>
+<td align="right">0.81632</td>
+<td align="right">0.81890</td>
+</tr>
+<tr class="even">
+<td align="left">DP</td>
+<td align="left">act0_d</td>
+<td align="right">0.82666</td>
+<td align="right">0.82684</td>
+</tr>
+<tr class="odd">
+<td align="left">DP</td>
+<td align="left">TVtime</td>
+<td align="right">0.82171</td>
+<td align="right">0.82362</td>
+</tr>
+<tr class="even">
+<td align="left">DP</td>
+<td align="left">sleep_d</td>
+<td align="right">0.81722</td>
+<td align="right">0.82018</td>
+</tr>
+<tr class="odd">
+<td align="left">DP</td>
+<td align="left">smoking_now</td>
+<td align="right">0.83860</td>
+<td align="right">0.84014</td>
+</tr>
+<tr class="even">
+<td align="left">DP</td>
+<td align="left">veg_cook</td>
+<td align="right">0.82972</td>
+<td align="right">0.82872</td>
+</tr>
+<tr class="odd">
+<td align="left">DP</td>
+<td align="left">fish_oily</td>
+<td align="right">0.82610</td>
+<td align="right">0.82754</td>
+</tr>
+<tr class="even">
+<td align="left">DP</td>
+<td align="left">fish_lean</td>
+<td align="right">0.82282</td>
+<td align="right">0.82479</td>
+</tr>
+<tr class="odd">
+<td align="left">DP</td>
+<td align="left">meat_proc</td>
+<td align="right">0.82698</td>
+<td align="right">0.82628</td>
+</tr>
+<tr class="even">
+<td align="left">DP</td>
+<td align="left">poultry</td>
+<td align="right">0.83331</td>
+<td align="right">0.83397</td>
+</tr>
+<tr class="odd">
+<td align="left">DP</td>
+<td align="left">beef</td>
+<td align="right">0.83461</td>
+<td align="right">0.83566</td>
+</tr>
+<tr class="even">
+<td align="left">DP</td>
+<td align="left">lamb</td>
+<td align="right">0.83098</td>
+<td align="right">0.83369</td>
+</tr>
+<tr class="odd">
+<td align="left">DP</td>
+<td align="left">pork</td>
+<td align="right">0.82998</td>
+<td align="right">0.83149</td>
+</tr>
+<tr class="even">
+<td align="left">DP</td>
+<td align="left">cheese</td>
+<td align="right">0.82740</td>
+<td align="right">0.82790</td>
+</tr>
+<tr class="odd">
+<td align="left">DP</td>
+<td align="left">salt</td>
+<td align="right">0.82732</td>
+<td align="right">0.82811</td>
+</tr>
+<tr class="even">
+<td align="left">DP</td>
+<td align="left">tea</td>
+<td align="right">0.82516</td>
+<td align="right">0.82576</td>
+</tr>
+<tr class="odd">
+<td align="left">DP</td>
+<td align="left">alc1</td>
+<td align="right">0.81752</td>
+<td align="right">0.81834</td>
+</tr>
+<tr class="even">
+<td align="left">DP</td>
+<td align="left">waist</td>
+<td align="right">0.95136</td>
+<td align="right">0.95177</td>
+</tr>
+<tr class="odd">
+<td align="left">DP</td>
+<td align="left">getup</td>
+<td align="right">0.81120</td>
+<td align="right">0.81167</td>
+</tr>
+<tr class="even">
+<td align="left">DP</td>
+<td align="left">coffee</td>
+<td align="right">0.81986</td>
+<td align="right">0.81804</td>
+</tr>
+<tr class="odd">
+<td align="left">DP</td>
+<td align="left">smoked_past</td>
+<td align="right">0.82983</td>
+<td align="right">0.82968</td>
+</tr>
+<tr class="even">
+<td align="left">DP</td>
+<td align="left">BFP</td>
+<td align="right">0.92987</td>
+<td align="right">0.92947</td>
+</tr>
+<tr class="odd">
+<td align="left">DP</td>
+<td align="left">sleep_dev</td>
+<td align="right">0.81282</td>
+<td align="right">0.81681</td>
+</tr>
+<tr class="even">
+<td align="left">SP</td>
+<td align="left">Townsend</td>
+<td align="right">0.89295</td>
+<td align="right">0.89388</td>
+</tr>
+<tr class="odd">
+<td align="left">SP</td>
+<td align="left">act0_d</td>
+<td align="right">0.89889</td>
+<td align="right">0.89861</td>
+</tr>
+<tr class="even">
+<td align="left">SP</td>
+<td align="left">TVtime</td>
+<td align="right">0.90059</td>
+<td align="right">0.90179</td>
+</tr>
+<tr class="odd">
+<td align="left">SP</td>
+<td align="left">sleep_d</td>
+<td align="right">0.89458</td>
+<td align="right">0.89625</td>
+</tr>
+<tr class="even">
+<td align="left">SP</td>
+<td align="left">smoking_now</td>
+<td align="right">0.90397</td>
+<td align="right">0.90236</td>
+</tr>
+<tr class="odd">
+<td align="left">SP</td>
+<td align="left">veg_cook</td>
+<td align="right">0.90188</td>
+<td align="right">0.90131</td>
+</tr>
+<tr class="even">
+<td align="left">SP</td>
+<td align="left">fish_oily</td>
+<td align="right">0.89827</td>
+<td align="right">0.89841</td>
+</tr>
+<tr class="odd">
+<td align="left">SP</td>
+<td align="left">fish_lean</td>
+<td align="right">0.89505</td>
+<td align="right">0.89466</td>
+</tr>
+<tr class="even">
+<td align="left">SP</td>
+<td align="left">meat_proc</td>
+<td align="right">0.90086</td>
+<td align="right">0.90064</td>
+</tr>
+<tr class="odd">
+<td align="left">SP</td>
+<td align="left">poultry</td>
+<td align="right">0.90132</td>
+<td align="right">0.90114</td>
+</tr>
+<tr class="even">
+<td align="left">SP</td>
+<td align="left">beef</td>
+<td align="right">0.90275</td>
+<td align="right">0.90297</td>
+</tr>
+<tr class="odd">
+<td align="left">SP</td>
+<td align="left">lamb</td>
+<td align="right">0.89998</td>
+<td align="right">0.90105</td>
+</tr>
+<tr class="even">
+<td align="left">SP</td>
+<td align="left">pork</td>
+<td align="right">0.90174</td>
+<td align="right">0.90193</td>
+</tr>
+<tr class="odd">
+<td align="left">SP</td>
+<td align="left">cheese</td>
+<td align="right">0.90121</td>
+<td align="right">0.90122</td>
+</tr>
+<tr class="even">
+<td align="left">SP</td>
+<td align="left">salt</td>
+<td align="right">0.89881</td>
+<td align="right">0.89874</td>
+</tr>
+<tr class="odd">
+<td align="left">SP</td>
+<td align="left">tea</td>
+<td align="right">0.89948</td>
+<td align="right">0.89964</td>
+</tr>
+<tr class="even">
+<td align="left">SP</td>
+<td align="left">alc1</td>
+<td align="right">0.89506</td>
+<td align="right">0.89592</td>
+</tr>
+<tr class="odd">
+<td align="left">SP</td>
+<td align="left">waist</td>
+<td align="right">0.96753</td>
+<td align="right">0.96749</td>
+</tr>
+<tr class="even">
+<td align="left">SP</td>
+<td align="left">getup</td>
+<td align="right">0.88823</td>
+<td align="right">0.88699</td>
+</tr>
+<tr class="odd">
+<td align="left">SP</td>
+<td align="left">coffee</td>
+<td align="right">0.89789</td>
+<td align="right">0.89723</td>
+</tr>
+<tr class="even">
+<td align="left">SP</td>
+<td align="left">smoked_past</td>
+<td align="right">0.90160</td>
+<td align="right">0.90146</td>
+</tr>
+<tr class="odd">
+<td align="left">SP</td>
+<td align="left">BFP</td>
+<td align="right">0.94401</td>
+<td align="right">0.94357</td>
+</tr>
+<tr class="even">
+<td align="left">SP</td>
+<td align="left">sleep_dev</td>
+<td align="right">0.89261</td>
+<td align="right">0.89523</td>
+</tr>
+<tr class="odd">
+<td align="left">PP</td>
+<td align="left">Townsend</td>
+<td align="right">0.98652</td>
+<td align="right">0.98651</td>
+</tr>
+<tr class="even">
+<td align="left">PP</td>
+<td align="left">act0_d</td>
+<td align="right">0.98800</td>
+<td align="right">0.98792</td>
+</tr>
+<tr class="odd">
+<td align="left">PP</td>
+<td align="left">TVtime</td>
+<td align="right">0.98923</td>
+<td align="right">0.98936</td>
+</tr>
+<tr class="even">
+<td align="left">PP</td>
+<td align="left">sleep_d</td>
+<td align="right">0.98680</td>
+<td align="right">0.98695</td>
+</tr>
+<tr class="odd">
+<td align="left">PP</td>
+<td align="left">smoking_now</td>
+<td align="right">0.99079</td>
+<td align="right">0.99043</td>
+</tr>
+<tr class="even">
+<td align="left">PP</td>
+<td align="left">veg_cook</td>
+<td align="right">0.98579</td>
+<td align="right">0.98552</td>
+</tr>
+<tr class="odd">
+<td align="left">PP</td>
+<td align="left">fish_oily</td>
+<td align="right">0.98643</td>
+<td align="right">0.98647</td>
+</tr>
+<tr class="even">
+<td align="left">PP</td>
+<td align="left">fish_lean</td>
+<td align="right">0.98513</td>
+<td align="right">0.98489</td>
+</tr>
+<tr class="odd">
+<td align="left">PP</td>
+<td align="left">meat_proc</td>
+<td align="right">0.98604</td>
+<td align="right">0.98592</td>
+</tr>
+<tr class="even">
+<td align="left">PP</td>
+<td align="left">poultry</td>
+<td align="right">0.98163</td>
+<td align="right">0.98136</td>
+</tr>
+<tr class="odd">
+<td align="left">PP</td>
+<td align="left">beef</td>
+<td align="right">0.98660</td>
+<td align="right">0.98647</td>
+</tr>
+<tr class="even">
+<td align="left">PP</td>
+<td align="left">lamb</td>
+<td align="right">0.98566</td>
+<td align="right">0.98553</td>
+</tr>
+<tr class="odd">
+<td align="left">PP</td>
+<td align="left">pork</td>
+<td align="right">0.98756</td>
+<td align="right">0.98738</td>
+</tr>
+<tr class="even">
+<td align="left">PP</td>
+<td align="left">cheese</td>
+<td align="right">0.98633</td>
+<td align="right">0.98635</td>
+</tr>
+<tr class="odd">
+<td align="left">PP</td>
+<td align="left">salt</td>
+<td align="right">0.98517</td>
+<td align="right">0.98497</td>
+</tr>
+<tr class="even">
+<td align="left">PP</td>
+<td align="left">tea</td>
+<td align="right">0.98768</td>
+<td align="right">0.98771</td>
+</tr>
+<tr class="odd">
+<td align="left">PP</td>
+<td align="left">alc1</td>
+<td align="right">0.98534</td>
+<td align="right">0.98539</td>
+</tr>
+<tr class="even">
+<td align="left">PP</td>
+<td align="left">waist</td>
+<td align="right">0.99021</td>
+<td align="right">0.99025</td>
+</tr>
+<tr class="odd">
+<td align="left">PP</td>
+<td align="left">getup</td>
+<td align="right">0.98760</td>
+<td align="right">0.98739</td>
+</tr>
+<tr class="even">
+<td align="left">PP</td>
+<td align="left">coffee</td>
+<td align="right">0.98892</td>
+<td align="right">0.98885</td>
+</tr>
+<tr class="odd">
+<td align="left">PP</td>
+<td align="left">smoked_past</td>
+<td align="right">0.98781</td>
+<td align="right">0.98778</td>
+</tr>
+<tr class="even">
+<td align="left">PP</td>
+<td align="left">BFP</td>
+<td align="right">0.98073</td>
+<td align="right">0.98064</td>
+</tr>
+<tr class="odd">
+<td align="left">PP</td>
+<td align="left">sleep_dev</td>
+<td align="right">0.98643</td>
+<td align="right">0.98655</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="section-1" class="section level2 unnumbered">
+<h2 class="unnumbered"></h2>
+<p>Results are highly correlated, suggesting the inclusion of BMI as a
+covariate does not have a dramatic effect on results. Lowest correlation
+is for diastolic pressure at 0.83</p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -2669,28 +3811,28 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
- [1] scales_1.4.0      cowplot_1.1.1     viridis_0.6.4     viridisLite_0.4.2
- [5] kableExtra_1.3.4  lubridate_1.9.3   forcats_1.0.0     stringr_1.5.1    
- [9] purrr_1.0.4       readr_2.1.4       tidyr_1.3.1       tibble_3.3.0     
-[13] ggplot2_3.5.0     tidyverse_2.0.0   data.table_1.17.0 dplyr_1.1.3      
-[17] workflowr_1.7.1  
+ [1] ggcorrplot_0.1.4.1 scales_1.4.0       cowplot_1.1.1      viridis_0.6.4     
+ [5] viridisLite_0.4.2  kableExtra_1.3.4   lubridate_1.9.3    forcats_1.0.0     
+ [9] stringr_1.5.1      purrr_1.0.4        readr_2.1.4        tidyr_1.3.1       
+[13] tibble_3.3.0       ggplot2_3.5.0      tidyverse_2.0.0    data.table_1.17.0 
+[17] dplyr_1.1.3        workflowr_1.7.1   
 
 loaded via a namespace (and not attached):
  [1] Rcpp_1.1.0         svglite_2.1.2      getPass_0.2-2      ps_1.9.0          
- [5] rprojroot_2.0.4    digest_0.6.37      R6_2.6.1           evaluate_1.0.3    
- [9] httr_1.4.7         pillar_1.11.1      rlang_1.1.4        rstudioapi_0.17.1 
-[13] whisker_0.4.1      callr_3.7.6        jquerylib_0.1.4    rmarkdown_2.29    
-[17] labeling_0.4.3     webshot_0.5.5      compiler_4.1.2     httpuv_1.6.12     
-[21] xfun_0.51          pkgconfig_2.0.3    systemfonts_1.0.5  htmltools_0.5.8.1 
-[25] tidyselect_1.2.1   gridExtra_2.3      tzdb_0.4.0         withr_3.0.2       
-[29] later_1.4.1        grid_4.1.2         jsonlite_2.0.0     gtable_0.3.6      
-[33] lifecycle_1.0.4    git2r_0.32.0       magrittr_2.0.4     cli_3.6.3         
-[37] stringi_1.8.7      cachem_1.1.0       farver_2.1.2       fs_1.6.5          
-[41] promises_1.3.2     xml2_1.3.3         bslib_0.9.0        generics_0.1.4    
-[45] vctrs_0.6.5        RColorBrewer_1.1-3 tools_4.1.2        dichromat_2.0-0.1 
-[49] glue_1.8.0         hms_1.1.3          processx_3.8.6     fastmap_1.2.0     
-[53] yaml_2.3.10        timechange_0.2.0   rvest_1.0.3        knitr_1.50        
-[57] sass_0.4.9        </code></pre>
+ [5] rprojroot_2.0.4    digest_0.6.37      plyr_1.8.9         R6_2.6.1          
+ [9] evaluate_1.0.3     httr_1.4.7         pillar_1.11.1      rlang_1.1.4       
+[13] rstudioapi_0.17.1  whisker_0.4.1      callr_3.7.6        jquerylib_0.1.4   
+[17] rmarkdown_2.29     labeling_0.4.3     webshot_0.5.5      compiler_4.1.2    
+[21] httpuv_1.6.12      xfun_0.51          pkgconfig_2.0.3    systemfonts_1.0.5 
+[25] htmltools_0.5.8.1  tidyselect_1.2.1   gridExtra_2.3      tzdb_0.4.0        
+[29] withr_3.0.2        later_1.4.1        grid_4.1.2         jsonlite_2.0.0    
+[33] gtable_0.3.6       lifecycle_1.0.4    git2r_0.32.0       magrittr_2.0.4    
+[37] cli_3.6.3          stringi_1.8.7      cachem_1.1.0       reshape2_1.4.4    
+[41] farver_2.1.2       fs_1.6.5           promises_1.3.2     xml2_1.3.3        
+[45] bslib_0.9.0        generics_0.1.4     vctrs_0.6.5        RColorBrewer_1.1-3
+[49] tools_4.1.2        dichromat_2.0-0.1  glue_1.8.0         hms_1.1.3         
+[53] processx_3.8.6     fastmap_1.2.0      yaml_2.3.10        timechange_0.2.0  
+[57] rvest_1.0.3        knitr_1.50         sass_0.4.9        </code></pre>
 </div>
 </div>
 </div>
