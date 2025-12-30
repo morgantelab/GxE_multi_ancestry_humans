@@ -399,7 +399,7 @@ aria-hidden="true"></span> </a>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2025-12-19
+<strong>Last updated:</strong> 2025-12-30
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -656,15 +656,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcommorgantelabGxEmultiancestryhumanstree59dd06f08fb4d1439ac685e5816547644259f65etargetblank59dd06fa">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcommorgantelabGxEmultiancestryhumanstree5d1ada4cf81d946ea019cbae7f61cdc8bfd29881targetblank5d1ada4a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/morgantelab/GxE_multi_ancestry_humans/tree/59dd06f08fb4d1439ac685e5816547644259f65e" target="_blank">59dd06f</a>
+<a href="https://github.com/morgantelab/GxE_multi_ancestry_humans/tree/5d1ada4cf81d946ea019cbae7f61cdc8bfd29881" target="_blank">5d1ada4</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcommorgantelabGxEmultiancestryhumanstree59dd06f08fb4d1439ac685e5816547644259f65etargetblank59dd06fa"
+id="strongRepositoryversionstrongahrefhttpsgithubcommorgantelabGxEmultiancestryhumanstree5d1ada4cf81d946ea019cbae7f61cdc8bfd29881targetblank5d1ada4a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -674,7 +674,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/morgantelab/GxE_multi_ancestry_humans/tree/59dd06f08fb4d1439ac685e5816547644259f65e" target="_blank">59dd06f</a>.
+<a href="https://github.com/morgantelab/GxE_multi_ancestry_humans/tree/5d1ada4cf81d946ea019cbae7f61cdc8bfd29881" target="_blank">5d1ada4</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -774,6 +774,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/morgantelab/GxE_multi_ancestry_humans/blob/5d1ada4cf81d946ea019cbae7f61cdc8bfd29881/analysis/newport.Rmd" target="_blank">5d1ada4</a>
+</td>
+<td>
+nklimko
+</td>
+<td>
+2025-12-30
+</td>
+<td>
+wflow_publish(fullpath)
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/morgantelab/GxE_multi_ancestry_humans/f7a4090b66f5e0a4e5073de062de17753fae83e3/docs/newport.html" target="_blank">f7a4090</a>
+</td>
+<td>
+nklimko
+</td>
+<td>
+2025-12-19
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1022,7 +1056,7 @@ tempt &lt;- t(temp_alt)</code></pre>
 <li>New Models</li>
 <li>Alternate Model 6 Populations</li>
 <li>ANOVA: Environment ~ Ancestry</li>
-<li>GXE-GWAS Variant Selection</li>
+<li>GxE-GWAS Variant Selection</li>
 <li>GxE-GWAS Variant Analysis</li>
 <li>GxE-GWAS BMI Covariate</li>
 </ul>
@@ -1074,7 +1108,8 @@ effects,</li>
 <li><span class="math inline">\(\mathbf{g}\)</span> is a <span
 class="math inline">\(n\)</span>-vector of random additive genetic
 values, <span class="math inline">\(\mathbf{g} \sim
-\mathcal{N}(\mathbf{0}, \mathbf{K}_g \sigma^2_g)\)</span>,</li>
+\mathcal{N}(\mathbf{0}, \mathbf{K}_{g.pcr}
+\sigma^2_{g.pcr})\)</span>,</li>
 <li><span class="math inline">\(\mathbf{e}\)</span> is a <span
 class="math inline">\(n\)</span>-vector of random lifestyle values,
 <span class="math inline">\(\mathbf{e} \sim \mathcal{N}(\mathbf{0},
@@ -1082,8 +1117,8 @@ class="math inline">\(n\)</span>-vector of random lifestyle values,
 <li><span class="math inline">\(\mathbf{g \times e}\)</span> is a <span
 class="math inline">\(n\)</span>-vector of random interaction values,
 <span class="math inline">\(\mathbf{g \times e} \sim
-\mathcal{N}(\mathbf{0}, \mathbf{K}_{g \times e} \sigma^2_{g \times
-e})\)</span>,</li>
+\mathcal{N}(\mathbf{0}, \mathbf{K}_{g.pcr \times e} \sigma^2_{g.pcr
+\times e})\)</span>,</li>
 <li><span class="math inline">\(\boldsymbol{\varepsilon}\)</span> is a
 <span class="math inline">\(n\)</span>-vector of random residual values,
 <span class="math inline">\(\boldsymbol{\varepsilon} \sim
@@ -1097,20 +1132,21 @@ e})\)</span>,</li>
 <li>Model 7: <span class="math inline">\(\mathbf{i}\)</span> is a <span
 class="math inline">\(n\)</span>-vector of random interaction values,
 <span class="math inline">\(\mathbf{i} \sim \mathcal{N}(\mathbf{0},
-\mathbf{K}_{top \times e} \sigma^2_{top \times e})\)</span>,</li>
+\mathbf{K}_{top.plink \times e} \sigma^2_{top.plink \times
+e})\)</span>,</li>
 <li>Model 8: <span class="math inline">\(\mathbf{X}_{3}\)</span> is a
 <span class="math inline">\(n \times c\)</span> design matrix with <span
 class="math inline">\(c = 20\)</span> columns including the top 10
-genetic principal components, the top 10 eigenvectors of the interaction
-relationship matrix (IRM),</li>
+genetic principal components (plink), the top 10 eigenvectors of the
+plink interaction relationship matrix (IRM),</li>
 <li>Model 8: <span class="math inline">\(\boldsymbol{\beta}_{3}\)</span>
 is a <span class="math inline">\(c\)</span>-vector of their fixed
 effects,</li>
 <li>Model 9: <span class="math inline">\(\mathbf{X}_{4}\)</span> is a
 <span class="math inline">\(n \times d\)</span> design matrix with <span
 class="math inline">\(d = 23\)</span> columns including the top 10
-genetic principal components, the top 10 eigenvectors of the IRM, and
-the top 3 eigenvectors of the Environmental Relationship Matrix
+genetic principal components, the top 10 eigenvectors of the plink IRM,
+and the top 3 eigenvectors of the Environmental Relationship Matrix
 (ERM),</li>
 <li>Model 9: <span class="math inline">\(\boldsymbol{\beta}_{4}\)</span>
 is a <span class="math inline">\(d\)</span>-vector of their fixed
@@ -1122,16 +1158,16 @@ effects,</li>
 <p>Model 7 includes an additional variance component <span
 class="math inline">\(\mathbf{i}\)</span> that implements a modified
 interaction relationship matrix. The modified IRM is given by <span
-class="math inline">\(\mathbf{K}_{top \times e} = \mathbf{K}_{top} \odot
-\mathbf{K}_e\)</span> where <span
-class="math inline">\(\mathbf{K}_{top}\)</span> is the GRM derived from
-the top 10 eigenvectors of the full plink GRM.</p>
-<p>Model 8 includes the top 10 eigenvectors of the full IRM as
+class="math inline">\(\mathbf{K}_{top.plink \times e} =
+\mathbf{K}_{top.plink} \odot \mathbf{K}_e\)</span> where <span
+class="math inline">\(\mathbf{K}_{top.plink}\)</span> is the GRM derived
+from the top 10 eigenvectors of the full plink GRM.</p>
+<p>Model 8 includes the top 10 eigenvectors of the full plink IRM as
 additional covariates (along with top 10 genetic PCs) for a total of 20
-covariates in <span class="math inline">\(\mathbf{X}_3\)</span>. The
-full IRM is the Hadamard product of the plink GRM and the full ERM,
-given by <span class="math inline">\(\mathbf{K}_{g \times e} =
-\mathbf{K}_g \odot \mathbf{K}_e\)</span>.</p>
+covariates in <span class="math inline">\(\mathbf{X}_3\)</span>. This
+IRM is the Hadamard product of the plink GRM and the full ERM, given by
+<span class="math inline">\(\mathbf{K}_{g.plink \times e} =
+\mathbf{K}_{g.plink} \odot \mathbf{K}_e\)</span>.</p>
 <p>Model 9 expands upon Model 8 by including the top 3 eigenvectors of
 the full ERM as additional covariates for a total of 23 covariates in
 <span class="math inline">\(\mathbf{X}_4\)</span>.</p>
@@ -2470,11 +2506,11 @@ across traits:</p>
 </div>
 </div>
 </div>
-<div id="anova-environment-ancestry" class="section level2 tabset">
-<h2 class="tabset">ANOVA: Environment ~ Ancestry</h2>
-<p>Assess environmental effects by ancestry. Analaysis of variance
-models where each environment was regressed across ancestry groups given
-by <span class="math inline">\(env \sim anc\)</span> where <span
+<div id="anova-environment-ancestry" class="section level2">
+<h2>ANOVA: Environment ~ Ancestry</h2>
+<p>Assess environmental effects by ancestry. Analysis of variance models
+where each environment was regressed across ancestry groups given by
+<span class="math inline">\(env \sim anc\)</span> where <span
 class="math inline">\(env\)</span> is a single environment and <span
 class="math inline">\(anc\)</span> is a factor coding for ancestry,
 containing the five classes:</p>
@@ -2485,25 +2521,1306 @@ containing the five classes:</p>
 <li>Mixed</li>
 <li>White</li>
 </ul>
-<div id="clean" class="section level3">
-<h3>Clean</h3>
+<div id="anova-test-results" class="section level3 tabset">
+<h3 class="tabset">ANOVA Test Results</h3>
+<p>Ethnicity was extremely significant (p-value less than 1e-300) in the
+top six environments (alcohol intake, beef, cheese, coffee, pork, and
+Townsend index) for the respective ANOVA tests. The only environment
+that did not vary significantly across ancestry groups was daily
+activity levels (act0_d p = 0.141). All other environments had a
+significant difference in variance for at least one ancestry group.</p>
+<div id="p-values-only" class="section level4">
+<h4>P-values only</h4>
+<pre class="r"><code>pvals &lt;- fread(&#39;output/anova/misc/pvals.txt&#39;)
+
+pvals$`P value` &lt;- scientific(pvals$`P value`)
+
+kable(pvals, &#39;simple&#39;, digits = 4)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Environment</th>
+<th align="left">P value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">alc1</td>
+<td align="left">0.00e+00</td>
+</tr>
+<tr class="even">
+<td align="left">beef</td>
+<td align="left">0.00e+00</td>
+</tr>
+<tr class="odd">
+<td align="left">cheese</td>
+<td align="left">0.00e+00</td>
+</tr>
+<tr class="even">
+<td align="left">coffee</td>
+<td align="left">0.00e+00</td>
+</tr>
+<tr class="odd">
+<td align="left">pork</td>
+<td align="left">0.00e+00</td>
+</tr>
+<tr class="even">
+<td align="left">Townsend</td>
+<td align="left">0.00e+00</td>
+</tr>
+<tr class="odd">
+<td align="left">meat_proc</td>
+<td align="left">8.70e-299</td>
+</tr>
+<tr class="even">
+<td align="left">poultry</td>
+<td align="left">3.04e-269</td>
+</tr>
+<tr class="odd">
+<td align="left">fish_lean</td>
+<td align="left">2.67e-264</td>
+</tr>
+<tr class="even">
+<td align="left">smoked_past</td>
+<td align="left">1.08e-258</td>
+</tr>
+<tr class="odd">
+<td align="left">fish_oily</td>
+<td align="left">1.24e-226</td>
+</tr>
+<tr class="even">
+<td align="left">veg_cook</td>
+<td align="left">1.49e-158</td>
+</tr>
+<tr class="odd">
+<td align="left">tea</td>
+<td align="left">3.05e-134</td>
+</tr>
+<tr class="even">
+<td align="left">sleep_d</td>
+<td align="left">1.86e-121</td>
+</tr>
+<tr class="odd">
+<td align="left">waist</td>
+<td align="left">8.52e-118</td>
+</tr>
+<tr class="even">
+<td align="left">BFP</td>
+<td align="left">2.26e-107</td>
+</tr>
+<tr class="odd">
+<td align="left">salt</td>
+<td align="left">4.04e-100</td>
+</tr>
+<tr class="even">
+<td align="left">lamb</td>
+<td align="left">1.24e-91</td>
+</tr>
+<tr class="odd">
+<td align="left">sleep_dev</td>
+<td align="left">1.24e-79</td>
+</tr>
+<tr class="even">
+<td align="left">TVtime</td>
+<td align="left">1.18e-56</td>
+</tr>
+<tr class="odd">
+<td align="left">getup</td>
+<td align="left">4.51e-40</td>
+</tr>
+<tr class="even">
+<td align="left">smoking_now</td>
+<td align="left">5.74e-22</td>
+</tr>
+<tr class="odd">
+<td align="left">act0_d</td>
+<td align="left">1.41e-01</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="full-table" class="section level4">
+<h4>Full Table</h4>
+<pre class="r"><code>options(scipen = 2)
+anovatable &lt;- fread(&#39;output/anova/misc/all_anova.txt&#39;)
+anovatable$Term &lt;- gsub(&#39;Ethincity&#39;,&#39;Ethnicity&#39;, anovatable$Term)
+
+anovatable$`Pr(&gt;F)` &lt;- scientific(anovatable$`Pr(&gt;F)`)
+
+kable(anovatable, &#39;simple&#39;, digits=2)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Environment</th>
+<th align="left">Term</th>
+<th align="right">Df</th>
+<th align="right">Sum Sq</th>
+<th align="right">Mean Sq</th>
+<th align="right">F value</th>
+<th align="left">Pr(&gt;F)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">act0_d</td>
+<td align="left">Ethnicity</td>
+<td align="right">4</td>
+<td align="right">6.90</td>
+<td align="right">1.72</td>
+<td align="right">1.72</td>
+<td align="left">1.41e-01</td>
+</tr>
+<tr class="even">
+<td align="left">act0_d</td>
+<td align="left">Residuals</td>
+<td align="right">24473</td>
+<td align="right">24470.10</td>
+<td align="right">1.00</td>
+<td align="right"></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">alc1</td>
+<td align="left">Ethnicity</td>
+<td align="right">4</td>
+<td align="right">4156.49</td>
+<td align="right">1039.12</td>
+<td align="right">1251.47</td>
+<td align="left">0.00e+00</td>
+</tr>
+<tr class="even">
+<td align="left">alc1</td>
+<td align="left">Residuals</td>
+<td align="right">24473</td>
+<td align="right">20320.51</td>
+<td align="right">0.83</td>
+<td align="right"></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">beef</td>
+<td align="left">Ethnicity</td>
+<td align="right">4</td>
+<td align="right">3581.43</td>
+<td align="right">895.36</td>
+<td align="right">1048.65</td>
+<td align="left">0.00e+00</td>
+</tr>
+<tr class="even">
+<td align="left">beef</td>
+<td align="left">Residuals</td>
+<td align="right">24473</td>
+<td align="right">20895.57</td>
+<td align="right">0.85</td>
+<td align="right"></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">BFP</td>
+<td align="left">Ethnicity</td>
+<td align="right">4</td>
+<td align="right">497.13</td>
+<td align="right">124.28</td>
+<td align="right">126.84</td>
+<td align="left">2.26e-107</td>
+</tr>
+<tr class="even">
+<td align="left">BFP</td>
+<td align="left">Residuals</td>
+<td align="right">24473</td>
+<td align="right">23979.87</td>
+<td align="right">0.98</td>
+<td align="right"></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">cheese</td>
+<td align="left">Ethnicity</td>
+<td align="right">4</td>
+<td align="right">2053.33</td>
+<td align="right">513.33</td>
+<td align="right">560.25</td>
+<td align="left">0.00e+00</td>
+</tr>
+<tr class="even">
+<td align="left">cheese</td>
+<td align="left">Residuals</td>
+<td align="right">24473</td>
+<td align="right">22423.67</td>
+<td align="right">0.92</td>
+<td align="right"></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">coffee</td>
+<td align="left">Ethnicity</td>
+<td align="right">4</td>
+<td align="right">2219.70</td>
+<td align="right">554.93</td>
+<td align="right">610.17</td>
+<td align="left">0.00e+00</td>
+</tr>
+<tr class="even">
+<td align="left">coffee</td>
+<td align="left">Residuals</td>
+<td align="right">24473</td>
+<td align="right">22257.30</td>
+<td align="right">0.91</td>
+<td align="right"></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">fish_lean</td>
+<td align="left">Ethnicity</td>
+<td align="right">4</td>
+<td align="right">1196.55</td>
+<td align="right">299.14</td>
+<td align="right">314.46</td>
+<td align="left">2.67e-264</td>
+</tr>
+<tr class="even">
+<td align="left">fish_lean</td>
+<td align="left">Residuals</td>
+<td align="right">24473</td>
+<td align="right">23280.45</td>
+<td align="right">0.95</td>
+<td align="right"></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">fish_oily</td>
+<td align="left">Ethnicity</td>
+<td align="right">4</td>
+<td align="right">1030.68</td>
+<td align="right">257.67</td>
+<td align="right">268.95</td>
+<td align="left">1.24e-226</td>
+</tr>
+<tr class="even">
+<td align="left">fish_oily</td>
+<td align="left">Residuals</td>
+<td align="right">24473</td>
+<td align="right">23446.32</td>
+<td align="right">0.96</td>
+<td align="right"></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">getup</td>
+<td align="left">Ethnicity</td>
+<td align="right">4</td>
+<td align="right">189.61</td>
+<td align="right">47.40</td>
+<td align="right">47.76</td>
+<td align="left">4.51e-40</td>
+</tr>
+<tr class="even">
+<td align="left">getup</td>
+<td align="left">Residuals</td>
+<td align="right">24473</td>
+<td align="right">24287.39</td>
+<td align="right">0.99</td>
+<td align="right"></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">lamb</td>
+<td align="left">Ethnicity</td>
+<td align="right">4</td>
+<td align="right">425.69</td>
+<td align="right">106.42</td>
+<td align="right">108.29</td>
+<td align="left">1.24e-91</td>
+</tr>
+<tr class="even">
+<td align="left">lamb</td>
+<td align="left">Residuals</td>
+<td align="right">24473</td>
+<td align="right">24051.31</td>
+<td align="right">0.98</td>
+<td align="right"></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">meat_proc</td>
+<td align="left">Ethnicity</td>
+<td align="right">4</td>
+<td align="right">1347.37</td>
+<td align="right">336.84</td>
+<td align="right">356.41</td>
+<td align="left">8.70e-299</td>
+</tr>
+<tr class="even">
+<td align="left">meat_proc</td>
+<td align="left">Residuals</td>
+<td align="right">24473</td>
+<td align="right">23129.63</td>
+<td align="right">0.95</td>
+<td align="right"></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">pork</td>
+<td align="left">Ethnicity</td>
+<td align="right">4</td>
+<td align="right">3625.45</td>
+<td align="right">906.36</td>
+<td align="right">1063.78</td>
+<td align="left">0.00e+00</td>
+</tr>
+<tr class="even">
+<td align="left">pork</td>
+<td align="left">Residuals</td>
+<td align="right">24473</td>
+<td align="right">20851.55</td>
+<td align="right">0.85</td>
+<td align="right"></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">poultry</td>
+<td align="left">Ethnicity</td>
+<td align="right">4</td>
+<td align="right">1218.24</td>
+<td align="right">304.56</td>
+<td align="right">320.46</td>
+<td align="left">3.04e-269</td>
+</tr>
+<tr class="even">
+<td align="left">poultry</td>
+<td align="left">Residuals</td>
+<td align="right">24473</td>
+<td align="right">23258.76</td>
+<td align="right">0.95</td>
+<td align="right"></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">salt</td>
+<td align="left">Ethnicity</td>
+<td align="right">4</td>
+<td align="right">464.25</td>
+<td align="right">116.06</td>
+<td align="right">118.29</td>
+<td align="left">4.04e-100</td>
+</tr>
+<tr class="even">
+<td align="left">salt</td>
+<td align="left">Residuals</td>
+<td align="right">24473</td>
+<td align="right">24012.75</td>
+<td align="right">0.98</td>
+<td align="right"></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">sleep_d</td>
+<td align="left">Ethnicity</td>
+<td align="right">4</td>
+<td align="right">560.83</td>
+<td align="right">140.21</td>
+<td align="right">143.47</td>
+<td align="left">1.86e-121</td>
+</tr>
+<tr class="even">
+<td align="left">sleep_d</td>
+<td align="left">Residuals</td>
+<td align="right">24473</td>
+<td align="right">23916.17</td>
+<td align="right">0.98</td>
+<td align="right"></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">sleep_dev</td>
+<td align="left">Ethnicity</td>
+<td align="right">4</td>
+<td align="right">371.06</td>
+<td align="right">92.76</td>
+<td align="right">94.18</td>
+<td align="left">1.24e-79</td>
+</tr>
+<tr class="even">
+<td align="left">sleep_dev</td>
+<td align="left">Residuals</td>
+<td align="right">24473</td>
+<td align="right">24105.94</td>
+<td align="right">0.99</td>
+<td align="right"></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">smoked_past</td>
+<td align="left">Ethnicity</td>
+<td align="right">4</td>
+<td align="right">1171.94</td>
+<td align="right">292.99</td>
+<td align="right">307.67</td>
+<td align="left">1.08e-258</td>
+</tr>
+<tr class="even">
+<td align="left">smoked_past</td>
+<td align="left">Residuals</td>
+<td align="right">24473</td>
+<td align="right">23305.06</td>
+<td align="right">0.95</td>
+<td align="right"></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">smoking_now</td>
+<td align="left">Ethnicity</td>
+<td align="right">4</td>
+<td align="right">105.58</td>
+<td align="right">26.39</td>
+<td align="right">26.50</td>
+<td align="left">5.74e-22</td>
+</tr>
+<tr class="even">
+<td align="left">smoking_now</td>
+<td align="left">Residuals</td>
+<td align="right">24473</td>
+<td align="right">24371.42</td>
+<td align="right">1.00</td>
+<td align="right"></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">tea</td>
+<td align="left">Ethnicity</td>
+<td align="right">4</td>
+<td align="right">618.49</td>
+<td align="right">154.62</td>
+<td align="right">158.61</td>
+<td align="left">3.05e-134</td>
+</tr>
+<tr class="even">
+<td align="left">tea</td>
+<td align="left">Residuals</td>
+<td align="right">24473</td>
+<td align="right">23858.51</td>
+<td align="right">0.97</td>
+<td align="right"></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">Townsend</td>
+<td align="left">Ethnicity</td>
+<td align="right">4</td>
+<td align="right">4293.15</td>
+<td align="right">1073.29</td>
+<td align="right">1301.36</td>
+<td align="left">0.00e+00</td>
+</tr>
+<tr class="even">
+<td align="left">Townsend</td>
+<td align="left">Residuals</td>
+<td align="right">24473</td>
+<td align="right">20183.85</td>
+<td align="right">0.82</td>
+<td align="right"></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">TVtime</td>
+<td align="left">Ethnicity</td>
+<td align="right">4</td>
+<td align="right">265.95</td>
+<td align="right">66.49</td>
+<td align="right">67.21</td>
+<td align="left">1.18e-56</td>
+</tr>
+<tr class="even">
+<td align="left">TVtime</td>
+<td align="left">Residuals</td>
+<td align="right">24473</td>
+<td align="right">24211.05</td>
+<td align="right">0.99</td>
+<td align="right"></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">veg_cook</td>
+<td align="left">Ethnicity</td>
+<td align="right">4</td>
+<td align="right">727.71</td>
+<td align="right">181.93</td>
+<td align="right">187.47</td>
+<td align="left">1.49e-158</td>
+</tr>
+<tr class="even">
+<td align="left">veg_cook</td>
+<td align="left">Residuals</td>
+<td align="right">24473</td>
+<td align="right">23749.29</td>
+<td align="right">0.97</td>
+<td align="right"></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">waist</td>
+<td align="left">Ethnicity</td>
+<td align="right">4</td>
+<td align="right">544.29</td>
+<td align="right">136.07</td>
+<td align="right">139.15</td>
+<td align="left">8.52e-118</td>
+</tr>
+<tr class="even">
+<td align="left">waist</td>
+<td align="left">Residuals</td>
+<td align="right">24473</td>
+<td align="right">23932.71</td>
+<td align="right">0.98</td>
+<td align="right"></td>
+<td align="left"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="all-ethnicity-terms" class="section level4">
+<h4>All Ethnicity Terms</h4>
+<pre class="r"><code>anova_ethn &lt;- anovatable[Term==&#39;Ethnicity&#39;,]
+kable(anova_ethn, &#39;simple&#39;, digits=2)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Environment</th>
+<th align="left">Term</th>
+<th align="right">Df</th>
+<th align="right">Sum Sq</th>
+<th align="right">Mean Sq</th>
+<th align="right">F value</th>
+<th align="left">Pr(&gt;F)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">act0_d</td>
+<td align="left">Ethnicity</td>
+<td align="right">4</td>
+<td align="right">6.90</td>
+<td align="right">1.72</td>
+<td align="right">1.72</td>
+<td align="left">1.41e-01</td>
+</tr>
+<tr class="even">
+<td align="left">alc1</td>
+<td align="left">Ethnicity</td>
+<td align="right">4</td>
+<td align="right">4156.49</td>
+<td align="right">1039.12</td>
+<td align="right">1251.47</td>
+<td align="left">0.00e+00</td>
+</tr>
+<tr class="odd">
+<td align="left">beef</td>
+<td align="left">Ethnicity</td>
+<td align="right">4</td>
+<td align="right">3581.43</td>
+<td align="right">895.36</td>
+<td align="right">1048.65</td>
+<td align="left">0.00e+00</td>
+</tr>
+<tr class="even">
+<td align="left">BFP</td>
+<td align="left">Ethnicity</td>
+<td align="right">4</td>
+<td align="right">497.13</td>
+<td align="right">124.28</td>
+<td align="right">126.84</td>
+<td align="left">2.26e-107</td>
+</tr>
+<tr class="odd">
+<td align="left">cheese</td>
+<td align="left">Ethnicity</td>
+<td align="right">4</td>
+<td align="right">2053.33</td>
+<td align="right">513.33</td>
+<td align="right">560.25</td>
+<td align="left">0.00e+00</td>
+</tr>
+<tr class="even">
+<td align="left">coffee</td>
+<td align="left">Ethnicity</td>
+<td align="right">4</td>
+<td align="right">2219.70</td>
+<td align="right">554.93</td>
+<td align="right">610.17</td>
+<td align="left">0.00e+00</td>
+</tr>
+<tr class="odd">
+<td align="left">fish_lean</td>
+<td align="left">Ethnicity</td>
+<td align="right">4</td>
+<td align="right">1196.55</td>
+<td align="right">299.14</td>
+<td align="right">314.46</td>
+<td align="left">2.67e-264</td>
+</tr>
+<tr class="even">
+<td align="left">fish_oily</td>
+<td align="left">Ethnicity</td>
+<td align="right">4</td>
+<td align="right">1030.68</td>
+<td align="right">257.67</td>
+<td align="right">268.95</td>
+<td align="left">1.24e-226</td>
+</tr>
+<tr class="odd">
+<td align="left">getup</td>
+<td align="left">Ethnicity</td>
+<td align="right">4</td>
+<td align="right">189.61</td>
+<td align="right">47.40</td>
+<td align="right">47.76</td>
+<td align="left">4.51e-40</td>
+</tr>
+<tr class="even">
+<td align="left">lamb</td>
+<td align="left">Ethnicity</td>
+<td align="right">4</td>
+<td align="right">425.69</td>
+<td align="right">106.42</td>
+<td align="right">108.29</td>
+<td align="left">1.24e-91</td>
+</tr>
+<tr class="odd">
+<td align="left">meat_proc</td>
+<td align="left">Ethnicity</td>
+<td align="right">4</td>
+<td align="right">1347.37</td>
+<td align="right">336.84</td>
+<td align="right">356.41</td>
+<td align="left">8.70e-299</td>
+</tr>
+<tr class="even">
+<td align="left">pork</td>
+<td align="left">Ethnicity</td>
+<td align="right">4</td>
+<td align="right">3625.45</td>
+<td align="right">906.36</td>
+<td align="right">1063.78</td>
+<td align="left">0.00e+00</td>
+</tr>
+<tr class="odd">
+<td align="left">poultry</td>
+<td align="left">Ethnicity</td>
+<td align="right">4</td>
+<td align="right">1218.24</td>
+<td align="right">304.56</td>
+<td align="right">320.46</td>
+<td align="left">3.04e-269</td>
+</tr>
+<tr class="even">
+<td align="left">salt</td>
+<td align="left">Ethnicity</td>
+<td align="right">4</td>
+<td align="right">464.25</td>
+<td align="right">116.06</td>
+<td align="right">118.29</td>
+<td align="left">4.04e-100</td>
+</tr>
+<tr class="odd">
+<td align="left">sleep_d</td>
+<td align="left">Ethnicity</td>
+<td align="right">4</td>
+<td align="right">560.83</td>
+<td align="right">140.21</td>
+<td align="right">143.47</td>
+<td align="left">1.86e-121</td>
+</tr>
+<tr class="even">
+<td align="left">sleep_dev</td>
+<td align="left">Ethnicity</td>
+<td align="right">4</td>
+<td align="right">371.06</td>
+<td align="right">92.76</td>
+<td align="right">94.18</td>
+<td align="left">1.24e-79</td>
+</tr>
+<tr class="odd">
+<td align="left">smoked_past</td>
+<td align="left">Ethnicity</td>
+<td align="right">4</td>
+<td align="right">1171.94</td>
+<td align="right">292.99</td>
+<td align="right">307.67</td>
+<td align="left">1.08e-258</td>
+</tr>
+<tr class="even">
+<td align="left">smoking_now</td>
+<td align="left">Ethnicity</td>
+<td align="right">4</td>
+<td align="right">105.58</td>
+<td align="right">26.39</td>
+<td align="right">26.50</td>
+<td align="left">5.74e-22</td>
+</tr>
+<tr class="odd">
+<td align="left">tea</td>
+<td align="left">Ethnicity</td>
+<td align="right">4</td>
+<td align="right">618.49</td>
+<td align="right">154.62</td>
+<td align="right">158.61</td>
+<td align="left">3.05e-134</td>
+</tr>
+<tr class="even">
+<td align="left">Townsend</td>
+<td align="left">Ethnicity</td>
+<td align="right">4</td>
+<td align="right">4293.15</td>
+<td align="right">1073.29</td>
+<td align="right">1301.36</td>
+<td align="left">0.00e+00</td>
+</tr>
+<tr class="odd">
+<td align="left">TVtime</td>
+<td align="left">Ethnicity</td>
+<td align="right">4</td>
+<td align="right">265.95</td>
+<td align="right">66.49</td>
+<td align="right">67.21</td>
+<td align="left">1.18e-56</td>
+</tr>
+<tr class="even">
+<td align="left">veg_cook</td>
+<td align="left">Ethnicity</td>
+<td align="right">4</td>
+<td align="right">727.71</td>
+<td align="right">181.93</td>
+<td align="right">187.47</td>
+<td align="left">1.49e-158</td>
+</tr>
+<tr class="odd">
+<td align="left">waist</td>
+<td align="left">Ethnicity</td>
+<td align="right">4</td>
+<td align="right">544.29</td>
+<td align="right">136.07</td>
+<td align="right">139.15</td>
+<td align="left">8.52e-118</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="all-residual-terms" class="section level4">
+<h4>All Residual Terms</h4>
+<pre class="r"><code>anova_resid &lt;- anovatable[Term==&#39;Residuals&#39;,]
+anova_resid$`F value` &lt;- NULL
+anova_resid$`Pr(&gt;F)` &lt;- NULL
+
+kable(anova_resid, &#39;simple&#39;, digits=2)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Environment</th>
+<th align="left">Term</th>
+<th align="right">Df</th>
+<th align="right">Sum Sq</th>
+<th align="right">Mean Sq</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">act0_d</td>
+<td align="left">Residuals</td>
+<td align="right">24473</td>
+<td align="right">24470.10</td>
+<td align="right">1.00</td>
+</tr>
+<tr class="even">
+<td align="left">alc1</td>
+<td align="left">Residuals</td>
+<td align="right">24473</td>
+<td align="right">20320.51</td>
+<td align="right">0.83</td>
+</tr>
+<tr class="odd">
+<td align="left">beef</td>
+<td align="left">Residuals</td>
+<td align="right">24473</td>
+<td align="right">20895.57</td>
+<td align="right">0.85</td>
+</tr>
+<tr class="even">
+<td align="left">BFP</td>
+<td align="left">Residuals</td>
+<td align="right">24473</td>
+<td align="right">23979.87</td>
+<td align="right">0.98</td>
+</tr>
+<tr class="odd">
+<td align="left">cheese</td>
+<td align="left">Residuals</td>
+<td align="right">24473</td>
+<td align="right">22423.67</td>
+<td align="right">0.92</td>
+</tr>
+<tr class="even">
+<td align="left">coffee</td>
+<td align="left">Residuals</td>
+<td align="right">24473</td>
+<td align="right">22257.30</td>
+<td align="right">0.91</td>
+</tr>
+<tr class="odd">
+<td align="left">fish_lean</td>
+<td align="left">Residuals</td>
+<td align="right">24473</td>
+<td align="right">23280.45</td>
+<td align="right">0.95</td>
+</tr>
+<tr class="even">
+<td align="left">fish_oily</td>
+<td align="left">Residuals</td>
+<td align="right">24473</td>
+<td align="right">23446.32</td>
+<td align="right">0.96</td>
+</tr>
+<tr class="odd">
+<td align="left">getup</td>
+<td align="left">Residuals</td>
+<td align="right">24473</td>
+<td align="right">24287.39</td>
+<td align="right">0.99</td>
+</tr>
+<tr class="even">
+<td align="left">lamb</td>
+<td align="left">Residuals</td>
+<td align="right">24473</td>
+<td align="right">24051.31</td>
+<td align="right">0.98</td>
+</tr>
+<tr class="odd">
+<td align="left">meat_proc</td>
+<td align="left">Residuals</td>
+<td align="right">24473</td>
+<td align="right">23129.63</td>
+<td align="right">0.95</td>
+</tr>
+<tr class="even">
+<td align="left">pork</td>
+<td align="left">Residuals</td>
+<td align="right">24473</td>
+<td align="right">20851.55</td>
+<td align="right">0.85</td>
+</tr>
+<tr class="odd">
+<td align="left">poultry</td>
+<td align="left">Residuals</td>
+<td align="right">24473</td>
+<td align="right">23258.76</td>
+<td align="right">0.95</td>
+</tr>
+<tr class="even">
+<td align="left">salt</td>
+<td align="left">Residuals</td>
+<td align="right">24473</td>
+<td align="right">24012.75</td>
+<td align="right">0.98</td>
+</tr>
+<tr class="odd">
+<td align="left">sleep_d</td>
+<td align="left">Residuals</td>
+<td align="right">24473</td>
+<td align="right">23916.17</td>
+<td align="right">0.98</td>
+</tr>
+<tr class="even">
+<td align="left">sleep_dev</td>
+<td align="left">Residuals</td>
+<td align="right">24473</td>
+<td align="right">24105.94</td>
+<td align="right">0.99</td>
+</tr>
+<tr class="odd">
+<td align="left">smoked_past</td>
+<td align="left">Residuals</td>
+<td align="right">24473</td>
+<td align="right">23305.06</td>
+<td align="right">0.95</td>
+</tr>
+<tr class="even">
+<td align="left">smoking_now</td>
+<td align="left">Residuals</td>
+<td align="right">24473</td>
+<td align="right">24371.42</td>
+<td align="right">1.00</td>
+</tr>
+<tr class="odd">
+<td align="left">tea</td>
+<td align="left">Residuals</td>
+<td align="right">24473</td>
+<td align="right">23858.51</td>
+<td align="right">0.97</td>
+</tr>
+<tr class="even">
+<td align="left">Townsend</td>
+<td align="left">Residuals</td>
+<td align="right">24473</td>
+<td align="right">20183.85</td>
+<td align="right">0.82</td>
+</tr>
+<tr class="odd">
+<td align="left">TVtime</td>
+<td align="left">Residuals</td>
+<td align="right">24473</td>
+<td align="right">24211.05</td>
+<td align="right">0.99</td>
+</tr>
+<tr class="even">
+<td align="left">veg_cook</td>
+<td align="left">Residuals</td>
+<td align="right">24473</td>
+<td align="right">23749.29</td>
+<td align="right">0.97</td>
+</tr>
+<tr class="odd">
+<td align="left">waist</td>
+<td align="left">Residuals</td>
+<td align="right">24473</td>
+<td align="right">23932.71</td>
+<td align="right">0.98</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="section" class="section level3 unnumbered">
+<h3 class="unnumbered"></h3>
+</div>
+<div id="lm-coefficients" class="section level3 tabset">
+<h3 class="tabset">LM Coefficients</h3>
+<div id="clean" class="section level4">
+<h4>Clean</h4>
 <p><img src="figure/newport.Rmd/anova-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-anova-1">
+Past versions of anova-1.png
+</button>
+</p>
+<div id="fig-anova-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/morgantelab/GxE_multi_ancestry_humans/blob/f7a4090b66f5e0a4e5073de062de17753fae83e3/docs/figure/newport.Rmd/anova-1.png" target="_blank">f7a4090</a>
+</td>
+<td>
+nklimko
+</td>
+<td>
+2025-12-19
+</td>
+</tr>
+</tbody>
+</table>
 </div>
-<div id="labeled" class="section level3">
-<h3>Labeled</h3>
+</div>
+</div>
+<div id="table" class="section level4">
+<h4>Table</h4>
+<table>
+<thead>
+<tr class="header">
+<th></th>
+<th align="right">Asian</th>
+<th align="right">Black</th>
+<th align="right">Chinese</th>
+<th align="right">Mixed</th>
+<th align="right">White</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Townsend</td>
+<td align="right">0.209</td>
+<td align="right">0.922</td>
+<td align="right">0.018</td>
+<td align="right">0.228</td>
+<td align="right">-0.283</td>
+</tr>
+<tr class="even">
+<td>act0_d</td>
+<td align="right">0.001</td>
+<td align="right">-0.035</td>
+<td align="right">-0.036</td>
+<td align="right">0.029</td>
+<td align="right">0.007</td>
+</tr>
+<tr class="odd">
+<td>TVtime</td>
+<td align="right">-0.154</td>
+<td align="right">0.195</td>
+<td align="right">-0.227</td>
+<td align="right">-0.006</td>
+<td align="right">0.011</td>
+</tr>
+<tr class="even">
+<td>sleep_d</td>
+<td align="right">-0.025</td>
+<td align="right">-0.361</td>
+<td align="right">0.064</td>
+<td align="right">-0.042</td>
+<td align="right">0.088</td>
+</tr>
+<tr class="odd">
+<td>smoking_now</td>
+<td align="right">-0.039</td>
+<td align="right">0.038</td>
+<td align="right">-0.107</td>
+<td align="right">0.256</td>
+<td align="right">-0.014</td>
+</tr>
+<tr class="even">
+<td>veg_cook</td>
+<td align="right">0.272</td>
+<td align="right">-0.036</td>
+<td align="right">0.621</td>
+<td align="right">-0.082</td>
+<td align="right">-0.091</td>
+</tr>
+<tr class="odd">
+<td>fish_oily</td>
+<td align="right">-0.386</td>
+<td align="right">0.346</td>
+<td align="right">0.111</td>
+<td align="right">0.010</td>
+<td align="right">0.022</td>
+</tr>
+<tr class="even">
+<td>fish_lean</td>
+<td align="right">-0.481</td>
+<td align="right">0.146</td>
+<td align="right">-0.070</td>
+<td align="right">-0.024</td>
+<td align="right">0.105</td>
+</tr>
+<tr class="odd">
+<td>meat_proc</td>
+<td align="right">-0.474</td>
+<td align="right">-0.115</td>
+<td align="right">-0.045</td>
+<td align="right">-0.002</td>
+<td align="right">0.158</td>
+</tr>
+<tr class="even">
+<td>poultry</td>
+<td align="right">-0.418</td>
+<td align="right">0.365</td>
+<td align="right">0.248</td>
+<td align="right">0.011</td>
+<td align="right">0.020</td>
+</tr>
+<tr class="odd">
+<td>beef</td>
+<td align="right">-0.848</td>
+<td align="right">0.186</td>
+<td align="right">0.120</td>
+<td align="right">0.049</td>
+<td align="right">0.181</td>
+</tr>
+<tr class="even">
+<td>lamb</td>
+<td align="right">0.036</td>
+<td align="right">0.307</td>
+<td align="right">-0.217</td>
+<td align="right">0.008</td>
+<td align="right">-0.068</td>
+</tr>
+<tr class="odd">
+<td>pork</td>
+<td align="right">-0.709</td>
+<td align="right">-0.078</td>
+<td align="right">1.280</td>
+<td align="right">0.062</td>
+<td align="right">0.143</td>
+</tr>
+<tr class="even">
+<td>cheese</td>
+<td align="right">-0.288</td>
+<td align="right">-0.468</td>
+<td align="right">-0.654</td>
+<td align="right">0.098</td>
+<td align="right">0.208</td>
+</tr>
+<tr class="odd">
+<td>salt</td>
+<td align="right">0.270</td>
+<td align="right">0.067</td>
+<td align="right">-0.020</td>
+<td align="right">0.090</td>
+<td align="right">-0.096</td>
+</tr>
+<tr class="even">
+<td>tea</td>
+<td align="right">-0.133</td>
+<td align="right">-0.326</td>
+<td align="right">-0.063</td>
+<td align="right">0.008</td>
+<td align="right">0.112</td>
+</tr>
+<tr class="odd">
+<td>alc1</td>
+<td align="right">0.656</td>
+<td align="right">0.444</td>
+<td align="right">0.645</td>
+<td align="right">-0.058</td>
+<td align="right">-0.306</td>
+</tr>
+<tr class="even">
+<td>waist</td>
+<td align="right">0.060</td>
+<td align="right">0.170</td>
+<td align="right">-0.734</td>
+<td align="right">-0.154</td>
+<td align="right">-0.005</td>
+</tr>
+<tr class="odd">
+<td>getup</td>
+<td align="right">-0.111</td>
+<td align="right">-0.069</td>
+<td align="right">-0.066</td>
+<td align="right">-0.205</td>
+<td align="right">0.067</td>
+</tr>
+<tr class="even">
+<td>coffee</td>
+<td align="right">-0.452</td>
+<td align="right">-0.386</td>
+<td align="right">-0.372</td>
+<td align="right">0.011</td>
+<td align="right">0.228</td>
+</tr>
+<tr class="odd">
+<td>smoked_past</td>
+<td align="right">-0.361</td>
+<td align="right">-0.242</td>
+<td align="right">-0.267</td>
+<td align="right">0.110</td>
+<td align="right">0.157</td>
+</tr>
+<tr class="even">
+<td>BFP</td>
+<td align="right">0.006</td>
+<td align="right">0.271</td>
+<td align="right">-0.545</td>
+<td align="right">0.066</td>
+<td align="right">-0.041</td>
+</tr>
+<tr class="odd">
+<td>sleep_dev</td>
+<td align="right">0.027</td>
+<td align="right">0.285</td>
+<td align="right">-0.025</td>
+<td align="right">0.082</td>
+<td align="right">-0.077</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="labeled-wip" class="section level4">
+<h4>Labeled (WIP)</h4>
 <p><img src="figure/newport.Rmd/anova_lab-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-anova_lab-1">
+Past versions of anova_lab-1.png
+</button>
+</p>
+<div id="fig-anova_lab-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/morgantelab/GxE_multi_ancestry_humans/blob/f7a4090b66f5e0a4e5073de062de17753fae83e3/docs/figure/newport.Rmd/anova_lab-1.png" target="_blank">f7a4090</a>
+</td>
+<td>
+nklimko
+</td>
+<td>
+2025-12-19
+</td>
+</tr>
+</tbody>
+</table>
 </div>
-<div id="labeled-90" class="section level3">
-<h3>Labeled + 90</h3>
+</div>
+</div>
+<div id="labeled-90-wip" class="section level4">
+<h4>Labeled + 90 (WIP)</h4>
 <p><img src="figure/newport.Rmd/anova_lab90-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-anova_lab90-1">
+Past versions of anova_lab90-1.png
+</button>
+</p>
+<div id="fig-anova_lab90-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/morgantelab/GxE_multi_ancestry_humans/blob/f7a4090b66f5e0a4e5073de062de17753fae83e3/docs/figure/newport.Rmd/anova_lab90-1.png" target="_blank">f7a4090</a>
+</td>
+<td>
+nklimko
+</td>
+<td>
+2025-12-19
+</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
-<div id="section" class="section level2 unnumbered">
-<h2 class="unnumbered"></h2>
-<p>The only enviornment that did not vary significantly across ancestry
-groups was daily activity levels (act0_d p = 0.141). All other
-environments had a significant difference in variance for at least one
-ancestry group.</p>
+</div>
+</div>
+<div id="section-1" class="section level3 unnumbered">
+<h3 class="unnumbered"></h3>
+</div>
 </div>
 <div id="gxe-gwas-variant-selection" class="section level2">
 <h2>GxE-GWAS Variant Selection</h2>
@@ -3343,7 +4660,7 @@ kable(bmicol, &#39;simple&#39;, digits = 5)</code></pre>
 </tbody>
 </table>
 </div>
-<div id="full-table" class="section level3">
+<div id="full-table-1" class="section level3">
 <h3>Full Table</h3>
 <p>Pearson and Spearman correlation coefficients for all trait and
 environment combinations.</p>
@@ -3778,7 +5095,7 @@ kable(bmidata, &#39;simple&#39;, digits = 5)</code></pre>
 </table>
 </div>
 </div>
-<div id="section-1" class="section level2 unnumbered">
+<div id="section-2" class="section level2 unnumbered">
 <h2 class="unnumbered"></h2>
 <p>Results are highly correlated, suggesting the inclusion of BMI as a
 covariate does not have a dramatic effect on results. Lowest correlation
