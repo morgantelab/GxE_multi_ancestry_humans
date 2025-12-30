@@ -172,7 +172,7 @@ Six subsections:
 - New Models
 - Alternate Model 6 Populations
 - ANOVA: Environment ~ Ancestry
-- GXE-GWAS Variant Selection
+- GxE-GWAS Variant Selection
 - GxE-GWAS Variant Analysis
 - GxE-GWAS BMI Covariate
 
@@ -194,24 +194,24 @@ Models 7, 8, and 9 are new. Model 6 is included for reference to existing terms.
 - $\boldsymbol{\beta}_{1}$ is an $a$-vector of their fixed effects,
 - $\mathbf{X}_{2}$ is a $n \times b$ design matrix with $b = 10$ columns including the top 10 genetic principal components,
 - $\boldsymbol{\beta}_{2}$ is a $b$-vector of their fixed effects,
-- $\mathbf{g}$ is a $n$-vector of random additive genetic values, $\mathbf{g} \sim \mathcal{N}(\mathbf{0}, \mathbf{K}_g \sigma^2_g)$,
+- $\mathbf{g}$ is a $n$-vector of random additive genetic values, $\mathbf{g} \sim \mathcal{N}(\mathbf{0}, \mathbf{K}_{g.pcr} \sigma^2_{g.pcr})$,
 - $\mathbf{e}$ is a $n$-vector of random lifestyle values, $\mathbf{e} \sim \mathcal{N}(\mathbf{0}, \mathbf{K}_e \sigma^2_e)$,
-- $\mathbf{g \times e}$ is a $n$-vector of random interaction values, $\mathbf{g \times e} \sim \mathcal{N}(\mathbf{0}, \mathbf{K}_{g \times e} \sigma^2_{g \times e})$,
+- $\mathbf{g \times e}$ is a $n$-vector of random interaction values, $\mathbf{g \times e} \sim \mathcal{N}(\mathbf{0}, \mathbf{K}_{g.pcr \times e} \sigma^2_{g.pcr \times e})$,
 - $\boldsymbol{\varepsilon}$ is a $n$-vector of random residual values, $\boldsymbol{\varepsilon} \sim \mathcal{N}(\mathbf{0}, \mathbf{I}_n \sigma^2_\varepsilon)$.
 
 ### Unique Terms
 
-- Model 7: $\mathbf{i}$ is a $n$-vector of random interaction values, $\mathbf{i} \sim \mathcal{N}(\mathbf{0}, \mathbf{K}_{top \times e} \sigma^2_{top \times e})$,
-- Model 8: $\mathbf{X}_{3}$ is a $n \times c$ design matrix with $c = 20$ columns including the top 10 genetic principal components, the top 10 eigenvectors of the interaction relationship matrix (IRM),
+- Model 7: $\mathbf{i}$ is a $n$-vector of random interaction values, $\mathbf{i} \sim \mathcal{N}(\mathbf{0}, \mathbf{K}_{top.plink \times e} \sigma^2_{top.plink \times e})$,
+- Model 8: $\mathbf{X}_{3}$ is a $n \times c$ design matrix with $c = 20$ columns including the top 10 genetic principal components (plink), the top 10 eigenvectors of the plink interaction relationship matrix (IRM),
 - Model 8: $\boldsymbol{\beta}_{3}$ is a $c$-vector of their fixed effects,
-- Model 9: $\mathbf{X}_{4}$ is a $n \times d$ design matrix with $d = 23$ columns including the top 10 genetic principal components, the top 10 eigenvectors of the IRM, and the top 3 eigenvectors of the Environmental Relationship Matrix (ERM),
+- Model 9: $\mathbf{X}_{4}$ is a $n \times d$ design matrix with $d = 23$ columns including the top 10 genetic principal components, the top 10 eigenvectors of the plink IRM, and the top 3 eigenvectors of the Environmental Relationship Matrix (ERM),
 - Model 9: $\boldsymbol{\beta}_{4}$ is a $d$-vector of their fixed effects,
 
 ### Descriptions
 
-Model 7 includes an additional variance component $\mathbf{i}$ that implements a modified interaction relationship matrix. The modified IRM is given by $\mathbf{K}_{top \times e} = \mathbf{K}_{top} \odot \mathbf{K}_e$ where $\mathbf{K}_{top}$ is the GRM derived from the top 10 eigenvectors of the full plink GRM.
+Model 7 includes an additional variance component $\mathbf{i}$ that implements a modified interaction relationship matrix. The modified IRM is given by $\mathbf{K}_{top.plink \times e} = \mathbf{K}_{top.plink} \odot \mathbf{K}_e$ where $\mathbf{K}_{top.plink}$ is the GRM derived from the top 10 eigenvectors of the full plink GRM.
 
-Model 8 includes the top 10 eigenvectors of the full IRM as additional covariates (along with top 10 genetic PCs) for a total of 20 covariates in $\mathbf{X}_3$. The full IRM is the Hadamard product of the plink GRM and the full ERM, given by $\mathbf{K}_{g \times e} = \mathbf{K}_g \odot \mathbf{K}_e$.
+Model 8 includes the top 10 eigenvectors of the full plink IRM as additional covariates (along with top 10 genetic PCs) for a total of 20 covariates in $\mathbf{X}_3$. This IRM is the Hadamard product of the plink GRM and the full ERM, given by $\mathbf{K}_{g.plink \times e} = \mathbf{K}_{g.plink} \odot \mathbf{K}_e$.
 
 Model 9 expands upon Model 8 by including the top 3 eigenvectors of the full ERM as additional covariates for a total of 23 covariates in $\mathbf{X}_4$.
 
@@ -356,9 +356,9 @@ The PoVE for the interaction term $\mathbf{g \times e}$ is not consistent across
 - Systolic pressure : Relative **decrease** of 15-26% (4.20 - 3.12-3.58)
 - Pulse pressure : Relative **increase** of 18-27% (3.05 -> 3.60-3.89)
 
-## ANOVA: Environment ~ Ancestry {.tabset}
+## ANOVA: Environment ~ Ancestry
 
-Assess environmental effects by ancestry. Analaysis of variance models where each environment was regressed across ancestry groups given by $env \sim anc$ where $env$ is a single environment and $anc$ is a factor coding for ancestry, containing the five classes:
+Assess environmental effects by ancestry. Analysis of variance models where each environment was regressed across ancestry groups given by $env \sim anc$ where $env$ is a single environment and $anc$ is a factor coding for ancestry, containing the five classes:
 
 - Asian
 - Black
@@ -366,8 +366,62 @@ Assess environmental effects by ancestry. Analaysis of variance models where eac
 - Mixed
 - White
 
+### ANOVA Test Results {.tabset}
 
-### Clean
+Ethnicity was extremely significant (p-value less than 1e-300) in the top six environments (alcohol intake, beef, cheese, coffee, pork, and Townsend index) for the respective ANOVA tests. The only environment that did not vary significantly across ancestry groups was daily activity levels (act0_d p = 0.141). All other environments had a significant difference in variance for at least one ancestry group.
+
+#### P-values only
+
+```{r anova_penv}
+
+pvals <- fread('output/anova/misc/pvals.txt')
+
+pvals$`P value` <- scientific(pvals$`P value`)
+
+kable(pvals, 'simple', digits = 4)
+
+```
+
+#### Full Table
+
+```{r anova_pall}
+
+options(scipen = 2)
+anovatable <- fread('output/anova/misc/all_anova.txt')
+anovatable$Term <- gsub('Ethincity','Ethnicity', anovatable$Term)
+
+anovatable$`Pr(>F)` <- scientific(anovatable$`Pr(>F)`)
+
+kable(anovatable, 'simple', digits=2)
+
+```
+
+#### All Ethnicity Terms
+
+```{r anova_pethn}
+
+anova_ethn <- anovatable[Term=='Ethnicity',]
+kable(anova_ethn, 'simple', digits=2)
+
+```
+
+#### All Residual Terms
+
+```{r anova_resids}
+
+anova_resid <- anovatable[Term=='Residuals',]
+anova_resid$`F value` <- NULL
+anova_resid$`Pr(>F)` <- NULL
+
+kable(anova_resid, 'simple', digits=2)
+
+```
+
+### {-}
+
+### LM Coefficients {.tabset}
+
+#### Clean
 
 ```{r anova, echo=FALSE}
 
@@ -375,7 +429,15 @@ ggcorrplot(tempt, lab=0)
 
 ```
 
-### Labeled
+#### Table
+
+```{r anovatable, echo=FALSE}
+
+kable(temp_alt, 'simple', digits=3)
+
+```
+
+#### Labeled (WIP)
 
 ```{r anova_lab, echo=FALSE}
 
@@ -383,7 +445,7 @@ ggcorrplot(tempt, lab=1)
 
 ```
 
-### Labeled + 90
+#### Labeled + 90 (WIP)
 
 ```{r anova_lab90, echo=FALSE}
 
@@ -391,9 +453,7 @@ ggcorrplot(temp_alt, lab=1)
 
 ```
 
-## {-}
-
-The only enviornment that did not vary significantly across ancestry groups was daily activity levels (act0_d p = 0.141). All other environments had a significant difference in variance for at least one ancestry group.
+### {-}
 
 ## GxE-GWAS Variant Selection
 
