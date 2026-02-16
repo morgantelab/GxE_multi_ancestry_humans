@@ -1,0 +1,41 @@
+# cluster: "sbatch -p fm-bigmem-1,fm-bigmem-2,fm-bigmem-3,fm-bigmem-4 \
+# -t {resources.time_min} \
+# --mem={resources.mem_mb} \
+# --cpus-per-task {resources.cpus} \
+# -o ../output/logs_slurm/{rule}_{wildcards}.%j.out \
+# -e ../output/logs_slurm/{rule}_{wildcards}.%j.err"
+# jobs: 75
+resources: [cpus=555, mem_mb=16810980]
+
+cluster:
+  mkdir -p /data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/logs_nklimko/{rule} &&
+  sbatch
+    --partition={resources.partition}
+    --ntasks-per-core={resources.ntpc}
+    --ntasks={resources.tasks}
+    --cpus-per-task={threads}
+    --mem-per-cpu={resources.mem_mb_per_cpu}
+    --job-name={rule}
+    --output=/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/logs_nklimko/{rule}/%jo_{rule}_{wildcards}
+    --error=/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/output/logs_nklimko/{rule}/%je
+    --time={resources.time_min}
+
+
+default-resources:
+  - partition='fm-bigmem-1,fm-bigmem-2,fm-bigmem-3,fm-bigmem-4'
+  - tasks=1
+  - ntpc=1
+  - mem_mb=10000
+  - mem_mb_per_cpu=10000
+  - time_min=600
+
+latency-wait: 20
+local-cores: 1
+keep-going: True
+keep-incomplete: True
+rerun-incomplete: True
+# rerun-triggers: 'mtime'
+nolock: True
+printshellcmds: True
+use-conda: True
+conda-frontend: 'mamba'

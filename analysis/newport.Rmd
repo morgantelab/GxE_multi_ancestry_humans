@@ -43,7 +43,7 @@ matter <- function(datanow, fulltitle, montag=NULL, mod7=TRUE){
     labs(title=fulltitle, color='Component', tag=montag)+
     xlab('Model')+
     # xlab(NULL)+
-    ylab('PoVE')+
+    ylab('Variance')+
     theme_minimal()+
     theme(axis.text.x = element_blank(),
           panel.grid.major.x = element_blank(),
@@ -75,6 +75,7 @@ mat_sp_pcs <- mat_sp[modnum %in% mod1,]
 mat_pp_pcs <- mat_pp[modnum %in% mod1,]
 
 # alt model 6 ancestry grouping
+mod2 <- c('6', '6b')
 mod2 <- c('6', '6b', '6w')
 mat_dp_alt <- mat_dp[modnum %in% mod2,]
 mat_sp_alt <- mat_sp[modnum %in% mod2,]
@@ -92,8 +93,8 @@ mat_pp_num <- mat_pp[modnum %in% mod3,]
 verty <- 0.5 + cumsum(unlist(table(mat_dp_pcs$model)))
 verty <- verty[-length(verty)]
 
-# add on hardpoint ends
-verty2 <- c(0, verty, nrow(mat_dp_pcs)+1)
+# add on softpoint ends
+verty2 <- c(0.5, verty, nrow(mat_dp_pcs)+0.5)
 
 # calculates midpoint of each section to place Model Number below x axis
 verty3 <- (verty2[2:length(verty2)] - verty2[1:(length(verty2) - 1)]) / 2 + verty2[1:(length(verty2) - 1)]
@@ -111,16 +112,29 @@ ppc <- matter(mat_pp_pcs, fulltitle=NULL, montag='PP', mod7=FALSE)
 
 # indexes of line breaks - model 6 white groups
 # verty <- c(1.5, 3.5, 6.5, 9.5, 13.5, 17.5, 22.5, 27.5, 33.5)
+
+# mat_dp_alt <- mat_dp_alt[modnum!='6w',]
+# mat_sp_alt <- mat_sp_alt[modnum!='6w',]
+# mat_pp_alt <- mat_pp_alt[modnum!='6w',]
+
 verty <- 0.5 + cumsum(unlist(table(mat_dp_alt$model)))
 verty <- verty[-length(verty)]
 
 # add on hardpoint ends
-verty2 <- c(0, verty, nrow(mat_dp_alt)+1)
+verty2 <- c(0.5, verty, nrow(mat_dp_alt)+1)
+
+lv2 <- length(verty2)
 
 # calculates midpoint of each section to place Model Number below x axis
-verty3 <- (verty2[2:length(verty2)] - verty2[1:(length(verty2) - 1)]) / 2 + verty2[1:(length(verty2) - 1)]
+verty3 <- (verty2[2:lv2] - verty2[1:(lv2 - 1)]) / 2 + verty2[1:(lv2 - 1)]
 
-altnumber <- c('6 - Original', '6b - Brits', '6w - Whites')
+
+
+verty3 <- (verty2[2:lv2] - verty2[1:(lv2 - 1)]) / 2 + verty2[1:(lv2 - 1)]
+
+
+# altnumber <- c('6 - Original', '6b - Brits', '6w - Whites')
+altnumber <- c('6 - Original', '6b - Brits')
 
 #matter function plots model number at specified breakpoint at y = -1 for each label.
 modcode <- data.table(mn=altnumber, x=verty3, y=-1)
@@ -130,7 +144,6 @@ salt <- matter(mat_sp_alt, fulltitle=NULL, montag='SP', mod7=FALSE)
 palt <- matter(mat_pp_alt, fulltitle=NULL, montag='PP', mod7=FALSE)
 
 # print(plot_grid(dalt, salt, palt, ncol=1))
-
 
 # indexes of line breaks - models 7-9
 # verty <- c(1.5, 3.5, 6.5, 9.5, 13.5, 17.5, 22.5, 27.5, 33.5)
@@ -216,7 +229,7 @@ Model 8 includes the top 10 eigenvectors of the full plink IRM as additional cov
 Model 9 expands upon Model 8 by including the top 3 eigenvectors of the full ERM as additional covariates for a total of 23 covariates in $\mathbf{X}_4$.
 
 
-### Estimates of effect sizes
+### Estimates of Variance
 
 #### Combined
 
@@ -299,7 +312,7 @@ snipper(mat_pp_pcs)
 
 ```
 
-Estimates of effect sizes are consistent between models, suggesting our calculation of genetic PCs is appropriate.
+Estimates of variance are consistent between models, suggesting our calculation of genetic PCs is appropriate.
 
 
 ### Ancestry Composition
@@ -459,6 +472,8 @@ ggcorrplot(temp_alt, lab=1)
 
 The full breakdown of selected SNPs is available in the [QQ Plot Selection report](qqtop.html). These results are summarized here:
 
+### Variant Count Summary
+
 ```{r qqsnps, echo=FALSE}
 
 qqsnps <- fread('output/vault/fullport/qqsnps.txt')
@@ -466,6 +481,19 @@ qqsnps <- fread('output/vault/fullport/qqsnps.txt')
 kable(qqsnps,'simple')
 
 ```
+
+### All Significant Variants
+
+```{r qqsnps_table}
+
+signif_snps <- fread('output/vault/fullport/signif_snps.txt')
+
+signif_snps$`P value` <- scientific(signif_snps$`P value`)
+
+kable(signif_snps, 'simple', digits=2)
+
+```
+
 
 ## GxE-GWAS Variant Analysis
 

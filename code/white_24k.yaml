@@ -58,7 +58,10 @@ rule all:
         data+'covar_pheno.txt',
         # expand(mam+'output/white_24k/gxegwas/{traitor}/{env}.{traitor}0s.glm.linear', env=env, traitor=trait_UPPER),
         mam+"data/gpcxe/covar_pheno.txt",
+        mam+"data/gpcxe/covar_pheno_bmi.txt",
         expand(mam+'output/gpcxe/gxegwas/{traitor}/{env}.{traitor}0s.glm.linear', env=env, traitor=trait_UPPER),
+        expand(mam+'output/gpcxe/gxegwas_bmi/{traitor}/{env}.{traitor}0s.glm.linear', env=env, traitor=trait_UPPER),
+        # expand(mam+'output/gpcxe/gxegwas_bmi/{traitor}/{env}.{traitor}0s.glm.linear', env='sleep_dev', traitor='SP'),
         expand(mam+'output/anova/{env}.txt', env=env),
 
 
@@ -79,10 +82,6 @@ rule mult_anova:
     --env {wildcards.env} \
     --outpath {output.main}
     """
-
-
-
-
 
 
 #### GxE-GWAS ####
@@ -477,7 +476,7 @@ rule white24k_pca_for_grm_by_plink:
 
 
 
-
+# GXE-GWAS ---------------------------------------------------------
 
 rule mam_gpcxe_covar_pheno:
     input:
@@ -528,6 +527,62 @@ rule mam_gxegwas:
         --covar {input.covar} --covar-name age,age2,sex,X1-X10,{wildcards.env},{wildcards.env}__X1-{wildcards.env}__X10 \
         --glm interaction \
         --parameters 1-25,39 \
+        --out {params.OPREFIX}
+
+        """
+
+
+rule mam_gpcxe_covar_pheno_bmi:
+    input:
+        script = mam+"code/scripts/white_24k/covar_pheno_creation_bmi.R",
+        dataset = mam+'data/data3_20250514.rds',
+        bmi=mam+'data/white_24k/keepbmi.rds',
+        pcs = mam+'data/scaled_pcs_plink.rds',
+        emat = mam+'data/Emat_20250514.RData'
+    output:
+        covar_pheno = mam+"data/gpcxe/covar_pheno_bmi.txt",
+    resources:
+        tasks=1, mem_mb_per_cpu=10000, time_min=3000,partition='fm-bigmem-1',nodelist='bigmem003'
+    shell:
+        """
+        source /opt/intel/oneapi/mkl/2023.2.0/env/vars.sh intel64
+        module load R/4.2.3
+        export MKL_NUM_THREADS=1
+
+        Rscript {input.script} \
+            --data {input.dataset} \
+            --bmikey {input.bmi} \
+            --pcs {input.pcs} \
+            --emat {input.emat} \
+            --output {output.covar_pheno}
+        """
+
+
+rule mam_gxegwas_bmi:
+    input:
+        bfile=mam+"data/filtered_chr/merged_geno_common_snps_selected_indiv.bed",
+        covar=mam+"data/gpcxe/covar_pheno_bmi.txt",
+    output:
+        mam+'output/gpcxe/gxegwas_bmi/{traitor}/{env}.{traitor}0s.glm.linear'
+        # done=config["gwas_dir"] + "/" + "gxe_gwas_{env}_full_dataset.done"
+    params:
+        plink_executable_gwas = config["plink2_gwas"],
+        IPREFIX=mam+'data/filtered_chr/merged_geno_common_snps_selected_indiv',
+        OPREFIX=mam+'output/gpcxe/gxegwas_bmi/{traitor}/{env}',
+        pheno ='{traitor}0s'
+    resources:
+        tasks=4, mem_mb_per_cpu=5000, time_min=1440
+    shell:
+        """
+        {params.plink_executable_gwas} \
+        --threads {resources.tasks} \
+        --seed 1123 \
+        --bfile {params.IPREFIX} \
+        --no-input-missing-phenotype \
+        --pheno {input.covar} --pheno-name {params.pheno} \
+        --covar {input.covar} --covar-name age,age2,sex,bmi,X1-X10,{wildcards.env},{wildcards.env}__X1-{wildcards.env}__X10 \
+        --glm interaction \
+        --parameters 1-26,41 \
         --out {params.OPREFIX}
 
         """

@@ -1,0 +1,299 @@
+### Overview ---------------------------------------------------------------------
+
+# The following code is my logic controller in the form of a massive rule all statement. Block specific breakdown:
+
+# Global parameters - Manually defined wildcard values applicable to one or many rule modules. Confirm definitions do not override rule-specific wildcards.
+
+# - Directories - Syntax shortcut for hotspot directories, including the project root, scratch folder, external data paths, and auxillary log files
+
+# - Constraints - Prevents rescursive wildcard issues and ensures proper rule flow. Generally, wildcards do not contain underscores to allow separation by underscores from other rules. Otherwise, wildcards serve as directory names to sort rule outputs intuitively.
+
+# - Wildcards - Manually defined wildcard values applicable to one or many rule modules. Confirm definitions do not override rule-specific wildcards.
+
+# Modules - Contains analysis specific rule sets and analysis-specific wildcards.
+
+# The Rule - This rule contains active outputs from all module files. Disabled inputs are commented out.
+
+# Rule storage - Housekeeping rules and other code that doesn't affect core analyses.
+
+## Noah Klimkowski
+## Last rule review 9/29/25
+## ---------------------------------------------------------------------------
+
+### Global parameters
+
+#### Directories
+scratch=config['scratch']
+geno=config['geno']
+gem=config['gem']
+demo=config['demo']
+ukbgen=config['ukbgen']
+bench=config['bench']
+mam = '/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/'
+
+#### Constraints
+wildcard_constraints:
+  chrom="[0-9]+",
+  trait="[a-z]+",
+  test="[a-z]+",
+  env="[^/]+",
+  bmitype="[^/]+",
+  traitor="[A-Z]+",
+
+#### Wildcards
+
+##### MINIGXE (Temp)
+MEME = [4,6,8]
+CORP = [10,20,30,40]
+# SAMPLES = []
+# with open("data/mini/snplist.txt") as f:
+#     for line in f:
+#         SAMPLES.append(line.strip())
+
+##### Main
+ALL=range(1,22+1,1)
+TRAIT=['dp','sp','pp']
+
+ME=['main','env']
+FLOW=['env']
+
+##### TXE
+TISSUE=['Adrenal_Gland', 'Artery_Aorta', 'Kidney_Cortex', 'Heart_Left_Ventricle']
+ageenv = ['age', 'sleep__age', 'waist__age']
+ENVINT=['act_mid__male', 'act_mid__age']
+# TISSUE=['Brain_Hypothalamus', 'Artery_Coronary', 'Adrenal_Gland', 'Kidney_Cortex', 'Heart_Left_Ventricle', 'Artery_Aorta', 'Liver', 'Whole_Blood', 'Adipose_Subcutaneous']
+# ageenv = ['age', 'getup__age', 'sleep__age', 'waist__age', 'bfp__age', 'tv__age']
+
+##### FASTGXE
+PARTMAX=100
+NPART=range(1,PARTMAX+1,1)
+GXEPART=10
+NGXEPART=range(1,GXEPART+1,1)
+
+FAST_SNP = []
+with open("data/fastgxe/snplist.txt") as f:
+    for line in f:
+        FAST_SNP.append(line.strip())
+
+# print(FAST_SNP)
+
+FAST_SNP_TRIAL = ['7:46018146_C_T','15:48915884_T_C']
+
+# FAST_PP = []
+# with open("output/fastgxe/pp/snps.filt") as f:
+#     for line in f:
+#         FAST_PP.append(line.strip())
+#
+# FAST_SP = []
+# with open("output/fastgxe/sp/snps.filt") as f:
+#     for line in f:
+#         FAST_SP.append(line.strip())
+#
+# FAST_DP = []
+# with open("output/fastgxe/dp/snps.filt") as f:
+#     for line in f:
+#         FAST_DP.append(line.strip())
+
+##### MISC
+BMI_TYPE=['bmi','logbmi']
+BMITYPE=['bmi','logbmi']
+BUILD = ['hg37', 'hg38']
+HG = ['37', '38']
+OVER10K = [1,2,3,6,7,11,12,17,19]
+
+##### RMD
+# FILE = glob_wildcards("analysis/{file,[^/]+}.Rmd").file
+# FILE= ['index','gwas_highres', 'gwas', 'vqtl_highres', 'vqtl']
+
+
+trait_UPPER = ['DP', 'SP', 'PP']
+
+
+
+### Modules
+# include: 'prep.yaml'
+include: 'mult.yaml'
+include: 'vault.yaml'
+include: 'reprep.yaml'
+include: 'geno.yaml'
+include: 'freq.yaml'
+# include: 'gwas.yaml'
+# include: 'vqtl.yaml'
+# include: 'lemma.yaml'
+# include: 'kerin.yaml'
+# include: 'pgxe.yaml'
+# include: 'clump.yaml'
+# include: 'reclump.yaml'
+# include: 'bmi.yaml'
+# include: 'bmx.yaml'
+# include: 'limix.yaml'
+# include: 'covbmi.yaml'
+# include: 'txe.yaml'
+# include: 'hunger.yaml'
+# include: 'fastgxe.yaml'
+# include: 'minigxe.yaml'
+
+
+
+### The Rule
+# One rule to rule them all:
+rule all:
+  input:
+    ### Multi Ancestry
+    # mam+'data/nklimko/model7/final_eigen.rds',
+    # mam+'data/nklimko/model8/eigen_irm.Rds',
+    # expand(mam+'output/model7/{traitor}/{grm}/fit.rds', traitor=trait_UPPER, grm='plink'),
+    # expand(mam+'output/model8/{traitor}/{grm}/fit.rds', traitor=trait_UPPER, grm='plink'),
+    # expand(mam+'output/model7/{traitor}/{grm}/fit.rds', traitor=trait_UPPER, grm='pcrelate'),
+    # expand(mam+'output/model8/{traitor}/{grm}/fit.rds', traitor=trait_UPPER, grm='pcrelate'),
+    expand(mam+'output/tenc_model7/{traitor}/{grm}/fit.rds', traitor=trait_UPPER, grm='pcrelate'),
+    expand(mam+'output/tenc_model8/{traitor}/{grm}/fit.rds', traitor=trait_UPPER, grm='pcrelate'),
+    expand(mam+'output/model6_alt/{traitor}/{grm}/fit.rds', traitor=trait_UPPER, grm='pcrelate'),
+    mam+"output/nklimko/grm/white_24k.rel.id",
+    # expand(mam+'output/model7/{traitor}/{grm}/varcomp.csv', traitor=trait_UPPER, grm='plink'),
+    # mam+"data/nklimko/plotdata/mean_ci.txt",
+    # expand(mam+'output/model7/{traitor}/{grm}/fit.rds', traitor='PP', grm='plink'),
+    # expand(mam+'output/model7/{trait}/{grm}/fit.rds', trait='PP', grm='plink'),
+    # expand(mam+'output/model7/{trait}/{grm}_varcomp.csv', trait=trait_UPPER, grm='plink'),
+    # mam+'data/nklimko/model8/eigvec10.rds',
+    ##### ONGOING / WIP
+    expand(gem+'data/prep/{flow}/rawdata.txt', flow=ME),
+    expand(gem+"data/geno/c{chrom}/main.bed", chrom=ALL),
+    expand(gem+"data/geno/c{chrom}/env.bgen", chrom=ALL),
+    ### FREQ
+    gem+'output/freq/env.afreq',
+    expand(gem+'output/freq/env/c{chrom}/raw.afreq', chrom=ALL),
+    # expand(gem+'output/freq/main/c{chrom}/raw.afreq', chrom=ALL),
+    expand(gem+'output/freq/main/c{chrom}/main.afreq', chrom=ALL),
+    expand(gem+'output/freq/{flow}/snps_{flow}.freq', flow='main'),
+    expand(gem+'output/freq/{flow}/snps_raw.freq', flow=ME),
+    ### VAULT
+    gem+'output/vault/freq/main.Rds',
+    # ### FAST GXE
+    # # gem+'data/geno/full/bed/covbmi.bed',
+    # expand(gem+'data/fastgxe/grm/part.agrm.{partmax}_{npart}.sp.bin', partmax=PARTMAX, npart=NPART),
+    # gem+'data/fastgxe/grm/full.agrm.sp.bin',
+    # gem+'data/fastgxe/grm/full.agrm.group',
+    # expand(gem+'output/fastgxe/{trait}/final.{gxemax}_{gxepart}.res', trait=TRAIT, gxepart=NGXEPART, gxemax=GXEPART),
+    # expand(gem+'output/fastgxe/{trait}/snps.filt', trait=TRAIT),
+    # expand(gem+'output/trial/{trait}/susie/snp_{snp}.var', trait='pp', snp=FAST_SNP_TRIAL),
+    # # expand(gem+'output/fastgxe/{trait}/susie/snp_{snp}.var', trait='pp', snp=FAST_SNP),
+    #
+    # ### MULTIPLE REGRESSION
+    # expand(gem+'data/mreg/{trait}.vcf', trait='pp'),
+    # # expand(gem+'output/gemini/mreg/{trait}/{bmitype}.{trait}.glm.linear', trait=TRAIT, bmitype='bmi'),
+    #
+
+    #
+    # ##### STABLE -------------------------------------------------------------------------------------
+    # ### GENO
+    # scratch+"env/genome.bgen",
+    # scratch+"env/genome.bgen.bgi",
+    # expand(gem+'data/geno/c{chrom}/covbmi.bgen', chrom=ALL),
+    # expand(gem+"data/geno/c{chrom}/typed_covbmi.bgen", chrom=ALL),
+    # gem+"data/geno/full/genome_covbmi.bgen",
+    # # gem+'data/geno/full/covbmi.bgen',
+    # ### LEMMA
+    # expand(gem+'output/lemma/{trait}_covbmi/vb/vb.out', trait=TRAIT),
+    # expand(gem+'output/lemma/{trait}_covbmi/sss/all_sss.txt', trait=TRAIT),
+    # expand(gem+'output/gemini/covbmi/{trait}/sss/all_sss.txt', trait=TRAIT),
+    # ### PGXE
+    # expand(gem+'output/pgxe/{trait}/{env}/gxe.{trait}.glm.linear', trait=TRAIT, env=FINAL_ENV),
+    # expand(gem+'output/pgxe/{trait}/{env}/alt.{trait}.glm.linear', trait=TRAIT, env=ALT_ENV),
+    # expand(gem+'output/pgxe/{trait}/gxe_test.data', trait=TRAIT),
+    # ### LIMIX
+    # expand(gem+'data/limix/{trait}.txt', trait=TRAIT),
+    # expand(gem+'output/limix/{trait}/pvi.out', trait=TRAIT),
+    # expand(gem+'output/limix/{trait}_covbmi/pvi.out', trait=TRAIT),
+    # expand(gem+'output/gemini/limix/{trait}/pvi.out', trait=TRAIT),
+    # ### TXE
+    # gem+'data/geno/full/eqtl.vcf',
+    # expand(gem+'output/txe/{trait}/{tissue}/{env}/linreg.txt', trait=TRAIT, env=ageenv, tissue=TISSUE),
+    # expand(gem+'output/txe/{trait}/{tissue}/{env}/test_{test}.txt', trait=TRAIT, env=ageenv, tissue=TISSUE, test='gxe'),
+    # expand(gem+'output/txe/{trait}/alltissue_{test}.txt', test='gxe', trait=TRAIT),
+    # ### RECLUMP
+    # expand(gem+'data/snps/vqtls/{trait}/reclump.bgen', trait=TRAIT),
+    # expand(gem+'data/snps/vqtls/{trait}/reclump_bgi.snporder', trait=TRAIT),
+    # expand(scratch+'chr_vqtls/{trait}/c{chrom}/reclump.bgen',trait=TRAIT, chrom=ALL),
+    # # expand(gem+'data/snps/vqtls/{trait}/reclump.bgen', trait='pp'),
+    # ### RECLUMP SAGA
+    # expand(gem+'output/gemini/pgxe/{trait}/{env}/{bmitype}.{trait}.glm.linear', trait='pp',env=FINAL_ENV, bmitype='bmi'),
+    # expand(gem+'output/gemini/pgxe_alt/{trait}/{env}/{bmitype}.{trait}.glm.linear', trait='pp',env=ALT_ENV, bmitype='bmi'),
+    # expand(gem+'output/gemini/pgxe/{trait}/gxe_{bmitype}.data', trait=TRAIT, bmitype='bmi'),
+    # ### KERIN Replication BMI
+    # gem+'data/kerin/all_data.txt',
+    # expand(gem+'data/kerin/bmi/c{chrom}/bmi.bgen', chrom=ALL),
+    # gem+'data/kerin/logbmi.txt',
+    # expand(gem+'data/kerin/bmi/c{chrom}/slice.bgen', chrom= [1,6,16]),
+    # expand(gem+'output/kerin/logbmi/sss/c{chrom}/sss.out', chrom=[1,6,16]),
+    # expand(gem+'output/pgxe_kerin/logbmi/{env}/gxe.logbmi.glm.linear', env=kFINAL_ENV),
+    # gem+'output/pgxe/logbmi/gxe_kerin.data',
+    # # gem+'output/kerin_alt/logbmi/vb/vb.out',
+    # ### COVBMI, pgxe and lemma
+    # gem+'data/covbmi/bp_all.Rds',
+    # gem+'data/covbmi/all_data.txt',
+    # expand(gem+'output/covbmi/{trait}/{env}/{bmitype}.{trait}.glm.linear', trait=TRAIT, env=FINAL_ENV, bmitype=BMI_TYPE),
+    # expand(gem+'output/covalt/{trait}/{env}/{bmitype}.{trait}.glm.linear', trait=TRAIT, bmitype=BMI_TYPE, env=ALT_ENV),
+    # expand(gem+'output/covbmi/{trait}/gxe_{bmitype}.data', trait=TRAIT, bmitype=BMI_TYPE),
+    # # expand(scratch+'vqtl_unlimited/{trait}/c{chrom}/raw.vcor', trait='pp', chrom=6),
+    # # expand(scratch+'vqtl_unlimited/dp/c{chrom}/filt.clumps', chrom=DP_VQTLS),
+    # # expand(scratch+'vqtl_unlimited/sp/c{chrom}/filt.clumps', chrom=SP_VQTLS),
+    # # expand(scratch+'vqtl_unlimited/pp/c{chrom}/filt.clumps', chrom=PP_VQTLS),
+    # expand(gem+'output/vqtl/{trait}/all_signif.data', trait=TRAIT),
+    # # expand(scratch+'vqtl_unlimited/merge/{trait}.blank', trait=TRAIT),
+    #
+    # ### MISC ACTIVE RULES (WIP) --------------------------------------------------------------------------
+    # expand(scratch+'vqtl/{trait}/c{chrom}/raw.vcor', trait='dp', chrom=DP_VQTLS),
+    # expand(scratch+'vqtl/{trait}/c{chrom}/raw.vcor', trait='sp', chrom=SP_VQTLS),
+    # expand(scratch+'vqtl/{trait}/c{chrom}/raw.vcor', trait='pp', chrom=PP_VQTLS),
+    # expand(gem+'data/snps/vqtls/{trait}/r02_{trait}.vqtl', trait=TRAIT),
+    # expand(gem+'data/snps/vqtls/{trait}/bgi.snporder', trait=TRAIT),
+    # expand(gem+'data/snps/vqtls/{trait}/{trait}.vcor', trait=TRAIT),
+    # # expand(scratch+'reclump/{trait}/c{chrom}/BIG.clumps', trait='pp', chrom=6),
+    # expand(gem+'data/snps/vqtls/{trait}/ALT_{trait}.vqtl', trait='pp'),
+
+    ### INACTIVE RULES
+    ### MINIGXE
+    # gem+'data/geno/mini/covbmi.bed',
+    # expand(gem+'data/mini/grm/mini.agrm.{partmax}_{npart}.sp.bin', partmax=PARTMAX, npart=NPART),
+    # gem+'data/mini/grm/mega.agrm.sp.bin',
+    # gem+'data/mini/mreg.txt',
+    # expand(gem+'output/mini/{trait}/testgxe{gxemax}_{gxepart}.var', trait='pp', gxepart=NGXEPART, gxemax=GXEPART),
+    # expand(gem+'output/mini/{trait}/slivergxe{gxemax}_{gxepart}.var', trait='pp', gxepart=1, gxemax=10),
+        # expand(gem+'output/mini/{trait}/susie/slivergxe_{snp}.var', trait='pp', snp='1:900001_G_A'),
+        # expand(gem+'output/mini/{trait}/susie/slivergxe_{snp}.var', trait='pp', snp=SAMPLES),
+
+    # expand(gem+'output/demo_fastgxe/{trait}/susie/snp_{snp}.out', trait='pp', snp='1:15777_A_G'),
+    # expand(gem+'output/demo_fastgxe/{trait}/susie/{mem}/snp_{snp}.out', trait='pp', snp='1:15777_A_G', mem=range(4,7+1,1)),
+    # expand(gem+'output/demo_fastgxe/{trait}/susie/{corp}/{mem}/snp_{snp}.out', trait='pp', snp='1:15777_A_G', mem=MEME, corp=CORP),
+
+
+
+
+
+### Rule storage
+
+# rule rmd_build:
+#   input:
+#     'analysis/{file}.Rmd'
+#   output:
+#     'docs/{file}.html'
+#   resources:
+#     mem_mb=10000
+#   shell:
+#     """
+#     Rscript -e 'wflow_build("{input}")'
+#     """
+
+# rule rmd_publish:
+#   input:
+#     'analysis/{file}.Rmd'
+#   output:
+#     'docs/{file}.html'
+#   resources:
+#     mem_mb=30000,
+#     solo=1
+#   shell:
+#     """
+#     Rscript -e 'wflow_publish("{input}")'
+#     """

@@ -54,8 +54,8 @@ picasso <- function(trait, env){
 
 # hold <- data.table(trait='BP', env='none', cor=0, logcor=0, spear=0, logspear=0)
 
-
-
+# trait <- t
+# env <- e
 
 # final <- hold[-1, ]
 
@@ -63,7 +63,7 @@ picasso <- function(trait, env){
 
 
 
-qqlim <- function(rawvector, outpath, file, size_point=0.75, saving=0, fulltitle=NULL){
+qqlim <- function(rawvector, outpath=NA, file=NA, size_point=0.75, saving=0, fulltitle=NULL, fullcut=1){
   
   # data filtering
   pvector <- na.omit(rawvector)
@@ -79,6 +79,10 @@ qqlim <- function(rawvector, outpath, file, size_point=0.75, saving=0, fulltitle
   eodata <- data.table(expect=expected, observe=obspoint)
   limax <- max(eodata)
   
+  if(fullcut!=0){
+    eodata <- eodata[expect > fullcut,]
+  }
+  
   # Full plot
   plothole <- ggplot(eodata, aes(x = expect, y=observe))+
     xlab(expression(Expected~~-log[10](italic(p))))+
@@ -90,6 +94,7 @@ qqlim <- function(rawvector, outpath, file, size_point=0.75, saving=0, fulltitle
   
   if(saving){
     # print(outpath)
+    print('sav')
     dir.create(outpath, recursive = 1, showWarnings = 0)
     
     ggsave(plot = plothole,
@@ -105,15 +110,42 @@ qqlim <- function(rawvector, outpath, file, size_point=0.75, saving=0, fulltitle
   
 }
 
-# traitlist <- c('dp', 'sp')
-envlist <- c('BFP', 'tea')
-# traitlist <- toupper(traitlist)
+gg[[1]] <- qqlim(unlist(newp$P), fulltitle='grill', saving=0, size_point=0.75, fullcut=0)
+
+
+claude <- function(trait, env){
+  
+  # needed for toTitleCase in ttitle remake
+  library(tools)
+  
+  #enforce upper case
+  trait <- toupper(trait)
+  
+  #read in data
+  newp <- readRDS(paste0('output/gpcxe/tables_gxegwas/', trait,'/',env,'.rds'))
+  
+  #convert to numeric
+  newp$P <- as.numeric(newp$P)
+  
+  # Remake title
+  # newtitle <- paste0(trait, ' ' ,env, ' new')
+  env2 <- gsub('_',' ',env)
+  newtitle <- toTitleCase(env2)
+  newtitle
+  
+  #qqlim funciton call
+  newhead <- qqlim(unlist(newp$P), fulltitle=newtitle, saving=0, size_point=0.75, fullcut=1)
+  
+  return(newhead)
+  
+}
+
+
+demo <- claude('dp', 'waist')
+
 
 
 envlist <- c('Townsend', 'act0_d', 'TVtime', 'sleep_d','smoking_now', 'veg_cook', 'fish_oily', 'fish_lean', 'meat_proc', 'poultry', 'beef', 'lamb', 'pork', 'cheese', 'salt', 'tea', 'alc1', 'waist', 'getup', 'coffee', 'smoked_past', 'BFP', 'sleep_dev')
-# 
-# traitlist <- c('dp', 'sp', 'pp')
-# traitlist <- toupper(traitlist)
 
 
 ```
@@ -123,6 +155,8 @@ envlist <- c('Townsend', 'act0_d', 'TVtime', 'sleep_d','smoking_now', 'veg_cook'
 ## Diastolic Pressure
 
 ```{r dp}
+
+envlist <- 'Townsend'
 
 t <- 'DP'
 for(e in envlist){
