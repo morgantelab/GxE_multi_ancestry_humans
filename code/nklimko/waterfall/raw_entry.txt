@@ -1,0 +1,49 @@
+
+502460 base
+Asian Black Chinese Mixed White other
+9880 8060 1573 2956 472656 6658
+
+14481 no genotype data or withdrawn
+
+487979 genotyped
+Asian Black Chinese Mixed White other
+9465 7634 1503 2837 459882 6658
+
+minus 32208 removed for missing DP or SP (31195, 32208)
+
+456771 remain
+Asian Black Chinese Mixed White other
+9162 7480 1424 2738 429595 6372
+
+minus 510 for DP or SP > 4 SD from respective mean
+
+456261 remain to assess for environment data below
+Asian Black Chinese Mixed White other
+9147 7460 1423 2735 429130 6366
+
+NAs removed from all environments
+336755
+Asian Black Chinese Mixed White zz_other
+5244 4269 842 1836 321179 3385
+
+filtered for age 40-70
+336743
+Asian Black Chinese Mixed White zz_other
+5244 4268 842 1836 321168 3385
+
+NA ethn1 removed, excludes missing from zz_other
+335787
+Asian Black Chinese Mixed White zz_other
+5244 4268 842 1836 321168 2429
+
+zz_other removed as well
+333358
+Asian Black Chinese Mixed White
+5244 4268 842 1836 321168
+
+
+99% and outliers removed for coffee tea veg cook Tv time and sleep d
+1% removed for sleep d
+321388
+Asian Black Chinese Mixed White
+4957 3979 774 1746 309932

@@ -168,8 +168,6 @@ rule brit24k_compute_gxe_hadamard_eigen:
             # --out_eigen_pcrelate {output.eigen_pcrelate}
 
 
-
-
 ## Creating GRMs ##
 
 # Step 4: GRM using plink
@@ -255,7 +253,6 @@ rule brit24k_pca_for_grm_by_plink:
 
 
 #11.6
-
 
 #
 rule brit24k_grm:

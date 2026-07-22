@@ -1034,6 +1034,7 @@ rule gwas_snp_env_full_dataset:
     output:
         done=config["gwas_dir"] + "/" + "gxe_gwas_{env}_full_dataset.done"
     params:
+        # nklimko - plink2_gwas name change in params of GxE-GWAS 10/23/25
         plink_executable_gwas = config["plink2_gwas"],
         COV=config["data_dir"] + "/" + "covar_pheno.txt",
         IPREFIX=config["filtered_chr_dir"] + "/" + "merged_geno_common_snps_selected_indiv",
@@ -1056,11 +1057,6 @@ rule gwas_snp_env_full_dataset:
         # Create a completion flag
         touch {output.done}
         """
-
-# nklimko - plink2_gwas name change in params of GxE-GWAS 10/23/25
-
-
-
 
 
 ## making covar_pheno file for gxe-gwas

@@ -28,6 +28,7 @@ ENV=config["ENV"]
 scratch=config['scratch']
 ukbgen=config['ukbgen']
 
+gem='/data2/morgante_lab/ukbiobank_projects/GxE_mapping/'
 mam='/data2/morgante_lab/ukbiobank_projects/GxE_multi_ancestry/'
 # data =     mam+'data/white_24k/'
 # chrdir =   mam+'data/white_24k/filt/'
@@ -43,8 +44,8 @@ rule all:
     # expand(mam+'output/model7/{traitor}/{grm}/fit.rds', traitor=trait_UPPER, grm='plink'),
     # expand(mam+'output/model8/{traitor}/{grm}/fit.rds', traitor=trait_UPPER, grm='plink'),
     expand(mam+'output/model7/{traitor}/{grm}/fit.rds', traitor=trait_UPPER, grm='pcrelate'),
-    # expand(mam+'output/model8/{traitor}/{grm}/fit.rds', traitor=trait_UPPER, grm='pcrelate'),
-    # expand(mam+'output/model9/{traitor}/{grm}/fit.rds', traitor=trait_UPPER, grm='pcrelate'),
+    expand(mam+'output/model8/{traitor}/{grm}/fit.rds', traitor=trait_UPPER, grm='pcrelate'),
+    expand(mam+'output/model9/{traitor}/{grm}/fit.rds', traitor=trait_UPPER, grm='pcrelate'),
     expand(mam+'output/model6_alt/{traitor}/{grm}/fit.rds', traitor=trait_UPPER, grm='pcrelate'),
     mam+"output/nklimko/grm/white_24k.rel.id",
     # expand(mam+'output/tenc_model7/{traitor}/{grm}/fit.rds', traitor=trait_UPPER, grm='pcrelate'),
@@ -58,7 +59,7 @@ rule all:
 
 rule mult_m7_eigen:
   input:
-    script=  ancient(mam+'code/nklimko/m7_eigen.R')
+    script=  gem+'code/mult/m7_eigen.R'
   output:
      mam+'data/nklimko/model7/final_eigen.rds',
   resources:
@@ -79,10 +80,10 @@ rule mult_m7_eigen:
 
 rule mult_m8_eigen:
   input:
+    # irm = mam+'data/nklimko/irm.Rds',
     script= ancient(mam+'code/nklimko/setup_m8.R')
   output:
     eigen = mam+'data/nklimko/model8/eigen_irm.Rds',
-    # irm = mam+'data/nklimko/irm.Rds',
   resources:
     tasks=10,
     mem_mb_per_cpu=10000,
@@ -350,6 +351,88 @@ rule mult_model6_X2swap:
 #     Rscript {input.script}
 #     """
 
+
+
+rule mult_tenc_model7:
+  input:
+    script = mam+'code/nklimko/model_7.R',
+    model = mam+'data/nklimko/grm10.Rds',
+    data = mam+'data/data3_20250514.rds',
+    eigen = mam+'data/filtered_chr/pca_for_{grm}.rds',
+    env = mam+'data/E_eigen.rds',
+    pcs = mam+'data/scaled_pcs_plink.rds',
+    gxe_eigen= mam+'data/eigen_GxE_{grm}.rds',
+  output:
+    fit =     mam+'output/tenc_model7/{traitor}/{grm}/fit.rds',
+    varcomp = mam+'output/tenc_model7/{traitor}/{grm}/varcomp.csv',
+  params:
+    scratch= scratch+'mult/{traitor}/{grm}/tenc_model7/dart_'
+  resources:
+    # original 10 cores with 150gb total
+    tasks=10,
+    mem_mb_per_cpu=15000,
+    time_min=3000
+    # 50 hour time limit is the frightening part
+  shell:
+    """
+    source /opt/intel/oneapi/mkl/2023.2.0/env/vars.sh intel64
+    module load R/4.2.3
+    export MKL_NUM_THREADS={resources.tasks}
+    export OMP_NUM_THREADS={resources.tasks}
+
+    Rscript {input.script} \
+    --trait {wildcards.traitor} \
+    --modelpath {input.model} \
+    --datapath {input.data} \
+    --eigenpath {input.eigen} \
+    --gxe_eigenpath {input.gxe_eigen} \
+    --pcpath {input.pcs} \
+    --envpath {input.env} \
+    --outpath {output.fit} \
+    --varpath {output.varcomp} \
+    --scratch {params.scratch}
+    """
+
+
+rule mult_tenc_model8:
+  input:
+    script = mam+'code/nklimko/model_8.R',
+    model = mam+'data/nklimko/model8/eigen_irm.Rds',
+    data = mam+'data/data3_20250514.rds',
+    eigen = mam+'data/filtered_chr/pca_for_{grm}.rds',
+    env = mam+'data/E_eigen.rds',
+    pcs = mam+'data/scaled_pcs_plink.rds',
+    gxe_eigen= mam+'data/eigen_GxE_{grm}.rds',
+  output:
+    fit =     mam+'output/tenc_model8/{traitor}/{grm}/fit.rds',
+    varcomp = mam+'output/tenc_model8/{traitor}/{grm}/varcomp.csv',
+  params:
+    scratch= scratch+'mult/{traitor}/{grm}/tenc_model8/dart_'
+  resources:
+    # original 10 cores with 150gb total
+    tasks=10,
+    mem_mb_per_cpu=15000,
+    time_min=3000
+    # 50 hour time limit is the frightening part
+  shell:
+    """
+    source /opt/intel/oneapi/mkl/2023.2.0/env/vars.sh intel64
+    module load R/4.2.3
+    export MKL_NUM_THREADS={resources.tasks}
+    export OMP_NUM_THREADS={resources.tasks}
+
+    Rscript {input.script} \
+    --trait {wildcards.traitor} \
+    --modelpath {input.model} \
+    --datapath {input.data} \
+    --eigenpath {input.eigen} \
+    --gxe_eigenpath {input.gxe_eigen} \
+    --pcpath {input.pcs} \
+    --envpath {input.env} \
+    --outpath {output.fit} \
+    --varpath {output.varcomp} \
+    --scratch {params.scratch}
+    """
 
 rule mult_24kwhite_grm:
     input:

@@ -63,6 +63,7 @@ rule all:
         expand(mam+'output/gpcxe/gxegwas_bmi/{traitor}/{env}.{traitor}0s.glm.linear', env=env, traitor=trait_UPPER),
         # expand(mam+'output/gpcxe/gxegwas_bmi/{traitor}/{env}.{traitor}0s.glm.linear', env='sleep_dev', traitor='SP'),
         expand(mam+'output/anova/{env}.txt', env=env),
+        expand(data + "eigen_GxE_{grm}.rds", grm='pcrelate'),
 
 
 ### ANOVA
@@ -110,7 +111,6 @@ rule white24k_covar_pheno:
             --output {output.covar_pheno}
         """
 
-#
 # rule white24k_gxegwas:
 #     input:
 #         bfile=chrdir+ "merged_geno_common_snps_selected_indiv.bed",

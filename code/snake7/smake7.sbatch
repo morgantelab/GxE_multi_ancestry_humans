@@ -34,9 +34,9 @@ conda activate snakemake
 # Include personal R packages
 #export R_LIBS=/data2/morgante_lab/kgoda/software/R/x86_64-pc-linux-gnu-library/4.1
 
+## Alt profiles to execute
 # -s code/mult.yaml \
 # -s code/white_24k.yaml \
-
 
 # Execute Snakemake
 snakemake \
@@ -48,17 +48,6 @@ snakemake \
 --rerun-incomplete \
 --profile code/snake7 \
 --jobs $jobs
-
-# Test/Dry version
-#snakemake \
-#-p \
-#-n \
-#-s snakefile.yaml \
-#--configfile config.yaml \
-#--profile slurm
-
-#--dag | display | dot
-#-p -n \
 
 # Unload R module and deactivate conda environment after completion
 #module unload R/4.1.2
